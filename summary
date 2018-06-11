@@ -1,0 +1,1500 @@
+
+		
+
+String sql = "SELECT toolname abbr, toolname name from toolquery";
+List<Map<String, Object>> toolnamelist = toolRepository.listMapBySql(sql);
+return JSONArray.fromObject(list).toString();
+
+String sql = "SELECT toolname from toolquery";
+List toolnamelist2 = toolRepository.listObjectBySql(sql);
+
+
+{
+  "Yesterday": 837,
+  "Past7Days": 1768,
+  "Past30Days": 4317
+}
+
+
+Map<String, String> activeMap = JSONObject.fromObject(activeData);
+activePast30Days = MapUtils.getInteger(activeMap, "Past30Days", 0);
+
+
+[{"DateTime":"2018-04-07T00:00:00","Value":25938},{"DateTime":"2018-04-08T00:00:00","Value":25946},{"DateTime":"2018-04-09T00:00:00","Value":25958},{"DateTime":"2018-04-10T00:00:00","Value":25968},{"DateTime":"2018-04-11T00:00:00","Value":25977},{"DateTime":"2018-04-12T00:00:00","Value":25991},{"DateTime":"2018-04-13T00:00:00","Value":25994},{"DateTime":"2018-04-14T00:00:00","Value":25997},{"DateTime":"2018-04-15T00:00:00","Value":25998},{"DateTime":"2018-04-16T00:00:00","Value":26013},{"DateTime":"2018-04-17T00:00:00","Value":26022},{"DateTime":"2018-04-18T00:00:00","Value":26029},{"DateTime":"2018-04-19T00:00:00","Value":26046},{"DateTime":"2018-04-20T00:00:00","Value":26056},{"DateTime":"2018-04-21T00:00:00","Value":26063},{"DateTime":"2018-04-22T00:00:00","Value":26063},{"DateTime":"2018-04-23T00:00:00","Value":26076},{"DateTime":"2018-04-24T00:00:00","Value":26086},{"DateTime":"2018-04-25T00:00:00","Value":26094},{"DateTime":"2018-04-26T00:00:00","Value":26102},{"DateTime":"2018-04-27T00:00:00","Value":26111},{"DateTime":"2018-04-28T00:00:00","Value":26121},{"DateTime":"2018-04-29T00:00:00","Value":26121},{"DateTime":"2018-04-30T00:00:00","Value":26121},{"DateTime":"2018-05-01T00:00:00","Value":26121},{"DateTime":"2018-05-02T00:00:00","Value":26138},{"DateTime":"2018-05-03T00:00:00","Value":26155},{"DateTime":"2018-05-04T00:00:00","Value":26161},{"DateTime":"2018-05-05T00:00:00","Value":26163},{"DateTime":"2018-05-06T00:00:00","Value":26163},{"DateTime":"2018-05-07T00:00:00","Value":26163}]
+
+
+List<Map<String, String>> totalList = JSONArray.fromObject(totalData);
+// 月初累计人数
+startTotal = MapUtils.getInteger(totalList.get(0), "Value", 0);
+// 月末累计人数
+endTotal = MapUtils.getInteger(totalList.get(totalList.size() - 1), "Value", 0);
+
+
+Collections.sort(top3list, new Comparator<Map<String, Object>>() {
+@Override
+public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+Integer name1 = MapUtils.getInteger(o1, "Value", 0);
+Integer name2 = MapUtils.getInteger(o2, "Value", 0);
+return name2.compareTo(name1);
+}
+});
+
+
+    StringBuilder sb;
+    sb = new StringBuilder();
+
+
+
+    xtype: "rownumberer",
+
+
+	
+	killjava
+	C:\Windows\System32\taskkill.exe
+	/f /im "java.exe" /im "javaw.exe"
+	
+	clean_compile_install
+	C:\apache-maven-3.0.3\bin\mvn.bat
+	D:\代码\xdu2\xdu
+	clean
+    compile
+    install -DskipTests
+
+    web_start
+    C:\apache-maven-3.0.3\bin\mvn.bat
+    ${workspace_loc:/web}
+    jetty:run
+
+java_home
+MAVEN_OPTS
+-Xms512m -Xmx512m -XX:PermSize=128M -XX:MaxPermSize=128m -Xdebug -Xnoagent -Djava.compiler=NONE -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y
+	
+	
+tomcat
+	-Xms512M -Xmx1024M -XX:MaxNewSize=256M -XX:MaxPermSize=256M
+	
+	
+	
+	
+	CREATE TABLE `T_BranchCode_FlowRate_4` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `domain` VARCHAR(255) DEFAULT NULL,
+  `component` VARCHAR(255) DEFAULT NULL,
+  `project` VARCHAR(255) DEFAULT NULL,
+  `branchComponent` VARCHAR(255) DEFAULT NULL,
+  `branchOwner` VARCHAR(255) DEFAULT NULL,
+  `curStockCode` VARCHAR(255) DEFAULT NULL,
+  `aveFlowRate` VARCHAR(255) DEFAULT NULL,
+  `recSubmit` VARCHAR(255) DEFAULT NULL,
+  `latestSynTime` VARCHAR(255) DEFAULT NULL,
+  `expirationMR` VARCHAR(255) DEFAULT NULL,
+  `bigVersionId` INT(11) DEFAULT NULL,
+  `level` VARCHAR(255) DEFAULT NULL,
+  `date` VARCHAR(255) DEFAULT NULL,
+  `NoCloMR` VARCHAR(255) DEFAULT NULL,
+  `state` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=INNODB AUTO_INCREMENT=2795 DEFAULT CHARSET=utf8
+
+
+
+CREATE TABLE [dbo].[T_BRANCH_INFO] (
+[id] int NOT NULL IDENTITY(1,1) NOT FOR REPLICATION ,
+[branch_name] varchar(500) NULL ,
+[branch_type] varchar(255) NULL ,
+[code_branch_name] varchar(500) NULL ,
+[code_branch_label] varchar(255) NULL ,
+[branch_describe] varchar(1000) NULL ,
+[branch_owner] varchar(255) NULL ,
+[planned_closing_date] varchar(255) NULL ,
+[project_group] varchar(255) NULL ,
+[v_version] varchar(255) NULL ,
+[entry_strategy] varchar(500) NULL ,
+[access_control] varchar(255) NULL ,
+[dept] varchar(255) NULL ,
+[branch_state] int NULL ,
+[branch_attributes] varchar(1000) NULL ,
+[r_version] varchar(255) NULL ,
+[development_project] varchar(255) NULL ,
+[projectNo] varchar(255) NULL ,
+[currentHander] varchar(255) NULL ,
+[currentNode] varchar(255) NULL ,
+[createTime] varchar(255) NULL ,
+[c_version] varchar(255) NULL ,
+[submitter] varchar(255) NULL ,
+[isDraftStatus] int NULL ,
+[lastModify] varchar(255) NULL ,
+[lastNode] varchar(255) NULL ,
+[branch_CME] varchar(255) NULL ,
+[branch_url] varchar(500) NULL ,
+[tempHandler] varchar(500) NULL ,
+[tempNode] varchar(500) NULL ,
+[check_result] varchar(50) NULL ,
+[valid_flg] int NULL ,
+[branch_PM] varchar(255) NULL ,
+[PMCperson] varchar(6000) NULL ,
+[orgname] varchar(1000) NULL ,
+[RPMIP] varchar(500) NULL ,
+[resourceName] varchar(500) NULL ,
+[resource_owner] varchar(500) NULL ,
+[isROP] varchar(20) NULL ,
+[Agent_linux] varchar(20) NULL ,
+[Agent_win] varchar(20) NULL ,
+[Agent_64bit_linux] varchar(20) NULL ,
+[POMNO] varchar(20) NULL ,
+[ProxyNo] varchar(20) NULL ,
+[RPM_flg] int NULL ,
+[recover_flg] varchar(20) NULL ,
+[allocation_flg] varchar(20) NULL ,
+[deptThree] varchar(1000) NULL ,
+[entrance] varchar(255) NULL ,
+[branch_doorBranch] varchar(255) NULL ,
+[mainfest_Store] varchar(1000) NULL ,
+[store_Orgname] varchar(1000) NULL ,
+[ROWVERSION] timestamp NOT NULL ,
+[deptFour] varchar(1000) NULL ,
+[component] varchar(255) NULL 
+)
+
+
+
+
+
+CREATE TABLE `T_BRANCH_CODE_OPTION` (
+  `ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `code_level` VARCHAR(255) DEFAULT NULL,
+  `branch_type` VARCHAR(255) DEFAULT NULL,
+  `bigVersionId` INT(11) DEFAULT NULL,
+  `bigVersionName` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=INNODB AUTO_INCREMENT=2795 DEFAULT CHARSET=utf8
+
+
+INSERT INTO T_BRANCH_CODE_OPTION (code_level, branch_type, bigVersionId, bigVersionName) VALUES ('mainTrunk', '平台主干集成线', 1002, 'VRP V800R018C10');
+
+INSERT INTO T_BRANCH_CODE_OPTION (code_level, branch_type, bigVersionId, bigVersionName) VALUES ('domain', '领域分支,部门主干', 1002, 'VRP V800R018C10');
+
+INSERT INTO T_BRANCH_CODE_OPTION (code_level, branch_type, bigVersionId, bigVersionName) VALUES ('domain', '领域分支,部门主干', 123, 'VRP V800R018C00');
+
+INSERT INTO T_BRANCH_CODE_OPTION (code_level, branch_type, bigVersionId, bigVersionName) VALUES ('mainTrunk', '平台主干集成线', 123, 'VRP V800R018C00');
+
+
+
+
+
+CREATE TABLE `T_BRANCH_INFO` (
+  `id` INT(11) NOT NULL,
+  `branch_name` VARCHAR(255) DEFAULT NULL,
+  `branch_type` VARCHAR(255) DEFAULT NULL ,
+  `code_branch_name` VARCHAR(255) DEFAULT NULL,
+  `code_branch_label` VARCHAR(255)  DEFAULT NULL,
+  `branch_describe` VARCHAR(255) DEFAULT NULL,
+  `branch_owner` VARCHAR(255)  DEFAULT NULL,
+  `planned_closing_date` VARCHAR(255)  DEFAULT NULL,
+  `project_group` VARCHAR(255)  DEFAULT NULL,
+  `v_version` VARCHAR(255)  DEFAULT NULL,
+  `entry_strategy` VARCHAR(255) DEFAULT NULL,
+  `access_control` VARCHAR(255)  DEFAULT NULL,
+  `dept` VARCHAR(255)  DEFAULT NULL,
+  `branch_state` INT(11) DEFAULT NULL,
+  `branch_attributes` VARCHAR(255) DEFAULT NULL,
+  `r_version` VARCHAR(255)  DEFAULT NULL,
+  `development_project` VARCHAR(255)  DEFAULT NULL,
+  `projectNo` VARCHAR(255)  DEFAULT NULL,
+  `currentHander` VARCHAR(255)  DEFAULT NULL,
+  `currentNode` VARCHAR(255)  DEFAULT NULL,
+  `createTime` VARCHAR(255)  DEFAULT NULL,
+  `c_version` VARCHAR(255)  DEFAULT NULL,
+  `submitter` VARCHAR(255)  DEFAULT NULL,
+  `isDraftStatus` INT(11) DEFAULT NULL,
+  `lastModify` VARCHAR(255)  DEFAULT NULL,
+  `lastNode` VARCHAR(255)  DEFAULT NULL,
+  `branch_CME` VARCHAR(255)  DEFAULT NULL,
+  `branch_url` VARCHAR(255) DEFAULT NULL,
+  `tempHandler` VARCHAR(255) DEFAULT NULL,
+  `tempNode` VARCHAR(255) DEFAULT NULL,
+  `check_result` VARCHAR(255)  DEFAULT NULL,
+  `valid_flg` INT(11) DEFAULT NULL,
+  `branch_PM` VARCHAR(255)  DEFAULT NULL,
+  `PMCperson` VARCHAR(255) DEFAULT NULL,
+  `orgname` VARCHAR(255) DEFAULT NULL,
+  `RPMIP` VARCHAR(255) DEFAULT NULL,
+  `resourceName` VARCHAR(255) DEFAULT NULL,
+  `resource_owner` VARCHAR(255) DEFAULT NULL,
+  `isROP` VARCHAR(20)  DEFAULT NULL,
+  `Agent_linux` VARCHAR(20)  DEFAULT NULL,
+  `Agent_win` VARCHAR(20)  DEFAULT NULL,
+  `Agent_64bit_linux` VARCHAR(20)  DEFAULT NULL,
+  `POMNO` VARCHAR(20)  DEFAULT NULL,
+  `ProxyNo` VARCHAR(20)  DEFAULT NULL,
+  `RPM_flg` INT(11) DEFAULT NULL,
+  `recover_flg` VARCHAR(20)  DEFAULT NULL,
+  `allocation_flg` VARCHAR(20)  DEFAULT NULL,
+  `deptThree` VARCHAR(255) DEFAULT NULL,
+  `entrance` VARCHAR(255)  DEFAULT NULL,
+  `branch_doorBranch` VARCHAR(255)  DEFAULT NULL,
+  `mainfest_Store` VARCHAR(255) DEFAULT NULL,
+  `store_Orgname` VARCHAR(255) DEFAULT NULL,
+  `ROWVERSION` LONGBLOB COMMENT '用来同步更新数据',
+  `deptFour` VARCHAR(255) DEFAULT NULL,
+  `component` VARCHAR(255)  DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8
+
+INSERT INTO T_BRANCH_INFO VALUES (2221, 'br_merge_base_4.0', '平台主干集成线', NULL, '三层四面上支撑组使用，现在补充电子流', '三层四面上支撑组使用，现在补充电子流', 'qinliqin 00325646', '2017-07-27', NULL, 'VRP V8', '三层四面上支撑组使用', '三层四面上支撑组使用', '软件平台业务支撑部', 1, 'GIT', 'VRP V800R018C10', 'None', 'MP20170427192138365', '', '40000', '2017-04-27', NULL, 'hetingting 00338340', 0, 'liyin 00413815', '10000', NULL, 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', NULL, '10000', '通过', 0, NULL, '陈超 00173055', 'NOSV4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, '网络软件平台开发部', 'a', '是', 'manifest_nos', 'NOSV4', 0x0000000008A0DF59, '软件平台维护支持部', NULL);
+
+INSERT INTO T_BRANCH_INFO VALUES (3903, 'br_nosv4_nmbp_release', '平台主干集成线', NULL, 'Tag_VRP_VRPV800R018C00B130_201802082210', '后续的领域主干发布线', 'wangsong 00317256', '2018-08-23', NULL, 'VRP V8', '后续的领域主干发布线', 'None', '产品领域业务开发部', 1, 'GIT', 'VRP V800R018C10', 'None', 'MP20180222181021660', '', '40000', '2018-02-22', NULL, 'wangsong 00317256', 0, 'hetingting 00338340', '20000', NULL, 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', NULL, '20000', '通过', 0, NULL, '陈超 00173055', 'nosv4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, '网络软件平台开发部', 'na
+', '否', 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', 'NOSV4', 0x0000000008A0DD38, '产品领域业务开发部', NULL);
+
+INSERT INTO T_BRANCH_INFO VALUES (3904, 'br_nosv4_nsmp_release', '平台主干集成线', NULL, 'Tag_VRP_VRPV800R018C00B130_201802082210', '后续的领域主干发布线', 'wangsong 00317256', '2018-08-23', NULL, 'VRP V8', '后续的领域主干发布线', 'None', 'FENIX与系统管理开发部', 1, 'GIT', 'VRP V800R018C10', 'None', 'MP20180222181426551', '', '40000', '2018-02-22', NULL, 'wangsong 00317256', 0, 'hetingting 00338340', '20000', NULL, 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', NULL, '20000', '通过', 0, NULL, '陈超 00173055', 'nosv4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, '网络软件平台开发部', 'na', '否', 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', 'NOSV4', 0x0000000008A0DD39, 'FENIX与系统管理开发部', NULL);
+
+INSERT INTO T_BRANCH_INFO VALUES (3906, 'br_nosv4_am_review', '平台主干集成线', NULL, 'Tag_VRP_VRPV800R018C00B130_201802082210', '后续的领域主干发布线', 'wangsong 00317256', '2018-08-23', NULL, 'VRP V8', '后续的领域主干发布线', 'None', '网络操作系统设计部', 1, 'GIT', 'VRP V800R018C10', 'None', 'MP20180223094956840', '', '40000', '2018-02-23', NULL, 'wangsong 00317256', 0, 'hetingting 00338340', '20000', NULL, 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', NULL, '20000', '通过', 0, NULL, '陈超 00173055', 'nosv4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, '网络软件平台开发部', 'na', '否', 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', 'NOSV4', 0x0000000008A0DD3A, '网络操作系统设计部', NULL);
+
+INSERT INTO T_BRANCH_INFO VALUES (3924, 'br_nosv4_nsfp_release', '平台主干集成线', NULL, 'Tag_VRP_VRPV800R018C00B130_201802082210', '后续的领域主干发布线
+', 'wangsong 00317256', '2018-08-26', NULL, 'VRP V8', 'None', 'None', 'DOPRA与系统支撑开发部', 1, 'GIT', 'VRP V800R018C10', 'None', 'MP20180226114347459', '', '40000', '2018-02-26', NULL, 'wangsong 00317256', 0, 'hetingting 00338340', '20000', NULL, 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', NULL, '20000', '通过', 0, NULL, '陈超 00173055', 'nosv4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, '网络软件平台开发部', 'na', '否', 'ssh://git@isource-dg.huawei.com:2222/NOSV4/manifest_all.git', 'NOSV4', 0x0000000008A0DD3B, 'DOPRA与系统支撑开发部', NULL);
+
+
+
+10.249.144.216
+sqlserver
+sa
+sa123456!
+
+
+10.178.71.83
+mysql
+3306
+root
+root
+
+	
+	
+共享网盘
+10.135.105.160
+
+maven 3.0.3
+tomcat 7.0.29
+	
+
+微服务1
+http://rnd-isourceb.huawei.com/Xdu_VRP/ms_BranchManager/tree/master
+
+微服务2
+http://rnd-isourceb.huawei.com/Xdu_VRP/nos-microservice-famework/tree/master
+	
+	
+XDU
+http://rnd-isourceb.huawei.com/RouterProductSupport/xdu/tree/master
+	
+
+hiserach
+http://3ms.huawei.com/doc3ms/unionSearch/unionSearch.do?lang_3ms_id=cn&userw3count=cwx557792&method=doSearch&appID=&3ms_hits=&appname=&nodename=&searchtext=photoshop&doctype=all&nodename2=&language=cn&deployEntironment=1&appID=all&dotype=&newDoctype=&needNavSearch=&page_size=&current_page=&start_page=&search_contion=&doChange=&fieldname=&tatalLevel=&current_level=&fieldvalue=&filter_path=&nameplate=&nameplateout=&groupSelect=&groupSelectOut=&lanDate=&lanDateOut=&current_order_field=&a_index=&profile=&supportStart=1&spid1=&spid2=&permssionKey=&businessField=&sortType=Relevance&page_describe=&l1Dept=%E4%BA%A7%E5%93%81%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88&l2Dept=%E7%BD%91%E7%BB%9C%E4%BA%A7%E5%93%81%E7%BA%BF&l3Dept=%E7%BD%91%E7%BB%9C%E7%A0%94%E5%8F%91%E7%AE%A1%E7%90%86%E9%83%A8&notConvertFlag=false&isImssASHi=&pilotUser=&channelSearchContent=photoshop
+
+
+isource
+http://rnd-isourceb.huawei.com/
+
+
+菜鸟教程
+http://www.runoob.com/java/java-examples.html
+	
+xdu云平台
+http://rnd-xdu/projectmng/versionExt6.action?s=6#toolOperationData
+	
+
+ext教程
+http://10.178.64.222:8111/extjs/6.0.0/modern/Ext.html#method-getCmp
+
+
+
+
+
+
+	//将分支流速信息存数据库方法  一天执行一次
+	@Override
+	public void saveBranchCodeFlowData() throws ParseException {
+		NumberFormat numberFormat = NumberFormat.getInstance();
+		numberFormat.setMaximumFractionDigits(2);
+		//获取当日日期
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar calendar = Calendar.getInstance();
+		Date date = new Date();
+		String endDate = "";
+		endDate= dateFormat.format(date);
+
+		Map<String, String> parameterMap;
+		StringBuilder sb;
+
+		T_BranchCode_FlowRate tbf;
+		List SuperMrIdsList;
+		List SuperMrIdsList2;
+		String domain = "";
+		String component = "";
+		String project = "";
+		String branchcomponent = "";
+		String branchowner = "";
+		String branchflowdata;
+		int n1 = 0;
+		int n2 = 0;
+		String Nbranchflowdata;
+		Double CodeStocksum = 0.0;
+		Double UnClosedMrCountsum = 0.0;
+		Double ExceedTimeUnClosedMrCounttsum = 0.0;
+		List<Map<String, Object>> branchList;
+		String[] SuperMrIdssplit;
+		List<Map<String, Object>> list2;
+		String branchname;
+		String[] branchnamesplit;
+		List<Map<String, Object>> list3;
+		List<Map<String, Object>> list5;
+		//获取表最大id
+		String idsql = "SELECT id id from T_BranchCode_FlowRate_2 ORDER BY id DESC";
+		List<Integer> idlist = codeFlowRepository.listObjectBySql(idsql);
+		int id= idlist.get(0);
+		String sql;
+		String sql3;
+		String SJsql;
+		String JieKouURL = "http://sfsgateway.netos.tools.huawei.com:31724/gateway/codeflow/mr";
+
+		//每天定时获取接口数据  表2数据  中间表数据  存库
+		//先获取branch_type    再根据遍历branch_type  取得info数据  再通过info数据  得到接口数据
+		List<String> list4 = new LinkedList();
+		list4.add("mainTrunk");
+		list4.add("domain");
+		//list4.add("component");
+		//list4.add("project");
+
+		for(int i=0;i<list4.size();i++){
+			id++;
+			//每遍历一次层级  根据2种bigversionname 获取两次branch_name   依次存取
+			CodeStocksum = 0.0;
+			UnClosedMrCountsum = 0.0;
+			ExceedTimeUnClosedMrCounttsum = 0.0;
+			//相同级别 情况一
+			sql = "SELECT * from T_BRANCH_CODE_OPTION WHERE code_level = '"+list4.get(i)+"' and bigVersionName = '"+"VRP V800R018C10"+"'";//1002
+
+			list2 = codeFlowRepository.listMapBySql(sql);
+			branchname = list2.get(0).get("branch_type").toString();
+			//对branchname做切割  普适性  针对存在多个字段时 领域分支 or 领域分支,部门主干
+			branchnamesplit = branchname.split(",");
+			sb = new StringBuilder();
+			sb.append("'");
+			for(int j=0;i<branchnamesplit.length-1;i++){
+				sb.append(branchnamesplit[i]+"'"+","+"'");
+			}
+			sb.append(branchnamesplit[branchnamesplit.length-1]);
+			sb.append("'");
+
+			sql3 = "SELECT TOP 1  * FROM [dbo].[T_BRANCH_INFO] WHERE [branch_state] = '1' AND [branch_attributes] = 'GIT' AND [currentNode] = '40000' AND [branch_type] IN ("+sb.toString()+") AND [r_version] LIKE '%"+"VRP V800R018C10"+"%'";
+			list3 = codeFlowRepository.listMapBySql(sql3);
+			if(list3!=null && list3.size()>0){
+
+				tbf = new T_BranchCode_FlowRate();
+
+				domain = list3.get(0).get("deptFour") == null ? "null":list3.get(0).get("deptFour").toString();
+				domain = domain.isEmpty() ? "null":domain;
+				component = list3.get(0).get("component") == null ? "":list3.get(0).get("component").toString();
+				//component = component.isEmpty() ? "null":component;
+				project = list3.get(0).get("development_project") == null ? "null":list3.get(0).get("development_project").toString();
+				project = project.isEmpty() ? "null":project;
+				branchcomponent = list3.get(0).get("branch_name") == null ? "null":list3.get(0).get("branch_name").toString();
+				branchcomponent = branchcomponent.isEmpty() ? "null":branchcomponent;
+				branchowner = list3.get(0).get("branch_owner") == null ? "null":list3.get(0).get("branch_owner").toString();
+				branchowner = branchowner.isEmpty() ? "null":branchowner;
+
+				tbf.setDomain(domain);
+				tbf.setComponent(component);
+				tbf.setProject(project);
+				tbf.setBranchComponent(branchcomponent);
+				tbf.setBranchOwner(branchowner);
+				tbf.setDate(endDate);
+				tbf.setBigVersionId(1002);
+				tbf.setLevel(list4.get(i));
+				tbf.setState(1);//1显示  0隐藏
+				tbf.setId(id);
+
+				if(list4.get(i)=="mainTrunk"){
+					tbf.setAveFlowRate("null");
+					tbf.setCurStockCode("null");
+					tbf.setExpirationMR("null");
+					tbf.setRecSubmit("null");
+					tbf.setNoCloMR("null");
+					tbf.setLatestSynTime("null");
+				}else{
+					//从接口取数据  存另外6个字段
+					//接口  自己的  branchcomponent  上级的？相同bigversionname的。
+					SJsql = "SELECT branchComponent FROM [dbo].[T_BranchCode_FlowRate_2] WHERE [level] = '"+list4.get(i-1)+"' AND [bigVersionId] in('1002','123') AND [date] = '"+endDate+"'";//1002
+					list5 = codeFlowRepository.listMapBySql(SJsql);
+					//如果该种类下上次存在  则查询接口  否则留空
+						parameterMap = new HashMap<String, String>();
+						parameterMap.put("TargetBranchName", branchcomponent);
+						parameterMap.put("UpStream", list5.get(0).get("branchComponent").toString());
+						branchflowdata = HttpClientREST.callHttpGetMethodSpecail(JieKouURL, CommonUtil.getHeader(), parameterMap);
+						if(!branchflowdata.equals("{}")) {
+							n1 = branchflowdata.indexOf("[");
+							n2 = branchflowdata.lastIndexOf("]");
+							Nbranchflowdata = branchflowdata.substring(n1,n2+1);
+							branchList = JSONArray.fromObject(Nbranchflowdata);
+
+							SuperMrIdsList = new ArrayList<>();
+							SuperMrIdsList2 = new ArrayList<>();
+							for(int k=0;k<branchList.size();k++){
+								//1  代码存量：  CodeStock  汇总值
+								CodeStocksum += Double.parseDouble(branchList.get(k).get("CodeStock").toString());
+								//2  分支流速  15 / 所有的SuperMrIds数组的并集个数（并集要求数据去重） ;
+								if(!branchList.get(k).get("SuperMrIds").toString().substring(1,branchList.get(k).get("SuperMrIds").toString().length()-1).isEmpty()){ //  [11483846, 11416750]  []
+									//  [11483846, 11416750]  list去重添加  再计算list长度
+									SuperMrIdssplit = branchList.get(k).get("SuperMrIds").toString().substring(1,branchList.get(k).get("SuperMrIds").toString().length()-1).split(",");
+									for(int l=0;l<SuperMrIdssplit.length;l++){
+										if(!SuperMrIdsList.contains(SuperMrIdssplit[l])){
+											SuperMrIdsList.add(SuperMrIdssplit[l]);
+										}
+									}
+								}else{
+									//如果没有，则 AvgCodeRate / Data.size() ??
+								};
+								//3  LatestSubmitTime:   取最大值
+								SuperMrIdsList2.add(dateFormat2.parse(branchList.get(k).get("LatestSubmitTime").toString().replaceAll("T"," ")).getTime());
+								//4  UnClosedMrCount:  汇总值
+								UnClosedMrCountsum += Double.parseDouble(branchList.get(k).get("UnClosedMrCount").toString());
+								//5  ExceedTimeUnClosedMrCount  超期MR
+								ExceedTimeUnClosedMrCounttsum += Double.parseDouble(branchList.get(k).get("ExceedTimeUnClosedMrCount").toString());
+
+							}
+
+							//1  代码存量：CodeStock  汇总值
+							tbf.setCurStockCode(String.valueOf(CodeStocksum));
+							System.out.println(String.valueOf(CodeStocksum));
+							//2  分支流速  15 / 所有的SuperMrIds数组的并集个数（并集要求数据去重）
+							tbf.setAveFlowRate(numberFormat.format((float)15/(float)SuperMrIdsList.size()));
+							//3  LatestSubmitTime
+							Long big =0L;
+							for(int v=0;v<SuperMrIdsList2.size();v++){
+								if((Long)SuperMrIdsList2.get(v)>big){
+									big = (Long)SuperMrIdsList2.get(v);
+								}
+							}
+							tbf.setRecSubmit(dateFormat2.format(new Date(big)));
+							//4  UnClosedMrCount  未关闭MR
+							tbf.setNoCloMR(String.valueOf(UnClosedMrCountsum));
+							//5  ExceedTimeUnClosedMrCount  超期MR
+							tbf.setExpirationMR(String.valueOf(ExceedTimeUnClosedMrCounttsum));
+							//6  最新同步时间
+							tbf.setLatestSynTime(dateFormat2.format(new Date(big)));
+						}
+				}
+				//调用dao 将tbf存入数据库
+				codeFlowRepository.save(tbf);
+			}
+
+			//相同级别 情况二
+			//id++;
+			CodeStocksum = 0.0;
+			UnClosedMrCountsum = 0.0;
+			ExceedTimeUnClosedMrCounttsum = 0.0;
+			sql = "SELECT * from T_BRANCH_CODE_OPTION WHERE code_level = '"+list4.get(i)+"' and bigVersionName = '"+"VRP V800R018C00"+"'";//123
+
+			list2 = codeFlowRepository.listMapBySql(sql);
+			branchname = list2.get(0).get("branch_type").toString();
+			//对branchname做切割  普适性  针对存在多个字段时 领域分支 or 领域分支,部门主干
+			branchnamesplit = branchname.split(",");
+			sb = new StringBuilder();
+			sb.append("'");
+			for(int j=0;i<branchnamesplit.length-1;i++){
+				sb.append(branchnamesplit[i]+"'"+","+"'");
+			}
+			sb.append(branchnamesplit[branchnamesplit.length-1]);
+			sb.append("'");
+
+			sql3 = "SELECT TOP 1  * FROM [dbo].[T_BRANCH_INFO] WHERE [branch_state] = '1' AND [branch_attributes] = 'GIT' AND [currentNode] = '40000' AND [branch_type] IN ("+sb.toString()+") AND [r_version] LIKE '%"+"VRP V800R018C00"+"%'";//123
+			list3 = codeFlowRepository.listMapBySql(sql3);
+			if(list3!=null && list3.size()>0){
+				tbf = new T_BranchCode_FlowRate();
+				domain = list3.get(0).get("deptFour") == null ? "null":list3.get(0).get("deptFour").toString();
+				domain = domain.isEmpty() ? "null":domain;
+				component = list3.get(0).get("component") == null ? "":list3.get(0).get("component").toString();
+				//component = component.isEmpty() ? "null":component;
+				project = list3.get(0).get("development_project") == null ? "null":list3.get(0).get("development_project").toString();
+				project = project.isEmpty() ? "null":project;
+				branchcomponent = list3.get(0).get("branch_name") == null ? "null":list3.get(0).get("branch_name").toString();
+				branchcomponent = branchcomponent.isEmpty() ? "null":branchcomponent;
+				branchowner = list3.get(0).get("branch_owner") == null ? "null":list3.get(0).get("branch_owner").toString();
+				branchowner = branchowner.isEmpty() ? "null":branchowner;
+
+				tbf.setDomain(domain);
+				tbf.setComponent(component);
+				tbf.setProject(project);
+				tbf.setBranchComponent(branchcomponent);
+				tbf.setBranchOwner(branchowner);
+				tbf.setDate(endDate);
+				tbf.setBigVersionId(123);
+				tbf.setLevel(list4.get(i));
+				tbf.setState(1);//1显示  0隐藏
+				tbf.setId(id);
+
+				if(list4.get(i)=="mainTrunk"){
+					tbf.setAveFlowRate("null");
+					tbf.setCurStockCode("null");
+					tbf.setExpirationMR("null");
+					tbf.setRecSubmit("null");
+					tbf.setNoCloMR("null");
+					tbf.setLatestSynTime("null");
+				}else{
+					//从接口取数据  存另外6个字段
+					//接口  自己的  branchcomponent  上级的？相同bigversionname的。
+					SJsql = "SELECT branchComponent FROM [dbo].[T_BranchCode_FlowRate_2] WHERE [level] = '"+list4.get(i-1)+"' AND [bigVersionId] in('123'，'1002') AND [date] = '"+endDate+"'";//123 1002
+					list5 = codeFlowRepository.listMapBySql(SJsql);
+					parameterMap = new HashMap<String, String>();
+					parameterMap.put("TargetBranchName", branchcomponent);
+					parameterMap.put("UpStream", list5.get(0).get("branchComponent").toString());
+					branchflowdata = HttpClientREST.callHttpGetMethodSpecail(JieKouURL, CommonUtil.getHeader(), parameterMap);
+					if(!branchflowdata.equals("{}")) {
+						n1 = branchflowdata.indexOf("[");
+						n2 = branchflowdata.lastIndexOf("]");
+						Nbranchflowdata = branchflowdata.substring(n1,n2+1);
+						branchList = JSONArray.fromObject(Nbranchflowdata);
+
+						SuperMrIdsList = new ArrayList<>();
+						SuperMrIdsList2 = new ArrayList<>();
+						for(int k=0;k<branchList.size();k++){
+							//1  代码存量：  CodeStock  汇总值
+							CodeStocksum += Double.parseDouble(branchList.get(k).get("CodeStock").toString());
+							//2  分支流速  15 / 所有的SuperMrIds数组的并集个数（并集要求数据去重） ;
+							if(!branchList.get(k).get("SuperMrIds").toString().substring(1,branchList.get(k).get("SuperMrIds").toString().length()-1).isEmpty()){ //  [11483846, 11416750]  []
+								//  [11483846, 11416750]  list去重添加  再计算list长度
+								SuperMrIdssplit = branchList.get(k).get("SuperMrIds").toString().substring(1,branchList.get(k).get("SuperMrIds").toString().length()-1).split(",");
+								for(int l=0;l<SuperMrIdssplit.length;l++){
+									if(!SuperMrIdsList.contains(SuperMrIdssplit[l])){
+										SuperMrIdsList.add(SuperMrIdssplit[l]);
+									}
+								}
+							}else{
+								//如果没有，则 AvgCodeRate / Data.size() ??
+							};
+							//3  LatestSubmitTime:   取最大值
+							SuperMrIdsList2.add(dateFormat2.parse(branchList.get(k).get("LatestSubmitTime").toString().replaceAll("T"," ")).getTime());
+							//4  UnClosedMrCount:  汇总值
+							UnClosedMrCountsum += Double.parseDouble(branchList.get(k).get("UnClosedMrCount").toString());
+							//5  ExceedTimeUnClosedMrCount  超期MR
+							ExceedTimeUnClosedMrCounttsum += Double.parseDouble(branchList.get(k).get("ExceedTimeUnClosedMrCount").toString());
+
+						}
+
+						//1  代码存量：CodeStock  汇总值
+						tbf.setCurStockCode(String.valueOf(CodeStocksum));
+						System.out.println(String.valueOf(CodeStocksum));
+						//2  分支流速  15 / 所有的SuperMrIds数组的并集个数（并集要求数据去重）
+						tbf.setAveFlowRate(numberFormat.format((float)15/(float)SuperMrIdsList.size()));
+						//3  LatestSubmitTime
+						Long big =0L;
+						for(int v=0;v<SuperMrIdsList2.size();v++){
+							if((Long)SuperMrIdsList2.get(v)>big){
+								big = (Long)SuperMrIdsList2.get(v);
+							}
+						}
+						tbf.setRecSubmit(dateFormat2.format(new Date(big)));
+						//4  UnClosedMrCount  未关闭MR
+						tbf.setNoCloMR(String.valueOf(UnClosedMrCountsum));
+						//5  ExceedTimeUnClosedMrCount  超期MR
+						tbf.setExpirationMR(String.valueOf(ExceedTimeUnClosedMrCounttsum));
+						//6  最新同步时间
+						tbf.setLatestSynTime(dateFormat2.format(new Date(big)));
+					}
+				}
+				//调用dao 将tbf存入数据库
+				codeFlowRepository.save(tbf);
+			}
+		}
+	}
+
+
+
+
+--------------工程工具controller-----------------
+
+@RestController
+@RequestMapping(value = "/tool")
+public class ToolController {
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    @Autowired
+    ToolCodesService getToolCodesService;
+
+    //从数据库取出工具名数据 传递到主线工具名选框
+    @PostMapping(value="/toolname")
+    public String toolname(HttpServletRequest request, HttpServletResponse response) {
+        List<Map<String, Object>> list = getToolCodesService.getToolname();
+        return JSONArray.fromObject(list).toString();
+    }
+
+    //从接口取出数据，往主线传递
+    @PostMapping(value="/querycode")
+    public String querycode(HttpServletRequest request, HttpServletResponse response) {
+        String toolname = request.getParameter("toolname");
+        //通过工具名  调service从数据库查询工具名数据
+        List list = getToolCodesService.queryToolData(toolname);
+        return JSONArray.fromObject(list).toString();
+    }
+
+}
+
+--------------工程工具service-----------------
+package com.huawei.xdu.sfmu.TOOL.Service;
+
+import com.huawei.xdu.sfmu.Common.ModuleTreeInfo;
+import com.huawei.xdu.sfmu.TOOL.Model.ToolInfo;
+import com.huawei.xdu.sfmu.TOOL.Repo.ToolRepository;
+import com.huawei.xdu.sfmu.util.*;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import org.apache.commons.collections.MapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.stereotype.Service;
+
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
+@Service
+public class ToolCodesService {
+    @Autowired
+    ToolRepository toolRepository;
+
+    @Modifying
+    public List<Map<String, Object>> getToolname() {
+        String sql = "SELECT toolname abbr, toolname name from toolquery";
+        List<Map<String, Object>> toolnamelist = toolRepository.listMapBySql(sql);
+        return toolnamelist;
+    }
+
+    @Modifying
+    public List getToolname2() {
+        String sql = "SELECT toolname from toolquery";
+        List toolnamelist2 = toolRepository.listObjectBySql(sql);
+        return toolnamelist2;
+    }
+
+    @Modifying
+    public void saveToolData() {
+        //存数据库方法  一天执行一次
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        numberFormat.setMaximumFractionDigits(2);
+
+        List toolnameList = this.getToolname2();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        String endDate = "";
+        String startDate = "";
+        endDate= dateFormat.format(date);
+        calendar.setTime(date); // 设置为当前时间
+        calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1); // 设置为上一个月
+        date = calendar.getTime();
+        startDate= dateFormat.format(date);
+
+        //取出活跃用户人数的接口
+        String activeUrl = XpiForTool.activeUserUrl;
+        //取出累计用户人数的接口
+        String totalUrl = XpiForTool.accumulateUserUrl;
+        //取出沉默人数的接口
+        String silenceUrl = XpiForTool.silentUserUrl;
+        //取出top3模块排名的接口
+        String top3Url = XpiForTool.personnelUrl;
+
+        StringBuilder sb;
+        int size = toolnameList.size();
+        Map<String, String> parameterMap;
+        ToolInfo ti;
+
+        List<ToolInfo> toolInfoList = new ArrayList<ToolInfo>();
+
+        for(int i = 0; i < size; i++) {
+
+            int endTotal =0;
+            int startTotal =0;
+            int addTotal =0;
+            String addRate ="0";
+            String totalRate ="0";
+            String top3module ="--";
+
+            // 活跃用户人数
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("project", toolnameList.get(i).toString());
+            String activeData = HttpClientREST.callHttpGetMethodSpecail(activeUrl, CommonUtil.getHeader(), parameterMap);
+
+            int activePast30Days = 0;
+            if(!activeData.equals("{}")) {
+                Map<String, String> activeMap = JSONObject.fromObject(activeData);
+                activePast30Days = MapUtils.getInteger(activeMap, "Past30Days", 0);
+            }
+
+            // 累计用户人数
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("project", toolnameList.get(i).toString());
+            parameterMap.put("startDate", startDate);
+            parameterMap.put("endDate", endDate);
+            parameterMap.put("dateType", "1");
+            String totalData = HttpClientREST.callHttpGetMethodSpecail(totalUrl, CommonUtil.getHeader(), parameterMap);
+
+            if(!totalData.equals("[]")) {
+                List<Map<String, String>> totalList = JSONArray.fromObject(totalData);
+                // 月初累计人数
+                startTotal = MapUtils.getInteger(totalList.get(0), "Value", 0);
+                // 月末累计人数
+                endTotal = MapUtils.getInteger(totalList.get(totalList.size() - 1), "Value", 0);
+                // 新增人数
+                addTotal = endTotal - startTotal;
+                //计算出30天增长率
+                addRate = numberFormat.format((float)addTotal/(float)startTotal*100);
+                //计算出综合排名数据
+                totalRate = numberFormat.format(activePast30Days*Double.parseDouble(addRate)).replaceAll(",","");
+            }
+
+            //得到沉默人数
+            int silencePast30Days = 0;
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("project", toolnameList.get(i).toString());
+            String silenceData = HttpClientREST.callHttpGetMethodSpecail(silenceUrl, CommonUtil.getHeader(), parameterMap);
+            if(!silenceData.equals("{}")) {
+                Map<String, String> silenceMap = JSONObject.fromObject(silenceData);
+                silencePast30Days = MapUtils.getInteger(silenceMap, "Past30Days", 0);
+            }
+
+            //top3模块
+            parameterMap = new HashMap<String, String>();
+            parameterMap.put("project", toolnameList.get(i).toString());
+            parameterMap.put("startDate", startDate);
+            parameterMap.put("endDate", endDate);
+            parameterMap.put("dateType", "1");
+
+            String top3Data = HttpClientREST.callHttpGetMethodSpecail(top3Url, CommonUtil.getHeader(), parameterMap);
+            if(!top3Data.equals("[]")){
+                List<Map<String, Object>> top3list = JSONArray.fromObject(top3Data);
+                double moduleSum = 0;
+                if(top3list !=null && top3list.size()>=3) {
+                    for(int j=0;j<top3list.size();j++){
+                        double moduleCount = MapUtils.getDoubleValue(top3list.get(j), "Value", 0);
+                        moduleSum+=moduleCount;
+                    }
+                    Collections.sort(top3list, new Comparator<Map<String, Object>>() {
+                        @Override
+                        public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+                            Integer name1 = MapUtils.getInteger(o1, "Value", 0);
+                            Integer name2 = MapUtils.getInteger(o2, "Value", 0);
+                            return name2.compareTo(name1);
+                        }
+                    });
+
+                    double big1=MapUtils.getDoubleValue(top3list.get(0), "Value", 0);
+                    String big1name = MapUtils.getString(top3list.get(0),"ModuleName");
+                    double big2=MapUtils.getDoubleValue(top3list.get(1), "Value", 0);
+                    String big2name = MapUtils.getString(top3list.get(1),"ModuleName");
+                    double big3=MapUtils.getDoubleValue(top3list.get(2), "Value", 0);
+                    String big3name = MapUtils.getString(top3list.get(2),"ModuleName");
+                    String big1rate = numberFormat.format(big1/moduleSum*100);
+                    String big2rate = numberFormat.format(big2/moduleSum*100);
+                    String big3rate = numberFormat.format(big3/moduleSum*100);
+                    top3module =big1name+"-"+big1rate+"%"+";"+big2name+"-"+big2rate+"%"+";"+big3name+"-"+big3rate+"%"+";";
+
+                }else if(top3list.size()<3) {
+                    sb = new StringBuilder();
+                    for (int k = 0; k < top3list.size(); k++) {
+                        String mdname = MapUtils.getString(top3list.get(k),"ModuleName");
+                        sb.append(mdname+"-100%；");
+                    }
+                    top3module = sb.toString();
+                }
+            }else{
+                top3module ="该工具无模块";
+            }
+
+            ti = new ToolInfo();
+            ti.setId(i);
+            ti.setToolname(toolnameList.get(i).toString());
+            ti.setVisitperson(activePast30Days+"("+activePast30Days+"/"+endTotal+"/"+addTotal+"/"+silencePast30Days+")");
+            ti.setUprate(addRate+"%");
+            ti.setToprate(top3module);
+            ti.setAllrate(totalRate);
+            ti.setTime(endDate);
+            toolInfoList.add(ti);
+        }
+        toolRepository.deleteAll();
+        toolRepository.save(toolInfoList);
+    }
+
+    @Modifying
+    public List queryToolData(String toolname) {
+
+        if("全部".equals(toolname)) {
+            String sql = "select * from t_tool_info ORDER BY allrate+0 DESC";
+            return toolRepository.listMapBySql(sql);
+        }else {
+            String[] toolnames = toolname.split(", ");
+            int size = toolnames.length;
+            StringBuilder sb =new StringBuilder();
+            for(int i = 0; i < size-1; i++) {
+                String tn = "'"+toolnames[i]+"',";
+                sb.append(tn);
+            }
+            sb.append("'"+toolnames[size-1]+"'");
+            String sql = "select * from t_tool_info WHERE toolname IN ("+sb.toString()+") ORDER BY allrate+0 DESC";
+            return toolRepository.listMapBySql(sql);
+        }
+    }
+}
+
+
+--------------工程工具 mysql yml配置文件-----------------
+?spring:
+  profiles:
+    active: dev
+  application:
+    name: nos-microservice-framework
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: com.huawei.xdu.sfmu.config.entity.ExtendSQLServerDialect
+        physical_naming_strategy: com.huawei.xdu.sfmu.config.entity.DefectPhysicalNamingStrategy
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    default-read-only: false
+    initial-size: 5
+    min-idle: 5
+    max-active: 20
+    max-wait: 60000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    test-on-borrow: false
+    test-on-return: false
+    test-while-idle: true
+    validation-query: SELECT 1
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 20
+    filters: stat,wall,log4j
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.huawei.xdu.sfmu: ERROR
+    org.hibernate: ERROR
+  file: logs/xdu_mainTrunk.log
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+schedule:
+  sync:
+    cron:
+      users: 0 23 2 * * ?
+---
+#开发环境
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://10.178.71.83:3306/test?characterEncoding=UTF-8
+    username: root
+    password: root
+server:
+  port: 8085
+  context-path: /web/xpi
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://10.252.211.16:20001/eureka/
+---
+#正式环境
+spring:
+  profiles: pub
+  datasource:
+    url: jdbc:mysql://10.178.71.83:3306/framework?characterEncoding=UTF-8
+    username: root
+    password: root
+server:
+  port: 8080
+  context-path: /web/xpi
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://10.252.211.16:10001/eureka/
+
+
+
+--------------工程工具 application-----------------
+package com.huawei.xdu.sfmu;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+//@EnableDiscoveryClient
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+
+--------------分支速流 sqlserver yml配置文件-----------------
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ms_BranchManager
+  jpa:
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: com.huawei.xdu.config.entity.ExtendSQLServerDialect
+        physical_naming_strategy: com.huawei.xdu.config.entity.DefectPhysicalNamingStrategy
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    initial-size: 5
+    min-idle: 5
+    max-idle: 20
+    max-active: 50
+    log-abandoned: true
+    remove-abandoned: true
+    remove-abandoned-timeout: 180
+    max-wait: 60000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    test-on-borrow: true
+    test-on-return: false
+    test-while-idle: true
+    validation-query: SELECT 1
+    pool-prepared-statements: true
+    max-pool-prepared-statement-per-connection-size: 50
+    filters: stat,wall,log4j
+logging:
+  level:
+    org.springframework.web: ERROR
+    com.huawei.xdu.dts: ERROR
+    org.hibernate: ERROR
+  file: logs/xdu_dts.log
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+  instance:
+    prefer-ip-address: true
+    lease-expiration-duration-in-seconds: 15
+    lease-renewal-interval-in-seconds: 5
+    metadata-map:
+      distributed: "groupid:64"
+
+schedule:
+  sync:
+    cron:
+      defect: 0 30 * * * ?
+      dihistoryarchive: 0 55 23 * * ?
+      lmt: 0 33 3 * * ?
+      updateDefectFeatureDevProject: 0 0 17 * * ?
+      chart: 0 13 0 * * ?
+      start:
+---
+#开发环境1
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:sqlserver://10.249.144.216:1433;databaseName=ipmserver_branch_manager
+    username: sa
+    password: sa123456!
+server:
+  port: 8085
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://10.252.211.16:20001/eureka/
+---
+---
+
+
+#正式环境
+spring:
+  profiles: pub
+  datasource:
+    url: jdbc:sqlserver://10.249.144.216:1433;databaseName=ipmserver_branch_manager
+    username: sa
+    password: sa123456!
+server:
+  port: 8001
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://10.252.211.16:10001/eureka/
+
+
+
+
+
+--------------工程工具 XDU主线代码  前台js页面-----------------
+
+toolOperation = new XDU.View("toolOperationData");
+
+toolOperation.load = function () {
+    this.store.load();
+};
+
+//导出
+toolOperation.exportExcel = function (gridPanel) {
+    if (gridPanel.store.getTotalCount() == 0) {
+        Ext.MessageBox.alert('温馨提示', '请先载入数据再导出！');
+        return;
+    }
+    var self = this;
+    XDU.Utils.exportExcel(
+        path + '/toolname/exportToolNameDate.action',
+        ["columns", this.getTableHeader(this.gridConfigColumns)],
+        ["toolname", Ext.getCmp('this_name_tool_name').getRawValue()]
+        );
+};
+
+toolOperation.open = function () {
+    var self = this;
+    this.tooln=this.add_toolname_search(); 
+
+    this.filterItems.push(this.tooln);
+    this.createFiltersPanel("查询按钮");
+
+   var exportExcelBar = this.createExportExcelToolbar(function () {
+        if (null == self.grid) {
+            return;
+        }
+        self.exportExcel(self.grid);
+    });
+ 
+    // 创建store
+    this.store = Ext.create('Ext.data.Store', {
+        autoLoad: false,
+        queryMode: 'remote',
+        pageSize:40, 
+        proxy: {
+         type: 'ajax',
+         url: path+'/toolname/queryToolNameDate.action',
+         reader: {
+             type: 'json'
+         },
+         simpleSortMode: true
+     },
+        listeners: {
+            beforeload: function (store) {
+            store.proxy.extraParams.toolname = Ext.getCmp('this_name_tool_name').getRawValue();
+            }
+        }
+    });
+  
+    // 创建列表
+    this.gridConfigColumns = [
+        {header: "工具名", width: "15%", dataIndex: "toolname", align:'center'},
+        {header: "访问人数（活跃/累计/新增/沉默）", width: "20%", dataIndex: "visitperson", align:'center'},
+        {header: "过去30天增长率", width: "15%", dataIndex: "uprate", align:'center'},
+        {header: "TOP3使用模块/比例", flex : 1, dataIndex: "toprate", align:'center'},
+        {header: "综合排名(30天增长率*访问人数)", xtype: "rownumberer", width: "15%", align:'center'}
+    ];
+
+    this.grid = this.createGrid("工具运营数据", this.store, this.gridConfigColumns, true, [this.filterPanel, exportExcelBar]);
+    this.show(this.grid);
+};
+
+
+//工具名下拉框
+toolOperation.add_toolname_search = function(){
+    var self = this;
+    if (null!=Ext.getCmp("this_name_tool_name")) {
+        return;
+    }
+    var T_N=Ext.create('Ext.data.Store', { 
+        proxy:{
+            type:'ajax',
+            url: path + '/toolname/getToolnames.action',
+            reader:{
+                type:'json',
+                rootProperty:'items'
+            },
+            simpleSortMode:true
+        }
+    });
+    var item_LM=Ext.create('Ext.XDU.MultiComboBox', {
+        id:'this_name_tool_name',
+        fieldLabel:'工具名',
+        valueField:'abbr',
+        displayField:'name',
+        width:250,
+        labelWidth:80,
+        height:28,
+        value:'',
+        store:T_N,
+        anyMatch:true,
+        typeAhead:false,
+        editable:true
+
+    });
+    this.item_LM=item_LM;
+    return item_LM;
+}; 
+
+
+--------------工程工具 XDU主线代码  后台action-----------------
+package com.huawei.ipm.mainpatch.codeMetric.action;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.huawei.ipm.base.mvc.Struts2ActionSupport;
+import com.huawei.ipm.base.utils.request.RequestUtil;
+import com.huawei.ipm.base.utils.string.StringUtil;
+import com.huawei.ipm.ppm.util.ExportExcelUtil;
+import net.sf.json.JSONArray;
+import com.huawei.ipm.requirementmng.util.CommonUtil;
+import com.huawei.ipm.utils.HttpClientREST;
+import com.huawei.nosTestManage.common.NosTestCommon;
+
+/**
+ * @Title:DelevopProjectcQueryCodeAction.java
+ * @Package com.huawei.ipm.mainpatch.codeMetric.action
+ * @Description:工程工具数据Action类
+ * @author:150909 唐来彬
+ * @time:2018年5月15日 上午14:50:23
+ */
+public class QueryToolNameDateAction extends Struts2ActionSupport{
+  
+	private static final long serialVersionUID = -7342490206596895671L;
+	
+	private InputStream inputStream;
+    private String downloadFileName;
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+    public String getDownloadFileName() {
+    	downloadFileName = CommonUtil.formatName("工具运营数据.xlsx");
+        return downloadFileName;
+    }
+    public void setDownloadFileName(String downloadFileName) {
+        this.downloadFileName = downloadFileName;
+    }
+    
+    //public static final String TOOL_NAME = "http://10.178.71.83:8090/web/xpi/";
+    public static final String TOOL_NAME = "http://localhost:8085/web/xpi/";
+    public static final String TOOL_NAME_ADDRESS = TOOL_NAME + "tool/toolname";
+    public static final String QUERY_CODE_ADDRESS = TOOL_NAME + "tool/querycode";
+	
+    
+	/**
+	 * @Description:获取工程工具数据
+	 * @author:150909 唐来彬
+	 * @time:2018年5月09日 上午10:29:15
+	 * @param @param 
+	 * @param @throws IOException
+	 * @return: String
+	 * @throws
+	 */
+	public String queryToolNameDate() throws IOException{
+		String data = getProjectCodeSize();
+		responseWriter(data);
+		return SUCCESS;
+	}
+	
+	
+	/**
+	 * @Description:获取工具名
+	 * @author:150909 唐来彬
+	 * @time:2018年5月09日 上午09:52:02
+	 * @param @param 
+	 * @param @throws IOException
+	 * @return: String
+	 * @throws
+	 */
+	public String getToolnames() throws IOException{
+		
+		Map<String, String> parameterMap = RequestUtil.getParameterMap(request);
+		String toolStr = HttpClientREST.callSoapUtf8PostMethodXPISpecial(TOOL_NAME_ADDRESS, "", 
+				CommonUtil.getHeader(), parameterMap);
+		
+		JSONArray json = new JSONArray();
+		if(StringUtil.notNullandEmptyCmpltl(toolStr)){
+			json = JSONArray.fromObject(toolStr);
+	 }
+		
+		if(json != null && json.size() != 0){
+			// 加上“全部”选项
+			Map<String, String> totalMap = new HashMap<String, String>();
+			totalMap.put("abbr", NosTestCommon.ALL_CN);
+			totalMap.put("name", NosTestCommon.ALL_CN);
+			json.add(0, totalMap);
+		}
+		
+		responseWriter(json.toString());
+		return SUCCESS;
+	}
+	
+	
+	/**
+	 * @throws IOException 
+	 * @Description:从微服务获取工具数据
+	 * @author:150909 唐来彬
+	 * @time:2018年5月09日 上午10:18:45
+	 * @param @param
+	 * @param @throws Exception 
+	 * @return: String
+	 * @throws
+	 */
+	private String getProjectCodeSize() throws IOException{
+		List<Map<String, String>> toolnamelist = this.getToolname();
+		String tooldate = JSONArray.fromObject(toolnamelist).toString();
+		responseWriter(tooldate);
+		return SUCCESS;
+	}
+	
+	
+	/**
+	 * @throws Exception 
+	 * @Description:导出excel功能
+	 * @author:150909 唐来彬
+	 * @time:2018年5月22日 上午10:18:45
+	 * @param @param
+	 * @param @throws Exception 
+	 * @return: String
+	 * @throws
+	 */
+	public String exportToolNameDate() throws Exception{
+		
+		 List<Map<String, String>> ToolNameData = this.getToolname();
+	     String columns = request.getParameter("columns");
+	     String merge = request.getParameter("merge");
+	     XSSFWorkbook xwb = ExportExcelUtil.buildExcel("ToolNameData", ToolNameData, columns, merge);
+	     ByteArrayOutputStream output = new ByteArrayOutputStream();
+	     xwb.write(output);
+	     byte[] ba = output.toByteArray();
+	     inputStream = new ByteArrayInputStream(ba);
+	     output.flush();
+	     output.close();
+	     return "down";
+	}
+	
+	
+	/**
+	 * @throws IOException 
+	 * @Description:获取工具运营数据，前端查询和导出使用
+	 * @author:150909 唐来彬
+	 * @time:2018年5月22日 上午10:18:45
+	 * @param @param
+	 * @param @throws IOEException 
+	 * @return: List<Map<String, String>>
+	 * @throws
+	 */
+	private List<Map<String, String>> getToolname() throws IOException{
+		Map<String, String> parameterMap = RequestUtil.getParameterMap(request);
+		String data = HttpClientREST.callSoapUtf8PostMethodXPISpecial(QUERY_CODE_ADDRESS, "", CommonUtil.getHeader(), parameterMap);
+		List<Map<String, String>> toolnamelist = JSONArray.fromObject(data);
+		return toolnamelist;
+	}
+}
+
+
+
+
+
+
+package com.huawei.xdu.branchCodeFlow.model;
+
+import org.aspectj.weaver.AjAttribute.PrivilegedAttribute;
+
+import javax.persistence.*;
+
+
+
+@Entity
+@Table(name = "T_BranchCode_FlowRate_2")
+public class T_BranchCode_FlowRate{
+	@Id
+	@Column
+	private int id;
+	@Column
+	private String domain;
+	@Column
+	private String component;
+	@Column
+	private String project;
+	@Column
+	private String branchComponent;
+	@Column
+	private String branchOwner;
+	@Column
+	private String curStockCode;
+	@Column
+	private String aveFlowRate;
+	@Column
+	private String recSubmit;
+	@Column
+	private String latestSynTime;
+	@Column
+	private String NoCloMR;
+	@Column
+	private String expirationMR;
+	@Column
+	private int bigVersionId;
+	@Column
+	private String level;
+	@Column
+	private String date;
+	@Column
+	private int state;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public String getComponent() {
+		return component;
+	}
+
+	public void setComponent(String component) {
+		this.component = component;
+	}
+
+	public String getProject() {
+		return project;
+	}
+
+	public void setProject(String project) {
+		this.project = project;
+	}
+
+	public String getBranchComponent() {
+		return branchComponent;
+	}
+
+	public void setBranchComponent(String branchComponent) {
+		this.branchComponent = branchComponent;
+	}
+
+	public String getBranchOwner() {
+		return branchOwner;
+	}
+
+	public void setBranchOwner(String branchOwner) {
+		this.branchOwner = branchOwner;
+	}
+
+	public String getCurStockCode() {
+		return curStockCode;
+	}
+
+	public void setCurStockCode(String curStockCode) {
+		this.curStockCode = curStockCode;
+	}
+
+	public String getAveFlowRate() {
+		return aveFlowRate;
+	}
+
+	public void setAveFlowRate(String aveFlowRate) {
+		this.aveFlowRate = aveFlowRate;
+	}
+
+	public String getRecSubmit() {
+		return recSubmit;
+	}
+
+	public void setRecSubmit(String recSubmit) {
+		this.recSubmit = recSubmit;
+	}
+
+	public String getLatestSynTime() {
+		return latestSynTime;
+	}
+
+	public void setLatestSynTime(String latestSynTime) {
+		this.latestSynTime = latestSynTime;
+	}
+
+	public String getNoCloMR() {
+		return NoCloMR;
+	}
+
+	public void setNoCloMR(String noCloMR) {
+		NoCloMR = noCloMR;
+	}
+
+	public String getExpirationMR() {
+		return expirationMR;
+	}
+
+	public void setExpirationMR(String expirationMR) {
+		this.expirationMR = expirationMR;
+	}
+
+	public int getBigVersionId() {
+		return bigVersionId;
+	}
+
+	public void setBigVersionId(int bigVersionId) {
+		this.bigVersionId = bigVersionId;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+}
+
+
+
+
+
+
