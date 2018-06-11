@@ -1,0 +1,124 @@
+
+
+
+用“netstat -b”命令查看正在运行的程序所占用的端口以及相关信息;
+
+
+在eclipse中可以直接通过添加语句“-Xms512M -Xmx1024M -XX:MaxNewSize=256M -XX:MaxPermSize=256M”轻松解决，添加具体位置如下：    双击Tomcat Server，打开配置页面 --> open launch configuration -->  Arguments选项卡 -->
+
+
+C:\Windows\System32\taskkill.exe
+/f /im "java.exe" /im "javaw.exe"
+
+
+clean_compile_install
+D:\工具\apache-maven-3.0.3\bin\mvn.bat
+D:\hehyworkspace\xdu
+clean
+compile
+install -DskipTests
+
+web_start
+D:\工具\apache-maven-3.0.3\bin\mvn.bat
+D:\hehyworkspace\xdu\web
+jetty:run
+
+JAVA_HOME
+C:\Program Files\Java\jdk1.7.0_79
+
+
+MAVEN_OPTS
+-Xms512m -Xmx512m -XX:PermSize=128M -XX:MaxPermSize=128m -Xdebug -Xnoagent -Djava.compiler=NONE -Djava.net.preferIPv4Stack=true -Xrunjdwp:transport=dt_socket,address=4000,server=y,suspend=y
+
+
+
+前端
+offset
+
+
+java heap space
+compacting resource model
+unhandled event loop exception
+
+
+map集合遍历——
+HashMap<String, String> map=new LinkedHashMap<>();
+		map.put("1", "a");
+		map.put("2", "b");
+		map.put("3", "c");
+		map.put("4", "d");
+		map.put("5", "e");
+		map.put("6", "f");
+		map.put("7", "h");
+		
+		Set<String> keySet = map.keySet();
+		for (String key : keySet) {
+			System.out.println(map.get(key));
+		}
+
+
+
+
+
+为了应对所有的现代浏览器，包括 IE5 和 IE6，请检查浏览器是否支持 XMLHttpRequest 对象。如果支持，则创建 XMLHttpRequest 对象。如果不支持，则创建 ActiveXObject ：
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+
+
+
+向 id="demo" 的 HTML 元素输出文本 "Hello World"：
+document.getElementById("demo").innerHTML="Hello World";
+
+
+JavaScript 是脚本语言。浏览器会在读取代码时，逐行地执行脚本代码。而对于传统编程来说，会在执行前对所有代码进行编译。
+
+变量是存储信息的容器。
+
+
+JS数组的创建及遍历
+
+<script>
+var i;
+var cars = new Array();
+cars[0] = "Audi";
+cars[1] = "BMW";
+cars[2] = "Volvo";
+
+for (i=0;i<cars.length;i++)
+{
+document.write(cars[i] + "<br>");
+}
+</script>
+
+
+
+JavaScript 对象
+对象由花括号分隔。在括号内部，对象的属性以名称和值对的形式 (name : value) 来定义。属性由逗号分隔：
+var person={firstname:"Bill", lastname:"Gates", id:5566};
+上面例子中的对象 (person) 有三个属性：firstname、lastname 以及 id。
+空格和折行无关紧要。声明可横跨多行：
+var person={
+firstname : "Bill",
+lastname  : "Gates",
+id        :  5566
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
