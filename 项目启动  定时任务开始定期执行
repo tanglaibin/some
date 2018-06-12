@@ -1,0 +1,61 @@
+public class Sd implements ServletContextListener{
+
+	@Override
+	public void contextDestroyed(ServletContextEvent arg0) {
+		
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent arg0) {
+		final long timeInterval = 5000;  
+        Runnable runnable = new Runnable() {  
+            public void run() {  
+                while (true) {  
+                	//定时任务主体  根据现有日期   判断目前是否是星期一  如果是 星期一  执行任务
+            		Calendar calendar = Calendar.getInstance();
+            	    int year = calendar.get(Calendar.YEAR);
+            	    int month = calendar.get(Calendar.MONTH);
+            	    int day = calendar.get(Calendar.DAY_OF_MONTH);//每天
+            	    calendar.set(year, month, day-1);
+            	    java.util.Date date = calendar.getTime();
+            	    String ndate = date.toString();
+            		if (ndate.startsWith("Mon")) {
+            			System.out.println("星期一，发送公共邮件");  
+            		}else{
+            			System.out.println("不是星期一，不执行任务");  
+            		}
+                    try {  
+                        Thread.sleep(timeInterval);  
+                    } catch (InterruptedException e) {  
+                        e.printStackTrace();  
+                    }  
+                }  
+            }  
+        };  
+        Thread thread = new Thread(runnable);  
+        thread.start();  
+    }  
+
+
+
+
+
+ <listener>
+        <listener-class>demo.Sd</listener-class>
+ </listener>
+
+
+
+
+
+新建定时任务类，实现监听器接口类，web.xml中设置监听即可。
+
+
+
+
+
+
+
+
+
+
