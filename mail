@@ -1,0 +1,52 @@
+package com.huawei.test;
+
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import org.junit.Test;
+
+public class MailTest {
+	private String mailAccount="pmail_RiskMonitoring";
+	private String mailPassword="DCNlmt666";
+	String content="xxx";
+	@Test
+	public void test1() throws FileNotFoundException, IOException, MessagingException{
+		Properties props=new Properties();
+		props.setProperty("mail.transport.protocol", "smtp");
+	    props.setProperty("mail.smtp.host", "smtp.huawei.com");
+	    props.setProperty("mail.smtp.auth", "true");           
+	    props.setProperty("mail.debug" , "true");               
+	    props.setProperty("mail.smtp.port", "25");
+//		props.store(new FileOutputStream("mail.properties"), "javaxmail config information");
+		
+	    Session session=Session.getDefaultInstance(props);
+	    
+	    MimeMessage message=new MimeMessage(session);
+	    
+	    message.setFrom(new InternetAddress("riskmonitoring@huawei.com", "风险管理平台","utf-8"));
+	    message.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress("tanglaibin@huawei.com"));
+	    message.setSubject("来自风险管理平台的推送","utf-8");
+	    
+	    message.setContent(content, "text/html;charset=UTF-8");
+	    message.setSentDate(new Date());
+	    message.saveChanges();
+	    
+	    Transport transport = session.getTransport();
+	    transport.connect(mailAccount,mailPassword);
+	    transport.sendMessage(message, message.getAllRecipients());
+	    transport.close();
+	}
+}
