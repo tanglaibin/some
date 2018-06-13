@@ -1,0 +1,93 @@
+
+
+
+检测用户名  密码是否正确
+
+function onCheckUserPassword(){
+				// 取得输入的用户名
+				var userName = document.getElementById("userName").value;
+				// 取得输入的密码
+				var userPassword = document.getElementById("userPassword").value;
+				// 检查用户名是否为空
+				if(trim(userName) == ""){
+					alert("用户名不能为空！");
+					document.getElementById("userName").focus();
+					return false;
+				}
+				// 用户名是否为英数字
+				if(!chkEisu(userName)){
+					alert("用户名只能为英数字！");
+					document.getElementById("userName").focus();
+					return false;
+				}
+				// 检查密码是否为空
+				if(trim(userPassword) == ""){
+					alert("密码不能为空！");
+					document.getElementById("userPassword").focus();
+					return false;
+				}
+				// 密码中是否含有特殊字符的检查
+				if(special_Chk(userPassword) == "false"){
+					alert("密码不能输入特殊字符！");
+					document.getElementById("userPassword").focus();
+					return false;
+				}
+				document.forms[0].action = "<%=request.getContextPath()%>/loginaction/login2.action";
+			   	document.forms[0].submit();
+			}
+      
+      
+
+用户名只能为英文数字check
+
+function chkEisu(objVal){
+    
+    var checkVal = objVal;
+    
+	if (checkVal == undefined || checkVal == ""){
+	    return true;
+	}
+	var i;
+	var c;
+	for(i = 0; i < checkVal.length; i++){
+		c = checkVal.charCodeAt(i);
+		if (( c >= 0x0030 && c <= 0x0039 ) || ( c >= 0x0041 && c <= 0x005a ) || ( c >= 0x0061 && c <= 0x007a )){
+		}else{
+            return false;
+		}
+	}
+    
+    return true;
+}
+      
+      
+      
+密码不能含有特殊字符check
+
+function special_Chk(str){
+	var hanTxt1="", hanTxt2="", hanTxt3="",hanTxt="";
+	hanTxt1 = "";
+	hanTxt2 = "'";
+	hanTxt3 = "";
+	//...
+	hanTxt = hanTxt1 + hanTxt2 + hanTxt3;
+	var chkRst = "true";
+	var c = "";
+	for(i = 0; i < str.length; i++){
+		c = str.charAt(i);
+		if(hanTxt.indexOf(c) != -1 ){
+			chkRst = "false";
+			break;
+		}
+	}
+	return chkRst;
+}  
+      
+      
+      
+      
+      
+      
+      
+      
+      
