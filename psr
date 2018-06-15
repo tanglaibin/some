@@ -1,0 +1,222 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<%@include file="/common/page/common2.jsp" %>
+	<script  type = "text/javascript" src ="<%=basePath%>js/index.js"></script>
+	<script  type = "text/javascript" src ="<%=basePath%>js/jquery-1.9.1.min.js"></script>
+	<script  type = "text/javascript" src ="<%=basePath%>My97DatePicker/WdatePicker.js"></script>
+	<title>风险管理平台</title>
+</head>
+<body>
+<div id="page">
+	<div id="headTip">
+		<span>当前位置：风险项管理  &gt;&gt; 风险项查看</span>
+	</div>
+	<div id="content">
+		<table style="width: 100%;" class="box_top">
+			<tr>
+				<td style="border-bottom: 1px solid #d3dbde;padding-left: 20px;"><b>风险识别录入</b></td>
+			</tr>
+		</table>
+		<div id="writeTable">
+		<table style="width: 100%;" class="box_top">
+			<tr>
+				<td style="border-bottom: 1px solid #d3dbde;padding-left: 40px;">基本信息</td>
+			</tr>
+		</table>
+		<table class="table creatTable" style="margin-bottom: 0px;">
+			<tr>
+				<td>跟踪闭环责任人<font color="#FF0000">*</font><input type="text" id="personName1" value="${riskproblem.developer}"   onclick="javascript:openWindow(1,'<%=basePath%>');" name="riskproblem.developer" readonly="readonly" /></td>
+				<td>发现时间&nbsp;&nbsp;&nbsp;<input type="text"  name="riskproblem.problemdate" value="${riskproblem.problemdate}" onclick="WdatePicker()"/></td>
+				<td>项目组<font color="#FF0000">*</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="riskproblem.progroup" id="progroup" value="${riskproblem.progroupName}"/></td>
+				<td>特性模块<font color="#FF0000">*</font>&nbsp;&nbsp;<input type="text" name="riskproblem.characteristic" id="characteristic" value="${riskproblem.characteristic}"/></td>
+			</tr>
+			<tr>
+				<td>补丁类型&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="${riskproblem.budtype}"   name="riskproblem.budtype"/></td>
+				<td>补丁版本号<input type="text" value="${riskproblem.budnumber}"  name="riskproblem.budnumber"/></td>
+				<td>推荐预警&nbsp;&nbsp;<input type="text"   value="${riskproblem.whetherWarningName}" id="whetherWarning"  name="riskproblem.whetherWarning" readonly="readonly" /></td>
+			</tr>
+			<tr>
+				<td>风险类型<font color="#FF0000">*</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text"   value="${riskproblem.riskType}" id="riskType"  name="riskproblem.riskType" readonly="readonly" /></td>
+				<td>风险级别<font color="#FF0000">*</font>&nbsp;&nbsp;<input type="text"   value="${riskproblem.riskLevelName}" id="riskLevel"  name="riskproblem.riskLevel" readonly="readonly" /></td>
+				<td>推荐整改&nbsp;&nbsp;<input type="text"   value="${riskproblem.whetherReformName}" id="whetherReform"  name="riskproblem.whetherReform" readonly="readonly" /></td>
+			</tr>
+			</table>
+			<table style="width: 100%;" class="box_top" >
+			<tr>
+				<td style="border-bottom: 1px solid #d3dbde;padding-left: 40px;">问题概要</td>
+			</tr>
+			</table>
+			<table class="table creatTable">
+			<tr rowspan="3">
+				<td>问题单号</td><td><input type="text" value="${riskproblem.probnumber}"  id="personName3"  name="riskproblem.probnumber"/></td>
+				<td>问题来源<font color="#FF0000">*</font></td><td><input type="text" name="riskproblem.probSource" id="probSource" value="${riskproblem.probSourceName}"/></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr rowspan="3">
+				<td>设备形态<font color="#FF0000">*</font></td><td><input type="text" name="riskproblem.devicemodels" id="devicemodels" value="${riskproblem.devicemodels}" title="${riskproblem.devicemodels}"></td>
+				<td>存在问题版本<font color="#FF0000">*</font></td><td><input type="text" name="riskproblem.problemvers" id="problemvers" value="${riskproblem.problemvers}" title="${riskproblem.problemvers}"></td>
+				<td></td>
+				<td></td>
+			</tr>
+			</table>
+			<table style="width: 100%;" class="box_top" >
+			<tr>
+				<td style="border-bottom: 1px solid #d3dbde;padding-left: 40px;">详细信息</td>
+			</tr>
+			</table>
+			<table class="table creatTable" style="margin-bottom: 0px;" id="widthTable">
+			<tr rowspan="3" >
+				<td>描述<font color="#FF0000">*</font><br/><textarea rows="2" cols="140" name="riskproblem.probdes">${riskproblem.probdes}</textarea></td>
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				<td>触发条件<font color="#FF0000">*</font><br /><textarea rows="2" cols="140" name="riskproblem.probconditions">${riskproblem.probconditions}</textarea></td>
+				
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				<td>根因<font color="#FF0000">*</font><br /><textarea rows="2" cols="140" name="riskproblem.probcause">${riskproblem.probcause}</textarea></td>
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				<td>影响<font color="#FF0000">*</font><br /><textarea rows="2" cols="140" name="riskproblem.proaffect">${riskproblem.proaffect}</textarea></td>
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				<td>修改方案<font color="#FF0000">*</font><br /><textarea rows="2" cols="140" name="riskproblem.amendment">${riskproblem.amendment}</textarea></td>
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				
+				<td>处理策略<br /><textarea rows="2" cols="140" name="riskproblem.avoidprogram">${riskproblem.avoidprogram}</textarea></td>
+				
+				
+				
+			</tr>
+			<tr rowspan="3">
+				<td>闭环进展&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<c:if test="${riskproblem.schedule==null}">0%</c:if><c:if test="${riskproblem.schedule!=null}">${riskproblem.schedule}%</c:if><br /><textarea rows="2" cols="140" name="riskproblem.emermeasures">${riskproblem.emermeasures}</textarea></td>
+				
+				
+				
+			</tr>
+			
+			</table>
+			<!-- 跟踪人才可以查看进度 -->
+			<c:if test="${riskproblem.developer == use.account }">
+				<table style="width: 100%;" class="box_top" >
+					<tr>
+						<td style="border-bottom: 1px solid #d3dbde;padding-left: 40px;">详细进度信息</td>
+					</tr>
+				</table>
+				<table class="table creatTable" style="margin-bottom: 0px;" id="widthTable">
+					<tr rowspan="3">
+					</tr>
+					<!-- 具体进度细节 -->
+					<c:if test="${fn:length(progressList) != 0 }">
+						<c:forEach var="progress" items="${progressList}" varStatus="i">
+							<tr rowspan="3">
+								<td>
+									处理人：${czNameList[i.index]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;处理进展及结果：${progress.czResult}<br>
+									<textarea rows="2" cols="140" >${progress.remark}</textarea>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:if>
+					<c:if test="${fn:length(untreated)!=0}">
+						<tr rowspan="3">
+							<td>
+							尚未处理：<br>
+							<textarea rows="2" cols="140" >${untreated}</textarea>
+							</td>
+						</tr>
+					</c:if>
+				</table>
+			</c:if>
+			
+			</div>
+		<c:if test="${riskproblem.workStatus ==5}">
+		<table style="width: 100%;" class="box_top">
+		<tr>
+			<td style="border-bottom: 1px solid #d3dbde;padding-left: 20px;"><b>风险关闭</b></td>
+		</tr>
+		</table>
+		<table class="table creatTable">
+			<tr>
+				<td>责任人<font color="#FF0000">*</font><input type="text" value="${ riskproblem.developer }"/></td>
+				<td>是否需要预警<font color="#FF0000">*</font><input type="text" value="${ riskproblem.cbbwarningName}"/></td>
+				<td>是否需要整改<font color="#FF0000">*</font><input type="text" value="${ riskproblem.cbbReformName}"/></td>
+				<td>
+					<c:if test="${riskproblem.cbbwarning == 1}">
+					预警链接<font color="#FF0000">*</font>:&nbsp;<a target="_blank" href="${ riskproblem.warningLink }">${ riskproblem.warningLink }</a>
+					</c:if>
+				</td>
+			</tr>
+		</table>
+		</c:if>
+		
+		<button  onclick="history.go(-1);" class="button_set" style="background-color: #e6e6e6;margin-left: 45%;">返回</button>
+		<button class="button_set" style="background-color: #e6e6e6;margin-left: 1%;color: red;font-weight: bold;"><a href="update2.action?id=${riskproblem.id}" target="iframe1">打回</a></button>
+		<button  onclick="showpsr()" class="button_set" style="background-color: #e6e6e6;margin-left: 1%;color: green;font-weight: bold;">初审通过</button>
+	    <div id="psr" align="center" style="display: none;">
+	     <td>选择评审人<font color="#FF0000">*</font></td><td><input type="text" id="personName12" value=""   onclick="javascript:openWindow(1,'<%=basePath%>');" name="riskproblem.developer" readonly="readonly" /></td>
+	    </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+	window.onload = function() {
+		$("input").attr("disabled",true);
+		$("textarea").attr("disabled",true);
+		$('textarea').each(function(){
+			console.log(this);
+			$(this).css("height",this.scrollHeight+6);
+		});
+		}
+	$('.box_top').each(function() {
+	$(this).click(function() {
+		if(($(this).next().css("display")) == "block") {
+			$(this).next().css("display","none");
+		} else{
+			$(this).next().css("display","block");
+		}
+	})
+	})
+	$(function() {
+		var tableWid = $('#widthTable').css('width');
+		$('.creatTable').css('width',tableWid);
+		$('.box_top').css('width',tableWid);
+	})
+	$(function() {
+	$('input[type=text],select,textarea').each(function() {
+		if($(this).val() != ""){
+			$(this).attr("title",$(this).val());
+		}
+	})
+	})
+	
+	function showpsr()
+		{
+		document.getElementById("psr").style.display = "block";
+		
+		}     
+	
+</script>
+</body>
+</html>
