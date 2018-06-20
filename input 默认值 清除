@@ -1,0 +1,9 @@
+ <input type="text" id="psr" class="psr" value="逗号隔开。例：xxx555555," name="riskproblem.checkPerson" style="display: none;" onfocus="clear2()" />
+ 
+ 
+ function clear2(){
+		var obj=document.getElementById("psr");
+		obj.setAttribute("value",""); 
+	}
+  
+  注：js中方法不用随便用既定已有的词语，如clear（）
