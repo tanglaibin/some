@@ -1,0 +1,18 @@
+修改字段值
+update r_problem set workStatus =1 where workStatus = 4
+
+select * from r_problem where workStatus !=2 and workStatus !=5
+
+SELECT * FROM r_problem WHERE developer ='w00215231' and probdes like '%配置assi%'
+
+
+
+
+
+
+
+
+
+
+
+
