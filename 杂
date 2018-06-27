@@ -1,3 +1,4 @@
 通过js清空div中的内容
 document.getElementById('BIGDraw').innerHTML = "";
 $('#BIGDraw').html("");
+例子：document.getElementById("b1").innerHTML = "<image alt='闭环责任人图表'src='<%=basePath%>problem/chart.action?value=1'>";
