@@ -1,0 +1,256 @@
+JFreeChart jsp页面动态展示数据图表
+
+
+1，jar包
+
+
+2，action
+public String chartShow() throws Exception{
+		JFreeChart chart = null;
+		
+		int value = Integer.parseInt(request.getParameter("value"));
+		
+		//添加数据
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		linkedmap = riskproblemService.getLinkedmap(value);
+		//value 123456
+		if (value==1) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图
+			chart = ChartFactory.createBarChart3D("闭环责任人统计图表", "问题闭环责任人", "问题数量", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("闭环责任人统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}else if (value==2) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				if (name.equals("1")) {
+					name="低级风险";
+				}else if (name.equals("2")) {
+					name="中级风险";
+				}else if (name.equals("3")) {
+					name="高级风险";
+				}
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图
+			chart = ChartFactory.createBarChart3D("风险等级统计图表", "风险等级", "数量总计", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("风险等级统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}else if (value==3) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图 
+			chart = ChartFactory.createBarChart3D("特性分布统计图表", "特性名", "特性数量", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("特性分布统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}else if (value==4) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图  
+			chart = ChartFactory.createBarChart3D("创建人统计图表", "创建者", "创建风险数量", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("创建人统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}else if (value==5) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				if (name.equals("0")) {
+					name="维护支撑组";
+				}else if (name.equals("1")) {
+					name="维护业务组";
+				}else if (name.equals("2")) {
+					name="维护三层组";
+				}else if (name.equals("3")) {
+					name="硬件组";
+				}else if (name.equals("4")) {
+					name="交付组";
+				}else if (name.equals("5")) {
+					name="平台组-BGP/VPN";
+				}else if (name.equals("6")) {
+					name="平台组-IGP/NPLS";
+				}else if (name.equals("7")) {
+					name="平台组-SMP";
+				}else if (name.equals("8")) {
+					name="平台组-SMF";
+				}else if (name.equals("9")) {
+					name="平台组-总线/组播/机制";
+				}else if (name.equals("10")) {
+					name="平台组-二层协议";
+				}else if (name.equals("11")) {
+					name="平台组-协议栈";
+				}else if (name.equals("12")) {
+					name="平台组-其他";
+				}else if (name.equals("14")) {
+					name="维优组";
+				}else if (name.equals("17")) {
+					name="测试组";
+				}
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图   
+			chart = ChartFactory.createBarChart3D("风险提出项目组统计图表", "项目组", "数量", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("风险提出项目组统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}else if (value==6) {
+			for(Entry<String, Object> map : linkedmap.entrySet()){
+				name = map.getKey();
+				sum = map.getValue();
+				BigInteger num = (BigInteger)sum;                                 
+				dataset.addValue(num, name, name);			
+			}
+			//创建柱状图  
+			chart = ChartFactory.createBarChart3D("未处理责任人统计图表", "责任人", "数量", dataset, PlotOrientation.VERTICAL, true, false, false);
+			chart.setTitle(new TextTitle("未处理责任人统计图表", new Font("微软雅黑", Font.ITALIC, 22)));
+		}
+		
+		LegendTitle legend = chart.getLegend(0);
+		legend.setItemFont(new Font("微软雅黑", Font.BOLD, 15));
+		CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		CategoryAxis categoryAxis = plot.getDomainAxis();
+		categoryAxis.setLabelFont(new Font("微软雅黑", Font.BOLD, 15));
+		categoryAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+		categoryAxis.setTickLabelFont(new Font("微软雅黑", Font.BOLD, 11));
+		NumberAxis numberAxis = (NumberAxis) plot.getRangeAxis();
+		numberAxis.setLabelFont(new Font("微软雅黑", Font.BOLD, 15));
+		
+		//保存图表在内存中 
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("image/");
+		ChartUtilities.writeChartAsJPEG(response.getOutputStream(), 1, chart, 900, 600, null);
+		response.getOutputStream().close();
+		
+		return "success";//进入展示的jsp页面
+	}
+  
+  
+  3，dao
+  public Map<String, Object> getLinkedmap(int value){
+		String sql = "";
+		
+		if (value==1) {
+			//闭环责任人图表
+			sql = "SELECT  developer, count(developer) as problemDep from r_problem group by developer";
+		}else if (value==2) {
+			//风险等级图表
+			sql = "SELECT  riskLevel, count(riskLevel) as riskSum from r_problem  group by riskLevel";
+		}else if (value==3) {
+			//特性分布图表
+			sql = "SELECT  characteristic, count(characteristic) as characteristicSum from r_problem  group by characteristic ORDER BY characteristicSum DESC LIMIT 15";
+		}else if (value==4) {
+			//创建责任人图表
+			sql = "SELECT  foundAccount, count(foundAccount) as foundAccountSum from r_problem  group by foundAccount ORDER BY foundAccountSum DESC LIMIT 15";
+		}else if (value==5) {
+			//风险提出项目组图表
+			sql = "SELECT  progroup, count(progroup) as progroupNum from r_problem  group by progroup ORDER BY progroupNum DESC";
+		}else if (value==6) {
+			//未处理责任人图表
+			sql = "SELECT  developer, COUNT(developer) AS problemOwner FROM r_problem WHERE SCHEDULE < 100 GROUP BY developer ORDER BY problemOwner DESC";
+		}
+		
+		Map<String, Object> linkedmap = new LinkedHashMap<String, Object>();
+		
+		session=HibernateUtil.getSession();
+		Query query=session.createSQLQuery(sql);
+		List list = query.list();
+		
+		for(Object o : list){
+			Object[] obj = (Object[])o;
+			String name = obj[0].toString();
+			Object Sum = obj[1];
+			linkedmap.put(name, Sum);
+		}
+		session.close();
+		return linkedmap;
+	}
+  
+  
+  4，jsp页面
+  <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<link rel="stylesheet" href="<%=basePath%>css/bootstrap.min.css" type="text/css" />
+	<link rel="stylesheet" href="<%=basePath%>css/iframe.css" type="text/css" />
+	<script src="<%=basePath%>js/jquery-1.9.1.min.js" type="text/javascript"></script>
+	<script src="<%=basePath%>js/index.js" defer="defer" type="text/javascript"></script>
+	<title>风险管理平台</title>
+</head>
+<body>
+<div id="page">
+	<div id="headTip">
+		<span>当前位置：风险项管理  &gt;&gt; 问题图表展示</span>
+	</div>
+	<div id="content">
+		<div class="radioSetting">
+			<form action="" method="post" name="">
+			&nbsp;&nbsp;&nbsp;&nbsp;问题图表
+			<input type="radio" name="num" checked="checked" value="1"/>闭环责任人图表
+			<input type="radio" name="num" value="2"/>风险等级图表
+			<input type="radio" name="num" value="3"/>特性分布图表
+			<input type="radio" name="num" value="4"/>创建责任人图表
+			<input type="radio" name="num" value="5"/>风险提出项目组图表
+			<input type="radio" name="num" value="6"/>未处理责任人图表
+			<input type="button" onclick="showB()" value="查询" class="button_set" style="background-color: #e6e6e6;" />
+			</form>
+		</div>
+		
+		<div id="b1" class="table-responsive" style="overflow-y:hidden;">
+		</div> 
+	</div>
+</div>	
+
+<script type="text/javascript">
+	
+function getNum(){
+	  var value="";
+	  var radio=document.getElementsByName("num");
+	  for(var i=0;i<radio.length;i++){
+		if(radio[i].checked==true){
+		  value=radio[i].value;
+		  break;
+		}
+	  }
+	  return value;
+	}
+	
+	function showB(){
+		var num = getNum();
+		
+		if (num=="1") {
+			document.getElementById("b1").innerHTML = "<image alt='闭环责任人图表'src='<%=basePath%>problem/chart.action?value=1'>";
+		}else if(num=="2"){
+			document.getElementById("b1").innerHTML = "<image alt='风险等级图表' src='<%=basePath%>problem/chart.action?value=2'>";
+		}else if(num=="3"){
+			document.getElementById("b1").innerHTML = "<image alt='特性分布图表' src='<%=basePath%>problem/chart.action?value=3'>";
+		}else if(num=="4"){
+			document.getElementById("b1").innerHTML = "<image alt='创建责任人图表' src='<%=basePath%>problem/chart.action?value=4'>";
+		}else if(num=="5"){
+			document.getElementById("b1").innerHTML = "<image alt='风险提出项目组图表' src='<%=basePath%>problem/chart.action?value=5'>";
+		}else if(num=="6"){
+			document.getElementById("b1").innerHTML = "<image alt='未处理责任人图表' src='<%=basePath%>problem/chart.action?value=6'>";
+		}
+		}   
+	
+</script>
+
+</body>
+</html>
