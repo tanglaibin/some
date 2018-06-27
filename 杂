@@ -1,0 +1,3 @@
+通过js清空div中的内容
+document.getElementById('BIGDraw').innerHTML = "";
+$('#BIGDraw').html("");
