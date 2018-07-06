@@ -1,0 +1,136 @@
+不要在jsp页面表单里提交按钮加onclick（）执行ajax方式，因为按钮执行完后，表单内部其他按钮功能继续执行。
+
+
+一，jsp
+<form enctype="multipart/form-data"  method="post" id ="upform">	
+			<input type="hidden" name="cwId" value="${riskproblem.id}" >
+			<input type="hidden" name="czType" value="2" />
+			
+			<table style="width: 100%;"class="box_top">
+				<tr>
+					<td style="border-bottom: 1px solid #d3dbde;padding-left: 20px;"><b>风险清除</b></td>
+				</tr>
+			</table>
+			<table class="table creatTable">
+				<tr>
+					<td>实施责任人<font color="#FF0000">*</font><input type="text" name="czAccount" value="${ use.account }" readonly="readonly"/></td>
+				</tr>
+				<tr>
+					<td>
+					 
+						<div id="plan" class="plan" >风险清除计划及进展<font color="#FF0000">*</font><br />
+						<textarea rows="2" cols="140" name="remark" id="planContent">${remark }</textarea>
+						</div>
+						</td>
+						
+						<td>
+						<p>附件上传</p>
+						<input type="file" name="uploadFile" id="uploadFile" style="float: left;height: 27px;border:2px solid  #ddd;">
+						</td>
+					</td>
+				</tr>
+			</table>
+			
+			<button id="check"  class="button_set" style="background-color: #e6e6e6;margin-left: 40%;">保存</button>
+		    <button  onclick="history.go(-1); return false;" class="button_set" style="background-color: #e6e6e6;margin-left: 8%;">&nbsp;返&nbsp;回&nbsp;</button>
+		</form>
+    
+二，jsp js
+  <script type="text/javascript">
+	//$(function() {
+		//$("input").attr("disabled","disabled");
+	//	$("#upform input").removeAttr("disabled");
+		//$("textarea").attr("disabled","disabled");
+		//$("#causeContent").removeAttr("disabled");
+		//$("#planContent").removeAttr("disabled");
+		//$('textarea').each(function(){
+			//console.log(this);
+			//$(this).css("height",this.scrollHeight+6);
+	//	});
+	//})
+  
+	$('#check').click(upCheck);
+	
+</script>
+
+三，upCheck里写判断 ajax  FormData用来ajax提交文件上传
+function upCheck(){
+	var bool = checkup();
+	  
+	  if(bool){
+		  var form = new FormData(document.getElementById("upform"));
+		  $.ajax({
+		        type: "POST",
+		        url: basePath + "riskoperate/uploadf.action",
+		        data:form,
+		        processData:false,
+		        contentType:false,
+		        async: false,
+		        error: function(request) {
+		        tip.parentAlertError("保存失败");
+		        },
+		        success: function(data) {
+		        	var obj = eval("("+data+")");
+		        	if(obj.result == "200") {
+		        	tip.parentAlertSuccess("上传保存成功", 'toIndex();');
+		        	} else {
+		        		tip.parentAlertError(obj.desc);
+		        	}
+		        }
+		    });
+	  }
+	return false;
+}
+
+function checkup(){
+	   var obj = document.getElementById("uploadFile");
+	   var importEx = obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();//获得文件后缀名
+	    if(importEx!='.zip' && importEx!='.rar' && importEx!=''){
+	        alert("请压缩为压缩包后上传！")
+	        return false;}
+	     else{
+	    	 return true;
+	    	 }
+	}
+
+四，后台action
+public void uploadf2() throws IOException {
+		String account = this.getRiskoperate().getCzAccount();
+		
+		if (uploadFileFileName!=null) {
+			ServletContext application = this.getServlet().getServletContext();
+			String path = application.getRealPath("/")+"uploadfile\\";
+			File file=new File(path+uploadFileFileName);
+			FileUtils.copyFile(uploadFile, file);
+			//有上传文件的话  直接riskoperate绑定文件服务器地址  add
+			riskoperate.setFilepath(path+uploadFileFileName);
+		}
+		
+		int id = this.getRiskoperate().getCwId();
+		String access = this.getRiskoperate().getCzResult();
+		/*评估之前判断是否已评估，已评咕过则将先前操作cztype设置为0,*/
+		int rows=riskoperateService.accessCheck(id, this.getRiskoperate().getCzAccount());
+		
+		if(rows==-1){
+			writeJson(new Message(Message.ERROR,null,"评估失败"));
+			return;
+		}
+		
+		int a = 0;
+		a = riskoperateService.add(riskoperate);
+		if(a == 2){
+			writeJson(new Message(Message.SUCCESS,null,"评估成功"));
+			} else {
+			writeJson(new Message(Message.ERROR,null,"评估失败"));
+		}
+	}
+
+
+
+
+
+
+
+
+
+
