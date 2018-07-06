@@ -1,0 +1,31 @@
+一，文件位置
+D:\upfile\xxxxxx.rar
+
+二，jsp
+附件：<a href="<%=basePath%>riskoperate/getf.action?filepath=${progress.filepath}">${progress.filepath}</a>
+[指向后台方法，产生流]
+
+三，action
+public void getf() throws IOException {
+		String filen = request.getParameter("filepath");//获取action路径参数
+		String path = "D:\\upfile\\";
+		File file = new File(path+filen);
+		InputStream inputStream = null;
+		OutputStream outputStream = null;
+		byte[] b= new byte[1024];
+		int len = 0;
+		inputStream = new FileInputStream(file);
+		outputStream = response.getOutputStream();
+		
+		response.setContentType("application/force-download");
+		String filename = filen;
+		
+		response.addHeader("Content-Disposition","attachment; filename=" + URLEncoder.encode(filename, "UTF-8"));
+		response.setContentLength( (int) file.length( ) );
+
+		while((len = inputStream.read(b)) != -1){
+		outputStream.write(b, 0, len);
+		}
+		inputStream.close();
+		outputStream.close();
+	}
