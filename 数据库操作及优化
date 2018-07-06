@@ -7,7 +7,9 @@ SELECT * FROM r_problem WHERE developer ='w00215231' and probdes like '%配置as
 
 
 
-
+sql优化  数据库优化：
+1，尽量使用列名代替*号；
+2，
 
 
 
