@@ -1,4 +1,13 @@
-通过js清空div中的内容
+1，通过js清空div中的内容
 document.getElementById('BIGDraw').innerHTML = "";
 $('#BIGDraw').html("");
 例子：document.getElementById("b1").innerHTML = "<image alt='闭环责任人图表'src='<%=basePath%>problem/chart.action?value=1'>";
+
+2，get parameter参数中文乱码
+get方式提交的参数编码，只支持iso8859-1编码。
+因此，如果里面有中文。
+在后台就需要转换编码，如下
+String zhongwen = request.getParameter("zhongwen");
+zhongwen = new String(zhongwen.getBytes("iso8859-1"),"GBK");
+前提是你页面编码就是GBK，如果是utf-8，那上面那句代码后面就改成utf-8。
+
