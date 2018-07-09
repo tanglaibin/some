@@ -24,13 +24,12 @@ public class MailTest {
 	String content="xxx";
 	@Test
 	public void test1() throws FileNotFoundException, IOException, MessagingException{
-		Properties props=new Properties();
-		props.setProperty("mail.transport.protocol", "smtp");
+	    Properties props=new Properties();
+	    props.setProperty("mail.transport.protocol", "smtp");
 	    props.setProperty("mail.smtp.host", "smtp.huawei.com");
 	    props.setProperty("mail.smtp.auth", "true");           
 	    props.setProperty("mail.debug" , "true");               
 	    props.setProperty("mail.smtp.port", "25");
-//		props.store(new FileOutputStream("mail.properties"), "javaxmail config information");
 		
 	    Session session=Session.getDefaultInstance(props);
 	    
