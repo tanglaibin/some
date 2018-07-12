@@ -3,7 +3,7 @@ navicat——
 
 1，安装database  解锁scott账户
 2，安装32位的client   不管你的Navicat是32位的还是64位的，你的Instant Client都要下载32位的，因为Navicat只支持32位的客户端。
-3，navicat  将Navicat Premium中的OCI library设置为F:/gome/instantclient_12_1/oci.dll，然后重启生效。
+3，navicat  将Navicat Premium中的OCI library设置为F:/gome/instantclient_12_1/oci.dll【本地安装的32位client目录】，然后重启生效。
 4，使用更简洁Basic模式，输入连接名、连接类型、IP地址、端口、服务名或SID、用户名及密码，点击确定即可连接数据库。
 
 
@@ -12,7 +12,7 @@ plsql——
 1，plsql客户端
 2，32位 instant client 工具
 3，oracle network文件夹拷贝到client下
-4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地client目录，不是oracle目录。如：D:\plsql\instantclient_11_2； D:\plsql\instantclient_11_2\oci.dll】。
+4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地plsql client目录，不是oracle目录。如：D:\plsql\instantclient_11_2； D:\plsql\instantclient_11_2\oci.dll】。
 
 
 
