@@ -12,7 +12,7 @@ plsql——
 1，plsql客户端
 2，32位 instant client 工具
 3，oracle network文件夹拷贝到client下
-4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地client目录，不是oracle目录】。
+4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地client目录，不是oracle目录。如：D:\plsql\instantclient_11_2； D:\plsql\instantclient_11_2\oci.dll】。
 
 
 
