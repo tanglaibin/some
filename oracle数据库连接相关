@@ -15,10 +15,14 @@ plsql——
 4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地plsql client目录，不是oracle目录。如：D:\plsql\instantclient_11_2； D:\plsql\instantclient_11_2\oci.dll】。
 
 
-
-
-
-
+oracle数据库删除用户  新建用户——
+1、打开oracle第三方工具，如plsq，然后用一个具有dba权限的用户登录。【dba权限用户，比如sys，密码是数据库口令，数据库口令一般用于sys system sysman dbsnmp用户】
+2、然后打开一个SQL窗口。
+3、执行语句：
+create user 用户名 identified by 密码;
+其中用户名需要为英文，密码为数字或字母或英文符号或组合。
+4、执行完毕后，可按需要给用户赋予相应的权限，如：
+grant connect,resource,dba to 用户名;
 
 
 
