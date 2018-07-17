@@ -1,0 +1,19 @@
+主程序SSH框架，通过action访问springboot微服务。
+1，主程序action：
+public static final String TOOL_NAME = "http://localhost:8085/web/xpi/";
+public static final String TOOL_NAME_ADDRESS = TOOL_NAME + "tool/toolname";
+public static final String QUERY_CODE_ADDRESS = TOOL_NAME + "tool/querycode";
+访问微服务
+Map<String, String> parameterMap = RequestUtil.getParameterMap(request);
+String toolStr = HttpClientREST.callSoapUtf8PostMethodXPISpecial(TOOL_NAME_ADDRESS, "", 
+CommonUtil.getHeader(), parameterMap);
+
+
+
+
+
+
+
+
+
+
