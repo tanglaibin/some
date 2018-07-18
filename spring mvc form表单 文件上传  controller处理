@@ -1,0 +1,81 @@
+
+1，jsp
+<form id="upform" class="upform" method="post"enctype="multipart/form-data">
+     <span style="font-family: 微软雅黑;font-weight: bold;color: #990033" class="wenjian">文件上传</span>
+     <input type='file' name='uploadExcel' id='upExcel' class="upexcel">
+     <input id="upbutton" class="upbutton" type="button" value="提交">
+     <div class="div1"></div>
+</form>
+
+
+2，js  ajax
+$('#upbutton').click(upCheck);
+    function upCheck(){
+    	var bool = checkup();  
+    	  if(bool){
+    		  var form = new FormData(document.getElementById("upform"));
+    		  $.ajax({
+    		        type: "POST",
+    		        url: "../.././upexcel",
+    		        data:form,
+    		        processData:false,
+    		        contentType:false,
+    		        async: false,
+    		        error: function(request) {
+    		        tip.parentAlertError("处理失败");
+    		        },
+    		        success: function(data) {
+    		        	var obj = eval("("+data+")");
+    		        	if(obj.result == "200") {
+    		        	tip.parentAlertSuccess("上传处理成功");
+    		        	} else {
+    		        		tip.parentAlertError(obj.desc);
+    		        	}
+    		        }
+    		    });
+    	  }
+    	return false;
+    }
+
+
+3,controller
+@Controller
+public class UpexcelController {
+	private static Logger logger = (Logger) LoggerFactory
+			.getLogger(UpexcelController.class);
+	
+	@Autowired
+	public UpexcelService upexcelService;
+	
+	@RequestMapping("/upexcel")
+	@ResponseBody
+	public String upExcel(HttpServletRequest request){
+		try {
+			//下面这句必须加，不然报错
+			MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			//获取一起跟文件传过来的其他参数值
+			//String id = multipartRequest.getParameter("dd");
+			//获取上传上来的文件
+			Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+			for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()){
+			MultipartFile file = entry.getValue();
+			String fileName = file.getOriginalFilename();
+			System.out.println(fileName);
+			String path = "d:\\" + File.separator + fileName;
+			file.transferTo(new File(path));
+			}
+			} catch (Exception e) {
+			e.printStackTrace();
+			}
+		return "";
+	}
+}
+
+
+
+
+
+
+
+
