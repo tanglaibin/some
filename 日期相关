@@ -6,3 +6,21 @@ String endDate = "";
 endDate= dateFormat.format(date);
 
 结果：2018年07月18日15时42分18秒
+
+2，根据当前日期，求得当前的星期
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+Calendar calendar = Calendar.getInstance();
+Date date = new Date();
+String nowDate;
+nowDate= dateFormat.format(date);
+Calendar c = Calendar.getInstance();
+c.setTime(dateFormat.parse(nowDate));
+int dayForWeek = 0;
+if(c.get(Calendar.DAY_OF_WEEK) == 1){
+		dayForWeek = 7;
+}else{
+		dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+			}
+System.out.println(dayForWeek);
+
+
