@@ -1,0 +1,8 @@
+1，按照特定格式，得到当前时间值【yyyy年MM月dd日HH时mm分ss秒】
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒");
+Calendar calendar = Calendar.getInstance();
+Date date = new Date();
+String endDate = "";
+endDate= dateFormat.format(date);
+
+结果：2018年07月18日15时42分18秒
