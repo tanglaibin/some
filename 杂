@@ -12,7 +12,21 @@ zhongwen = new String(zhongwen.getBytes("iso8859-1"),"GBK");
 前提是你页面编码就是GBK，如果是utf-8，那上面那句代码后面就改成utf-8。
 
 https://www.guokr.com/post/637343/
-
 https://www.zhihu.com/question/25712407
-
 https://tieba.baidu.com/p/3415152295
+
+3，css div背景透明设置
+.div1{
+width: 200px;
+height: 30px;
+background-color: gray;
+filter:alpha(opacity=50);opacity:0.5;
+}
+
+
+
+
+
+
+
+
