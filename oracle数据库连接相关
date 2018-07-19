@@ -22,7 +22,7 @@ oracle数据库删除用户  新建用户——
 create user 用户名 identified by 密码;
 其中用户名需要为英文，密码为数字或字母或英文符号或组合。
 4、执行完毕后，可按需要给用户赋予相应的权限，如：
-grant connect,resource,dba to 用户名;
+grant connect,resource,dba to 用户名;【dba为管理员权限，一般不用给予它这个权限】
 
 
 
