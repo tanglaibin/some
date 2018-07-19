@@ -35,6 +35,12 @@ sql="insert into T_TOOLS_EYC_TYPE_CN select 1,'CE12804S','1' from dual union all
 pstem = conn.prepareStatement(sql);
 pstem.executeQuery();
 
+六、删除表
+drop table 表名;
+
+七、删除数据库
+drop database 数据库名;
+
 
 
 
