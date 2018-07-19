@@ -1,21 +1,16 @@
-
-navicat——
-
+一、navicat——
 1，安装database  解锁scott账户
 2，安装32位的client   不管你的Navicat是32位的还是64位的，你的Instant Client都要下载32位的，因为Navicat只支持32位的客户端。
 3，navicat  将Navicat Premium中的OCI library设置为F:/gome/instantclient_12_1/oci.dll【本地安装的32位client目录】，然后重启生效。
 4，使用更简洁Basic模式，输入连接名、连接类型、IP地址、端口、服务名或SID、用户名及密码，点击确定即可连接数据库。
 
-
-plsql——
-
+二、plsql——
 1，plsql客户端
 2，32位 instant client 工具
 3，oracle network文件夹拷贝到client下
 4，配置plsql工具-首选项。client安装目录+client oci.dll目录【本地plsql client目录，不是oracle目录。如：D:\plsql\instantclient_11_2； D:\plsql\instantclient_11_2\oci.dll】。
 
-
-oracle数据库删除用户  新建用户——
+三、oracle数据库删除用户  新建用户——
 1、打开oracle第三方工具，如plsq，然后用一个具有dba权限的用户登录。【dba权限用户，比如sys，密码是数据库口令，数据库口令一般用于sys system sysman dbsnmp用户】
 2、然后打开一个SQL窗口。
 3、执行语句：
@@ -23,6 +18,25 @@ create user 用户名 identified by 密码;
 其中用户名需要为英文，密码为数字或字母或英文符号或组合。
 4、执行完毕后，可按需要给用户赋予相应的权限，如：
 grant connect,resource,dba to 用户名;【dba为管理员权限，一般不用给予它这个权限】
+
+四、oracle清空某用户下 某个数据表下的所有数据——
+sql = "delete from 表名";
+pstem = conn.prepareStatement(sql);
+pstem.executeUpdate();
+sql = "truncate table 表名";
+pstem = conn.prepareStatement(sql);
+pstem.executeUpdate();*
+
+五、oracle批量插入数据——
+String sql;
+Class.forName("oracle.jdbc.OracleDriver");
+conn = DriverManager.getConnection("jdbc:oracle:thin:@10.134.201.137:1521:orcl","scott","1234");
+sql="insert into T_TOOLS_EYC_TYPE_CN select 1,'CE12804S','1' from dual union all select 2,'CE12808S','1' from dual  union all select 3,'CE12804','1' from dual  union all select 4,'CE12808','1' from dual  union all select 5,'CE12812','1' from dual  union all select 6,'CE12816','1' from dual union all select 7,'唐来彬','1' from dual union all select 7,'唐来彬','1' from dual where rownum<1";
+pstem = conn.prepareStatement(sql);
+pstem.executeQuery();
+
+
+
 
 
 
