@@ -41,8 +41,27 @@ drop table 表名;
 七、删除数据库
 drop database 数据库名;
 
-
-
+八、executeQuery得到结果集转list
+List<E> list = new ArrayList<E>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		conn = DBUtil.getConnection();
+		try {
+			pstmt = conn.prepareStatement("select*from xxx");
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				EmployeeInfo employee = new EmployeeInfo();
+				employee.setEmployeeID(rs.getInt("employeeID"));
+				employee.setIsLead(rs.getString("isLead"));
+				list.add(employee);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.closeAll(pstmt, rs, conn);
+		}
+		return list;
 
 
 
