@@ -1,0 +1,19 @@
+ 一、form表单文件上传ajax写法
+ if(bool){
+    		  var form = new FormData(document.getElementById("upform"));
+    		  $.ajax({
+    		        type: "POST",
+    		        url: "../.././upexcel",
+    		        data:form,
+    		        processData:false,
+    		        contentType:false,
+    		        async: false,
+    		        success: function(data) {
+    		        	if(data=="ok"){
+    		        		$("#TableViewA").html("上传处理成功！");
+    		        	}else if(data=="no"){
+    		        		$("#TableViewA").html("内容格式填写错误，上传处理失败，请严格按照模板格式填写数据上传！");
+    		        	}
+    		        }
+    		    });
+    	  }
