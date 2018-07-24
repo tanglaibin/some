@@ -1,0 +1,260 @@
+介绍
+
+展示在本教程中的内容准备简要概述jxl使用读写Excel中数据,这个教程不是最详细的,如果没有在这里提及的内容,并不代表是该工具没有的功能,读者应该去查看API文档和示例代码(特别是Write.java 和ReadWrite.java)以便获得更多详细的功能和该工具的局限性.
+
+读取 Excel 
+
+jxl可以本地文件系统和一些输入流读取Excel . 当从文件或输入流读取Excel时首先是创建Workbook. 以下代码片段示例从本地系统文件创建一个workbook. 
+
+
+import java.io.File; 
+import java.util.Date; 
+import jxl.*; 
+
+... 
+
+Workbook workbook = Workbook.getWorkbook(new File("myfile.xls"));
+(注意:当从ServletInputStream 创建Excel时你必须在创建Workbook对象之前移除HTTP头信息.) 
+
+ 当你需要访问工作簿时, 你可以使用这个去访问个别的工作簿.这些的下标都是从0开始 第一个工作簿是0, 第二个工作簿是1,等等.... (你也可以使用API通过名称去得到工作簿(Sheet)对象). 
+
+Sheet sheet = workbook.getSheet(0);
+当你有一个工作簿时,你然后可以开始访问单元格.你可以检索单元格内容,当内容是String类型时你可以使用简便的放法getContents() . 在下面示例代码, A1是一个text类型单元格, B2是一个数值类型和 C2 是一个date类型的单元格. 这些单元格的内容可以如下方式访问
+
+Cell a1 = sheet.getCell(0,0); 
+Cell b2 = sheet.getCell(1,1); 
+Cell c2 = sheet.getCell(2,1); 
+
+String stringa1 = a1.getContents(); 
+String stringb2 = b2.getContents(); 
+String stringc2 = c2.getContents(); 
+
+// 针对字符串的操作....
+...
+  在demo示例程序中CSV.java 和 XML.java 使用简便方法 getContents() 方便输出Excel内容. 
+
+ 然而在需要在访问单元格内容时需要精确的类型时 例如. 如同一个数值(numerical)或者一个日期值(date), 然后检索单元格必须转换为正确的类型和和调用适当的方法.以下示例代码片段jxl从一个Excel中检索一个真是的java double类型的数据和java.util.Date对象. 出于完备性Label也可以转换为其正确的类型 ,虽然在实践中没有什么不同. 这个示例也阐明如何验证单元格(cell)是你期待的类型,这个在你验证Excel中的单元格(cell)是否在正确的位置时非常实用, . 
+
+String stringa1 = null; 
+double numberb2 = 0; 
+Date datec2 = null; 
+
+Cell a1 = sheet.getCell(0,0); 
+Cell b2 = sheet.getCell(1,1); 
+Cell c2 = sheet.getCell(2,1); 
+
+if (a1.getType() == CellType.LABEL) 
+{ 
+  LabelCell lc = (LabelCell) a1; 
+  stringa1 = lc.getString(); 
+} 
+
+if (b2.getType() == CellType.NUMBER) 
+{ 
+  NumberCell nc = (NumberCell) b2; 
+  numberb2 = nc.getValue(); 
+} 
+
+if (c2.getType() == CellType.DATE) 
+{ 
+  DateCell dc = (DateCell) c2; 
+  datec2 = dc.getDate(); 
+} 
+
+// 对日期数据和double类型数据操作 ....
+...
+  当你完成处理所有单元格时,使用close()方法.释放任何分配使用内存 ,当读取Excel时特别重要,尤其是读取较大Excel
+
+// 最后 - 关闭workbook和释放内存
+workbook.close();
+          
+写出Excel 
+
+最基本的
+
+这段描述如何写出简单的电子表格数据 没有任何的格式化信息,比如 字体(Font) 或者 小数位. 
+
+类似于读取Excel,首先使用工厂方法在Workbook类创建一个 writable workbook . 
+
+
+import java.io.File; 
+import java.util.Date; 
+import jxl.*; 
+import jxl.write.*; 
+
+... 
+
+WritableWorkbook workbook = Workbook.createWorkbook(new File("output.xls"));
+这将创建workbook对象.生成的文件将位于当前工作空间文件夹和名称为"output.xls".API也能使用直接发送workbook到一个输出流 例如.从一个web服务器到用户浏览器.如果HTTP头信息设置是正确的,然后这个将执行Excel和显示生成的Excel
+
+接下来就是为workbook创建sheet. 重申一下, 这是一个工厂方法, 需要传入sheet名称和位置然后将占据在工作薄中.以下代码片段创建一个sheet 名称为"First Sheet" 在第一个. 
+
+WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+现在剩余的就是添加单元格到工作表中了. 这个简单的示例添加单元格到sheet.以下代码片段放置一个label到单元格 A3, 和数字 3.14159 到单元格 D5. 
+
+Label label = new Label(0, 2, "A label record"); 
+sheet.addCell(label); 
+
+Number number = new Number(3, 4, 3.1459); 
+sheet.addCell(number);
+这里有许多地方需要注意. 首先, 在sheet中的单元格位置需要指定作为构造函数的一部分. 一旦创建, 不能改变单元格的位置, 虽然单元格的内容可以更改. 
+
+
+另外一个需要注意的地方,单元格的位置指定为(列,行),他们的下标是从0开始的整数- A1 通过 (0,0)代表, B1 通过 (1,0), A2 通过 (0,1) 和..... 
+
+一旦你完成添加sheet和单元格到workbook中,你要调用write()方法在workbook,然后关闭文件. 最后步骤生成输出文件(output.xls ) 可以通过读取Excel. 如果你调用close()方法而没有在其之前调用write(),一个完整的空文件将生成. 
+
+... 
+//所有sheet和cell添加后.现在写出workbook 
+workbook.write(); 
+workbook.close();
+  
+添加格式信息
+
+在之前的示例介绍中基本的使用API生成Excel电子表格的使用. 然而, 依照标准的Excel将呈现数据为默认的字体,和显示数字保留3位小数. 为了提供格式化信息到Excel,我们必须使用重载的构造方法,需要提供一个额外的对象包含单元格格式化信息 (字体 和样式). 
+
+以下示例代码片段 创建一个 label cell 给定一个arial 10 像素 字体样式.
+
+// 创建cell格式字体为 Arial 10 像素字体
+WritableFont arial10font = new WritableFont(WritableFont.ARIAL, 10); 
+WritableCellFormat arial10format = new WritableCellFormat (arial10font); 
+
+// 创建 label, 指定内容和格式
+Label label2 = new Label(1,0, "Arial 10 point label", arial10format); 
+sheet.addCell(label2);
+     单元格样式是可以共享的,以便多个单元格使用相同的格式化对象 例如. 
+
+Label label3 = new Label(2, 0, "Another Arial 10 point label", arial10format); 
+sheet.addCell(label3);
+这里创建另一个label,使用相同的格式在单元格C1中. 
+
+因为单元格样式对象是共享的, 不能改变单元格格式化对象内容. (如果这是允许的, 然后改变对象内容可能会有不可预见的后果在其余的工作簿). 以便于改变一个特定的单元格的显示方式,API允许你分配一个新的样式到一个单元格上. 
+
+WritableFont对象的构造方法有很多重载,通过示例, 以下代码片段创建一个 label 里面字体为TIMES 字号是16, 加粗和分配其位置为 D1.
+//创建一个单元格 字体为TIMES 字号是16 加粗
+WritableFont times16font = new WritableFont(WritableFont.TIMES, 16, WritableFont.BOLD, true); 
+WritableCellFormat times16format = new WritableCellFormat (times16font); 
+
+// 创建 label, 指定内容和格式 specifying content and format 
+Label label4 = new Label(3,0, "Times 16 bold italic label", times16format); 
+sheet.addCell(label4);
+ 
+格式化数字
+
+格式化数字信息可以通过传入单元格格式化信息对象,和上面描述设置字体是同样的原理. 
+
+多种预先定义的数字格式化都是静态的. 这些可用于格式化数字信息,如下:
+
+WritableCellFormat integerFormat = new WritableCellFormat (NumberFormats.INTEGER); 
+Number number2 = new Number(0, 4, 3.141519, integerFormat); 
+sheet.addCell(number2); 
+
+WritableCellFormat floatFormat = new WritableCellFormat (NumberFormats.FLOAT); 
+Number number3 = new Number(1, 4, 3.141519, floatFormat); 
+sheet.addCell(number3);
+以上代码插入值3.14159到A5和B5中,使用预先设置的整数和浮点数的对应格式.当Excel渲染这些单元格时,虽然这两个单元格都包含同样的浮点型数据,A5将显示"3"和B5将显示"3.14".
+
+
+
+可以允许用户定义自己的数字格式化类型, 通过传入一个格式化数字的字符串. 这个传入的string应该是同样的格式因为他是通过使用java.text.DecimalFormat类实现. 格式化一个数字显示5个小数点在A5中,以下代码片段可以使用:
+NumberFormat fivedps = new NumberFormat("#.#####"); 
+WritableCellFormat fivedpsFormat = new WritableCellFormat(fivedps); 
+Number number4 = new Number(2, 4, 3.141519, fivedpsFormat); 
+sheet.addCell(number4);
+
+当然,也可以定义字体信息 例如:我们可以写我们之前定义的字体 显示相同的值 字号为16 的粗体 .
+
+WritableCellFormat fivedpsFontFormat = new WritableCellFormat (times16font, fivedps); 
+Number number5 = new Number(3, 4, 3.141519, fivedpsFontFormat); 
+sheet.addCell(number5);
+
+格式化日期
+
+日期的处理和数字是一样的, 提供一个格式字符串兼容于java.text.SimpleDateFormat 类. 此外,一些预定义的日期格式都定义在 jxl.write.DateFormat类中
+
+作为一个简单的示例,以下示例代码片段放置当前日期时间早A7单元格中,使用自定义格式转换:
+
+
+// 从Calendar对象得到当前日期和时间 
+Date now = Calendar.getInstance().getTime(); 
+DateFormat customDateFormat = new DateFormat ("dd MMM yyyy hh:mm:ss"); 
+WritableCellFormat dateFormat = new WritableCellFormat (customDateFormat); 
+DateTime dateCell = new DateTime(0, 6, now, dateFormat); 
+sheet.addCell(dateCell); 
+与数字一样,字体信息也可以使用显示日期文本通过使用在WritableCellFormat类重载的构造方法.
+
+对于更对的写出Excel示例,请见示例程序Write.java,此外以上描述的函数功能,这个示例测试出不同类型的单元格,格式化信息和字体设置选项,以及显示单元格不同的背景和前景,底纹和边框 .
+
+
+
+复制和修改Excel 
+
+这部分描述场景是一个读入的Excel,将其内容在某种程度上进行修改,将修改后的Excel写出. 
+
+首先,使用常见的方式读取Excel:
+
+import java.io.File; 
+import java.util.Date; 
+import jxl.*; 
+import jxl.write.*; 
+
+... 
+
+Workbook workbook = Workbook.getWorkbook(new File("myfile.xls"));
+这里创建了一个可读的Excel. 获得这个Excel可写的版本, 必须使用复制, 如下:
+WritableWorkbook copy = Workbook.createWorkbook(new File("output.xls"), workbook);
+API函数这种方式是出于读取的效率(由于这里主要是使用的API).为了改善性能, 涉及数据输出,当Excel是可读时,输出信息是没有解释的(例如  所有格式化信息,比如字体),当审查原始数据是这是没有必要的.然而,如果我们需要修改这个Excel那么一个处理各种写出的接口是必要的,这可使用以上的复制方法获得.这个复制的信息已经读取,以及执行额外的处理解释字段,这都需要编写Excel. 这个优化的读取策略的缺点是我们需要持有两个Excel在内存,而不是一个.这样我们需要加倍的内存,对于复制和修改很大Excel的情况,将会消耗很多内存. 
+
+
+ 一旦我们有一个可写的接口到Excel,我们可以检索和修改单元格.以下代码展示如何修改一个label单元格的内容,这个单元格位于B3在Excel的第二个工作表中.
+WritableSheet sheet2 = copy.getSheet(1); 
+WritableCell cell = sheet2.getWritableCell(1, 2); 
+
+if (cell.getType() == CellType.LABEL) 
+{ 
+  Label l = (Label) cell; 
+  l.setString("modified cell"); 
+} 
+这里不需要调用sheet的add()方法, 因为单元格已经出现在sheet上,数字内容和日期内容的单元格可以使用相同的方法修改,通过使用对应的setValue()方法 和setDate() 方法.
+
+虽然单元格的格式是不可变的,可以通过分配一个不同的格式化对象给单元格可是单元格内容呈现不同样式. 以下示例代码片段改变格式化数字单元格(位置是C5)所以他的内容将显示为5个小数点.
+WritableSheet sheet2 = copy.getSheet(1); 
+WritableCell cell = sheet2.getWritableCell(2, 4); 
+
+NumberFormat fivedps = new NumberFormat("#.#####"); 
+WritableCellFormat cellFormat = new WritableCellFormat(fivedps); 
+cell.setFormat(cellFormat);
+因为复制的Excel是一个普通的可写的Excel,新的单元格可以添加到Sheet(工作表) 如下:
+Label label = new Label(0, 2, "New label record"); 
+sheet2.addCell(label); 
+
+Number number = new Number(3, 4, 3.1459); 
+sheet2.addCell(number);
+像之前一样, 一旦修改完成,workbook对象必须写出和关闭.
+... 
+//所有的单元格修改/添加之后,现在写出workbook
+copy.write(); 
+copy.close();
+示例程序包含在源文件ReadWrite.java中,可以学习到更多详细示例,如何对Excel进行修改.这个示例程序复制Excel通过传入命令,如果是示例Excel(jxlrwtest.xls)被复制 ,位于当前文件夹,然后进行某些修改.不要修改示例Excel ,否则示例程序将不能工作.
+
+
+示例和测试程序 
+
+jxl提供大量的示例和测试程序包含在jxl.demo.包 .这些可以从命令行进行访问 ,如下
+
+java -jar jxl.jar -csv spreadsheet.xls
+读取spreadsheet.xls和写出对应的数据最为cvs标准输出.-cvs是默认的可以省略
+java -jar jxl.jar -xml spreadsheet.xls
+读取spreadsheet.xls和写出对应的单元格数据最为xml数据标准输出
+
+      java -jar jxl.jar -xml -format spreadsheet.xls
+
+同上 ,但是引入了格式化信息(字体,数字格式化 等等...) 到生成的xml中.
+java -jar jxl.jar -formulas spreadsheet.xls
+读取spreadsheet.xls和显示所有包含在工作表中的的公式.
+java -jar jxl.jar -write test.xls
+生成一个简单的测试Excel名叫test.xls
+java -jar jxl.jar -rw in.xls out.xls
+读取 in.xls, 复制in.xls和生成一个文件名叫out.xls. 如果传入的Excel是一个特殊的示例Excel名叫jxlrwtest.xls ,然后这个示例将改变特殊的单元格到复制的EXCEL out.xls中.
+
+由于时间原因,之后更新......
