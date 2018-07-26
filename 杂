@@ -33,23 +33,23 @@ function toIndex() {
 
 5，js 遍历相同类，相同的类，当点击某个类时，添加方法
 $('.multipleText').each(function() {
-		var thisNode = $(this);
-		var contentNode = $(this).parents("table:first").find("tr:last td");
-		$(this).click(function() {
-			if(contentNode.css("display") == "none"){
-				contentNode.css("display","block");
-				contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
-				contentNode.find('input').each(function() {
-					if(thisNode.val().indexOf($(this).val()) != -1){
-						$(this).css("background-color","#6A6AFF");
-					}
-				});
-			}
-			else{
-				contentNode.css("display","none");
-			}
-		});
-    }
+	var thisNode = $(this);
+	var contentNode = $(this).parents("table:first").find("tr:last td");
+	$(this).click(function() {
+		if(contentNode.css("display") == "none"){
+		contentNode.css("display","block");
+		contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
+		contentNode.find('input').each(function() {
+		if(thisNode.val().indexOf($(this).val()) != -1){
+		$(this).css("background-color","#6A6AFF");
+		}
+	});
+}
+	else{
+	contentNode.css("display","none");
+	}
+});
+}
 
 
 6，当页面加载完毕后执行方法
@@ -60,39 +60,39 @@ window.onload = function(){ } 【页面中所有内容加载完成才执行】
 
 7，js，找到类自己的parent（上一级标签），及找到其他对应的标签，对其进行操作
 <table>
-			<tr>
-					<td style="padding-left: 0px;">
-								<input name="devicemodels" class="multipleText" readonly="readonly"/> 
-					</td>
-			</tr>
-						
-      <tr>
-					<td style="display: none;border-style: none;width: 18px; position: absolute;">
-								<input type="text" value="CloudEngine 12800" class="first-level directory">
-								<div style="display: none;border-style: none;width: 18px; ">
-									<input type="text" value="CE12800全形态" class="fullForm"><br>		
-								</div>
-								<input type="text" value="CloudEngine 8800" class="first-level directory">
-								<div style="display: none;border-style: none;width: 18px; ">
-									<input type="text" value="CE8800全形态" class="fullForm"><br>
-								</div>
-								<input type="text" value="CloudEngine 7800" class="first-level directory">
-								<div style="display: none;border-style: none;width: 18px; ">
-									<input type="text" value="CE7800全形态" class="fullForm"><br>
-								</div>
-								<input type="text" value="CloudEngine 6800" class="first-level directory">
-								<div style="display: none;border-style: none;width: 18px; ">
-									<input type="text" value="CE6800全形态" class="fullForm"><br>
-								</div>
-								<input type="text" value="CloudEngine 5800" class="first-level directory">
-								<div style="display: none;border-style: none;width: 18px; ">
-									<input type="text" value="CE5800全形态" class="fullForm"><br>
-								</div>
-						</td>
-			</tr>
+	<tr>
+	<td style="padding-left: 0px;">
+	<input name="devicemodels" class="multipleText" readonly="readonly"/> 
+	</td>
+	</tr>
+
+	<tr>
+	<td style="display: none;border-style: none;width: 18px; position: absolute;">
+		<input type="text" value="CloudEngine 12800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE12800全形态" class="fullForm"><br>		
+		</div>
+		<input type="text" value="CloudEngine 8800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE8800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 7800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE7800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 6800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE6800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 5800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE5800全形态" class="fullForm"><br>
+		</div>
+	</td>
+	</tr>
 </table>
 
-//找到自己类的上一个table，并找到table里的最后一个td
+//找到自己类的上一个table，并找到table里的最后一个td，对其进行操作
 var contentNode = $(this).parents("table:first").find("tr:last td");
 
 
