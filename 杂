@@ -96,6 +96,32 @@ window.onload = function(){ } 【页面中所有内容加载完成才执行】
 var contentNode = $(this).parents("table:first").find("tr:last td");
 
 
+8，任何标签元素，选中它，点击操作
+$('.multipleText').each【遍历得到this】
+$(this).click(function() {【添加click方法】
+
+
+9，得到css属性值，根据css值判断
+var thisNode = $(this);【得到jquery对象】
+if(contentNode.css("display") == "none"){【取css值】
+	contentNode.css("display","block");
+	contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
+}
+
+
+10,获取工程项目路径根目录
+String path = request.getContextPath();
+String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
+
+
+11，jquery 获取当前对象下一个对象
+var secondLevel=$(this).next();
+
+
+
+
+
+
 
 
 
