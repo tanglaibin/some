@@ -112,7 +112,7 @@ if(contentNode.css("display") == "none"){【取css值】
 10,获取工程项目路径根目录  服务器路径
 String path = request.getContextPath();
 String basePath = request.getScheme() + "://"+ request.getServerName() + ":" + request.getServerPort()+ path + "/";
-
+找到工程根目录名称，访问目录下的jsp页面——href="${pageContext.request.contextPath }/cn/Shared/ViewStart2.jsp"
 
 11，jquery 获取当前对象下一个对象
 var secondLevel=$(this).next();
