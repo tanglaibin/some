@@ -159,10 +159,14 @@ okNode.innerText = "ok";
 okNode.style.marginLeft = "40px";
 
 
-15，
+15，map根据value取得key
+for(Map.Entry entry:typemap.entrySet()){
+	if(Ntname.equals(entry.getValue())){
+		tid =  (int) entry.getKey();
+			break;
+		}}
 
-
-
+16，
 
 
 
