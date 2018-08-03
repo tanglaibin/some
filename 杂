@@ -166,8 +166,127 @@ for(Map.Entry entry:typemap.entrySet()){
 			break;
 		}}
 
-16，
+16，div设置透明度
+.div1{
+background-color: gray;
+filter:alpha(opacity=50);opacity:0.2;//透明度设置
+z-index: 1;//显示层级设置  高于body上一层
+}
 
+
+17，jsp 页面动态引用
+<jsp:include page="Layout.jsp" flush="false"/>
+
+<jsp:include page="included.jsp" flush="true" />：动态INCLUDE在使用的时候，会先解析所要包含的页面，解析后在和主页面放到一起显示；
+<%@ include file="included.htm" %> ：静态INCLUDE在使用的时候，不会解析所要包含的页面，也就是说，不管你的included.htm中有什么，我的任务就是把你包含并显示，其他的一概不管。
+
+jsp:include是先编译一下included.jsp文件，然后再包含 先编译，后包含；
+@ include是先把文件包含就来，然后统一编译 先包含，后编译。
+
+
+18，js选择多个标签元素  对他们添加css属性
+ $(".menu ul li a").click(function () {
+        $(this).css("color", "#990033");
+        $(this).parent().nextAll().children().css("color", "#666666");
+        $(this).parent().prevAll().children().css("color", "#666666");
+        $(".sub_bound li").each(function () {
+            $(this).css("background", "#66ccee");
+        });
+    });	
+
+19，字符串转换成Json对象
+function stringToJson(data) {
+      return eval("(" + data + ")");
+    }	
+
+20，div show hide 				
+<div id="ectype01">
+$("#ectype01").show();				
+$("#linecardid").hide();				
+$(".linecardclass").hide();	
+
+
+21，访问工程路径写法
+window.location="../en/Shared/ViewStart.jsp";	
+
+22，鼠标经过 赋予功能方法
+$("#otherstool").mouseover(function(){
+	$("#OtherToolDiv").show();
+});				
+				
+鼠标离开 赋予功能方法				
+$("#otherstool").mouseout(function(){
+	$("#OtherToolDiv").hide();
+});	
+
+23，后台返回jason  ajax拼接前台option展示数据
+	$.ajax({
+		type : "post",
+		url : "../.././getTypeManage",
+		dataType : "json",
+		async: false,
+		success : function(data) {
+			var database = stringToJson(data);
+			var htmlString = "";
+			tobj = database.value;
+			for (var index = 0; index < tobj.length; index++) {
+	         htmlString += "<option value='" + tobj[index].tId + "'>" + tobj[index].tName + "</option>";
+	           }
+	        $("#pv_query_ec_type").html(htmlString);}
+});	
+
+
+24，读取package里的文件
+InputStreamReader isr=null;
+BufferedReader br = null;
+isr = new InputStreamReader(getClass().getResourceAsStream("../sql/01.execute/insert_sql_list.txt"),"utf-8");
+br = new BufferedReader(isr);
+String str = "";
+str=br.readLine()
+
+25，oracle  根据sname  tid  求得sid
+		sql = "select s_id from t_tools_eyc_type_stencil_cn where s_name = '"+Sname+"' and t_id = '"+tid+"'";
+		pstem = conn.prepareStatement(sql);
+	        ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+		sid = executeQuery.getInt("s_id");
+		}
+
+26，Java poi处理excel
+InputStream is= new FileInputStream(path);
+	Workbook workbook = null;
+	workbook = WorkbookFactory.create(is);
+	int numberOfSheets = workbook.getNumberOfSheets();
+
+workbook.getSheetName(index)
+
+Sheet sheet = workbook.getSheet("单板信息");
+
+Row row = sheet.getRow(rowNum);
+Cell cell = row.getCell(cellNum);
+
+int type = cell.getCellType();
+switch (type) {
+	case Cell.CELL_TYPE_NUMERIC:
+	stringCellValue = (int)cell.getNumericCellValue();
+	break;
+	case Cell.CELL_TYPE_STRING:
+	stringCellValue = cell.getStringCellValue();
+	break;
+	}
+	
+if (cell.toString().contains("ROUNDUP"))
+FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+CellValue evaluate = evaluator.evaluate(cell);
+stringCellValue = (int)(evaluate.getNumberValue()*0.8);
+
+
+27，按指定格式  求得当前日期
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒  ");
+Calendar calendar = Calendar.getInstance();
+Date date = new Date();
+String endDate = "";
+endDate= dateFormat.format(date);
 
 
 
