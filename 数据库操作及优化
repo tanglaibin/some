@@ -1,12 +1,42 @@
 sql:
 
-修改字段值
+1,修改字段值
 update r_problem set workStatus =1 where workStatus = 4
-选择
+
+2,选择
 select * from r_problem where workStatus !=2 and workStatus !=5
 SELECT * FROM r_problem WHERE developer ='w00215231' and probdes like '%配置assi%'
-把null值改为0或""
+
+3,把null值改为0或""
 SELECT IFNULL(filep,'') AS filep FROM r_operate
+
+4,两个表联合查数据，主表某id对应二表id，得到该id对应的具体name。									
+select d.*,l.L_NAME from T_TOOLS_EYC_TYPE_DETAIL_CN d,T_TOOLS_EYC_TYPE_LINECARD_CN l where d.L_ID=l.L_ID  and D_DELETE=1 and S_ID=1 order by D_ID
+
+5,两个表联合查数据，自定义取得哪些字段。
+select s.S_ID,s.S_NAME,t.T_NAME from T_TOOLS_EYC_TYPE_STENCIL_CN s,T_TOOLS_EYC_TYPE_CN t where s.S_DELETE=1 and s.T_ID=t.T_ID order by t.T_ID,s.S_ID
+
+6,多表查询，并将一多表查询结果做为字段。
+select e.*,t.T_NAME from t_TOOLS_eyc_type_cn t,
+	(select d.*,s.T_ID,s.S_NAME,l.L_NAME from 
+	t_TOOLS_eyc_type_detail_cn d,t_TOOLS_eyc_type_stencil_cn s, t_TOOLS_eyc_type_linecard_cn l
+   where s.S_ID=d.S_ID and D_ID=163)e
+  where t.T_ID=e.T_ID
+
+7,mybatis 更新数据库
+update T_TOOLS_EYC_TYPE_DETAIL_CN 
+  		set 
+  		S_ID=#{sId,jdbcType=DECIMAL},
+  		L_ID=#{lId,jdbcType=DECIMAL},
+  		D_PPNAME=#{dPpname,jdbcType=VARCHAR},
+  		D_ONE=#{dOne,jdbcType=DECIMAL},
+  		D_TWO=#{dTwo,jdbcType=DECIMAL},
+  		D_THREE=#{dThree,jdbcType=DECIMAL},
+  		D_FOUR=#{dFour,jdbcType=DECIMAL},
+  		D_FIVE=#{dFive,jdbcType=DECIMAL},
+  		D_SIX=#{dSix,jdbcType=DECIMAL},
+  		D_DELETE=#{dDelete,jdbcType=VARCHAR}
+  		where D_ID=#{dId,jdbcType=DECIMAL}
 
 
 sql优化  数据库优化：
