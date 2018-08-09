@@ -1,0 +1,104 @@
+1,html文件新建
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+ 
+<h1>我的第一个标题</h1>
+ 
+<p>我的第一个段落。</p>
+ 
+</body>
+</html>
+
+2，html编辑器
+Notepad++ 和 Sublime Text 还可以配合 Emmet 插件来提高编码速度。
+Emmet 官网：http://emmet.io/
+
+3，img标签  查找图片文件目录写法
+1、*.html 文件跟 *.jpg 文件(f盘)在不同目录下：
+<img src="file:///f:/*.jpg" width="300" height="120"/>
+2、*.html 文件跟 *.jpg 图片在相同目录下：
+<img src="*.jpg" width="300" height="120"/>
+3、*.html 文件跟 *.jpg 图片在不同目录下：
+a、图片 *.jpg 在 image 文件夹中，*.html 跟 image 在同一目录下：
+<img src="image/*.jpg/"width="300" height="120"/>
+b、图片 *.jpg 在 image 文件夹中，*.html 在 connage 文件夹中，image 跟 connage 在同一目录下：
+<img src="../image/*.jpg/"width="300" height="120"/>
+4、如果图片来源于网络，那么写绝对路径：
+<img src="http://static.runoob.com/images/runoob-logo.png" width="300" height="120"/>
+
+4，<br>换行
+
+5，<hr> 标签在 HTML 页面中创建水平线。
+
+6,<b> 与<i> 定义粗体或斜体文本。
+<strong> 或者 <em>意味着你要呈现的文本是重要的，所以要突出显示。
+
+7,css
+CSS (Cascading Style Sheets) 用于渲染HTML元素标签的样式.
+
+8,a标签，修改其颜色特性，必须直接修改 a 标签的特性才可。
+<a href="#" style="color：red;" rel="nofollow">只能使用"内联"方式</a>
+
+9,设置图像的高度与宽度
+<img src="pulpit.jpg" alt="Pulpit rock" width="304" height="228">
+
+10,map标签
+<map name="planetmap">
+  <area shape="rect" coords="0,0,82,126" alt="Sun" href="sun.htm">
+  <area shape="circle" coords="90,58,3" alt="Mercury" href="mercur.htm">
+  <area shape="circle" coords="124,58,8" alt="Venus" href="venus.htm">
+</map>
+
+1、矩形：(左上角顶点坐标为(x1,y1)，右下角顶点坐标为(x2,y2))
+<area shape="rect" coords="x1,y1,x2,y2" href=url>
+2、圆形：(圆心坐标为(X1,y1)，半径为r)
+<area shape="circle" coords="x1,y1,r" href=url>
+3、多边形：(各顶点坐标依次为(x1,y1)、(x2,y2)、(x3,y3) ......)
+<area shape="poly" coords="x1,y1,x2,y2 ......" href=url>
+
+11，框架，你可以在同一个浏览器窗口中显示不止一个页面。
+<iframe src="demo_iframe.htm" width="200" height="200"></iframe>
+使用iframe来显示目标链接页面
+<iframe src="demo_iframe.htm" name="iframe_a"></iframe>
+<p><a href="http://www.runoob.com" target="iframe_a">RUNOOB.COM</a></p>
+
+12，rgba
+相对于使用rgb(255,255,0)，使用rgba(255,255,0,0.5)可以实现设置颜色透明度的功能，这里的0.5表示透明度，范围0~1。
+<p style="background-color:rgba(255,255,0,0.25)">
+
+13，HTML 颜色名
+http://www.runoob.com/html/html-colornames.html
+
+14，
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
