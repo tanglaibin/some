@@ -309,7 +309,14 @@ String endDate = "";
 endDate= dateFormat.format(date);
 
 
+28，拼接sql语句
+sql = String.format("update t_tools_eyc_type_en set T_DELETE=0 where t_name='%s'",tname);
+sql = String.format("insert into T_TOOLS_EYC_TYPE_CN values ('%s','%s','1')",Btid,Ntname);
+pstem = conn.prepareStatement(sql);
+pstem.executeQuery();
+pstem.close();
 
+29，
 
 
 
