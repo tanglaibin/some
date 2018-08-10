@@ -244,6 +244,26 @@ br = new BufferedReader(isr);
 String str = "";
 str=br.readLine()
 
+public Connection getconnect(){
+        try{
+        	Properties property = new Properties();
+        	property.load(new InputStreamReader(getClass().getResourceAsStream("../config/datasource.properties")));
+        	String url = property.getProperty("datasource.url");
+        	String username = property.getProperty("datasource.username");
+        	String password = property.getProperty("datasource.password");
+        	Class.forName("oracle.jdbc.OracleDriver");
+		    conn = DriverManager.getConnection(url,username,password);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return conn;
+	}
+
+
+
+
+
 25，oracle  根据sname  tid  求得sid
 		sql = "select s_id from t_tools_eyc_type_stencil_cn where s_name = '"+Sname+"' and t_id = '"+tid+"'";
 		pstem = conn.prepareStatement(sql);
