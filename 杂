@@ -236,7 +236,7 @@ $("#otherstool").mouseout(function(){
 });	
 
 
-24，读取package里的文件
+24，读取package里的文件  找到对应路径下文件  并把文件转成流
 InputStreamReader isr=null;
 BufferedReader br = null;
 isr = new InputStreamReader(getClass().getResourceAsStream("../sql/01.execute/insert_sql_list.txt"),"utf-8");
