@@ -132,11 +132,14 @@ p.center {text-align:center;}
 </html>
 
 
+1,形容对象与元素的区别  svg与canvas
+在 SVG 中，每个被绘制的图形均被视为对象。如果 SVG 对象的属性发生变化，那么浏览器能够自动重现图形。
+Canvas 是逐像素进行渲染的。在 canvas 中，一旦图形被绘制完成，它就不会继续得到浏览器的关注。如果其位置发生变化，那么整个场景也需要重新绘制，包括任何或许已被图形覆盖的对象。
 
 
-
-
-
+2，往元素写内容
+var x=document.getElementById("demo");
+x.innerHTML="该浏览器不支持获取地理位置。";
 
 
 
