@@ -1,0 +1,1246 @@
+package com.tools.control;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import com.alibaba.fastjson.JSON;
+import com.huawei.dsdp.online.tools.service.ConnectionService;
+import com.huawei.dsdp.online.tools.service.impl.ConnectionServiceImpl;
+import com.tools.model.Stencil;
+import com.tools.service.StencilService;
+import com.tools.util.Result;
+
+import ch.qos.logback.classic.Logger;
+
+/**
+ * 
+ * @author twx580078
+ *
+ */
+@Controller
+public class UpexcelController {
+	
+	Connection conn = null; 
+	PreparedStatement pstem = null;
+	List list;
+	Map<Integer, String> tMap;
+	Map<Integer, String> tMap2;
+	Map<Integer, String> lMap;
+	Map<Integer, String> SMap;
+	Map<Object, String> SMap2;
+	String tname;
+	String sql;
+	
+	private static Logger logger = (Logger) LoggerFactory
+			.getLogger(UpexcelController.class);
+	
+	//获得数据库连接
+	public void getconnect(){
+        try{
+        	Properties property = new Properties();
+        	InputStreamReader isr = new InputStreamReader(getClass().getResourceAsStream("../config/datasource.properties"));
+        	property.load(isr);
+        	String url = property.getProperty("datasource.url");
+        	String username = property.getProperty("datasource.username");
+        	String password = property.getProperty("datasource.password");
+        	Class.forName("oracle.jdbc.OracleDriver");
+		    conn = DriverManager.getConnection(url,username,password);
+		    isr.close();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 处理上传的excel文件
+	 * @param 
+	 * @return
+	 * @throws SQLException 
+	 */
+	@RequestMapping("/upexcel")
+	@ResponseBody
+	public String upExcel(HttpServletRequest request) throws SQLException{
+		String path = null;
+		getconnect();
+		
+		try {
+			//获取上传上来的excel文件   存入指定位置暂存
+			//MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+			Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+			
+			for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()){
+			MultipartFile file = entry.getValue();
+			String fileName = file.getOriginalFilename();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒  ");
+	        Calendar calendar = Calendar.getInstance();
+	        Date date = new Date();
+	        String endDate = "";
+	        endDate= dateFormat.format(date);
+			path = "d:\\"+"upexcel\\"+ endDate+fileName;
+			file.transferTo(new File(path));
+			}
+			
+			//初始化操作：清空除手动维护的表以外的所有表内容
+			clearData();
+			// T_TOOLS_EYC_TYPE_CN 数据tname map
+			Map<Integer, String> typemap = getTypemap();
+			//T_TOOLS_EYC_TYPE_CN 最大值tid
+			int Btid = getBtid();
+			//读取excel表格 创建workbook对象
+			InputStream is= new FileInputStream(path);
+			Workbook workbook = null;
+			workbook = WorkbookFactory.create(is);
+			int numberOfSheets = workbook.getNumberOfSheets();
+			
+			//1,读取  存 T_TOOLS_EYC_TYPE_CN/EN 及T_TOOLS_EYC_TYPE_STENCIL_CN/EN数据   
+			//2,读取  存 T_TOOLS_EYC_TYPE_LINECARD_CN/EN数据  
+			doTypeline(workbook,numberOfSheets,typemap,Btid);
+			
+			if (!tMap2.isEmpty()) {
+				for(Map.Entry entry:tMap2.entrySet()){
+					tname = entry.getValue().toString();
+					sql = String.format("update t_tools_eyc_type_cn set T_DELETE=0 where t_name='%s'",tname);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sql = String.format("update t_tools_eyc_type_en set T_DELETE=0 where t_name='%s'",tname);
+				    pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    }
+			}
+			
+			//t_tools_eyc_type_linecard_cn 最大值lid
+			int Blid = getBlid();
+			//t_tools_eyc_type_linecard_cn map集合
+			Map<Integer, String> linemap = getLinemap();
+			Map<Object, String> Smap2 = getSmap2();
+			//3,读取  存T_TOOLS_EYC_TYPE_DETAIL_CN/EN数据  
+			saveTypeDetail(numberOfSheets,workbook,typemap,Blid,linemap,Smap2);
+
+			//得到smap数据集合
+			Map<Integer, String> Smap = getSmap();
+			//得到sid
+			int bsid = getBsid();
+			//再次得到最新的lid
+			int Blid2 = getBlid();
+			//4，管理推荐信息模块   T_TOOLS_RECOMMEND_CN   T_TOOLS_UNRECOMMEND_CN   T_TOOLS_UNSUPPORT_CN
+			saveRecAndSup(numberOfSheets,workbook,typemap,Blid2,linemap,Smap,bsid,Smap2);
+
+			is.close();
+			conn.close();
+			String resultStr = "ok";
+			return resultStr;
+			} catch (Exception e) {
+			e.printStackTrace();
+			conn.close();
+			String resultStr = "no";
+			return resultStr;
+			}
+	}
+	
+	//1,读取  存 T_TOOLS_EYC_TYPE_CN/EN 及T_TOOLS_EYC_TYPE_STENCIL_CN/EN数据   
+	//2,读取  存 T_TOOLS_EYC_TYPE_LINECARD_CN/EN数据  
+	public void doTypeline(Workbook workbook,int numberOfSheets,Map<Integer, String> typemap,int Btid) throws Exception{
+		String sql;
+		int sid=1;
+		int tid = 0;
+		String Sname1;
+		List Llist = new LinkedList<>();
+		String Ntname;
+		String Sname;
+		
+		for (int i = 0; i < numberOfSheets; i++) {
+			//遍历sheet name 
+			if(workbook.getSheetName(i).trim().contains("槽位带宽")){
+				//1,读取  存 T_TOOLS_EYC_TYPE_CN/EN 及T_TOOLS_EYC_TYPE_STENCIL_CN/EN数据   例如：CE12808S
+				Ntname = workbook.getSheetName(i).substring(0, workbook.getSheetName(i).indexOf(" "));
+				Sname = workbook.getSheetName(i).substring(workbook.getSheetName(i).indexOf(" ")+1);
+				//对sname进行处理 切割 组装  得到最后的sname  分三个情况
+				if(Sname.contains("高速槽位")){
+					Sname1 = "CE-"+Sname.substring(0, Sname.indexOf("网"))+"(H)";
+				}else if (Sname.contains("低速槽位")) {
+					Sname1 = "CE-"+Sname.substring(0, Sname.indexOf("网"))+"(L)";
+				}else {
+					Sname1 = "CE-"+Sname.substring(0, Sname.indexOf("网"));
+				}
+				//新增tid  同步设置tid的sid
+				if(!typemap.containsValue(Ntname)){
+					Btid++;
+					//如果现有数据库  没有这个新的全局型号  数据库新增进去  并设置tid
+					sql = String.format("insert into T_TOOLS_EYC_TYPE_CN values ('%s','%s','1')",Btid,Ntname);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sql = String.format("insert into T_TOOLS_EYC_TYPE_EN values ('%s','%s','1')",Btid,Ntname);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    //存入该tid的sid
+				    sql = String.format("insert into T_TOOLS_EYC_TYPE_STENCIL_CN values ('%s','%s','%s','1')",sid,Btid,Sname1);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sql = String.format("insert into T_TOOLS_EYC_TYPE_STENCIL_EN values ('%s','%s','%s','1')",sid,Btid,Sname1);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sid++;
+				}else {
+					//直接存入sid表
+					for(Map.Entry entry:typemap.entrySet()){
+					    if(Ntname.equals(entry.getValue())){
+					    	tid =  (int) entry.getKey();
+					    	tMap2.remove(tid);
+					    	break;
+					    }
+					}
+					sql = String.format("insert into T_TOOLS_EYC_TYPE_STENCIL_CN values ('%s','%s','%s','1')",sid,tid,Sname1);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sql = String.format("insert into T_TOOLS_EYC_TYPE_STENCIL_EN values ('%s','%s','%s','1')",sid,tid,Sname1);
+					pstem = conn.prepareStatement(sql);
+				    pstem.executeQuery();
+				    pstem.close();
+				    sid++;
+				}
+			}else if (workbook.getSheetName(i).trim().equals("单板信息")) {
+				//2,读取  存 T_TOOLS_EYC_TYPE_LINECARD_CN/EN数据  
+				Sheet sheet = workbook.getSheet("单板信息");
+				//求得真实行数
+				int rownum = getRealRowNum(sheet);
+				StringBuffer sb = new StringBuffer();
+				Object stringCellValue = null;
+				StringBuffer sb2 = new StringBuffer();
+				int startCellNum;
+				int endCellNum;
+				
+				int lid=1;
+				sb.append("insert into T_TOOLS_EYC_TYPE_LINECARD_CN ");
+				sb2.append("insert into T_TOOLS_EYC_TYPE_LINECARD_EN ");
+				//循环遍历所有行 
+				for (int rowNum = 3; rowNum < rownum; rowNum++) {
+					Row row = sheet.getRow(rowNum);
+					startCellNum = row.getFirstCellNum();
+					endCellNum = row.getLastCellNum();
+					Llist.clear();
+					
+						//循环遍历每行的每一个单元格  得到相应值  直接插入数据库 
+						for (int cellNum = startCellNum; cellNum < endCellNum; cellNum++) {
+						Cell cell = row.getCell(cellNum);
+						if (cell!=null && cell.toString()!="") {
+							int type = cell.getCellType();
+							switch (type) {
+							case Cell.CELL_TYPE_NUMERIC:
+								stringCellValue = (int)cell.getNumericCellValue();
+								break;
+							case Cell.CELL_TYPE_STRING:
+								stringCellValue = cell.getStringCellValue();
+								stringCellValue = stringCellValue.toString().replaceAll(" ", "");
+								if (stringCellValue.toString().contains("(")) {
+									stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("(")-1).trim();
+								}else if (stringCellValue.toString().contains("（")) {
+									stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("（")-1).trim();
+								}
+								break;
+							       }
+							Llist.add(stringCellValue);
+						        }
+						   }
+						//拼接插入数据库语句   select 1,'CE-L48GS-EA\ED',1,'48','1' from dual union all
+					    sb.append(String.format("select '%s','%s','%s','%s','1' from dual union all ",lid,Llist.get(0),Llist.get(2),Llist.get(3)));
+					    sb2.append(String.format("select '%s','%s','%s','%s','1' from dual union all ",lid,Llist.get(0),Llist.get(2),Llist.get(3)));
+					    lid++;
+				  }
+				lid=lid-1;
+				sb.append(String.format("select '%s','%s','%s','%s','1' from dual ",lid,Llist.get(0),Llist.get(2),Llist.get(3)));
+				sb2.append(String.format("select '%s','%s','%s','%s','1' from dual ",lid,Llist.get(0),Llist.get(2),Llist.get(3)));
+				sb.append("where rownum<1");
+				sb2.append("where rownum<1");
+				Llist.clear();
+				pstem = conn.prepareStatement(sb.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(sb2.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			}
+		}
+	}
+	
+	//3,读取  存T_TOOLS_EYC_TYPE_DETAIL_CN/EN数据  
+	public void saveTypeDetail(int num,Workbook workbook,Map<Integer, String> typemap,int Blid,
+			Map<Integer, String> linemap,Map<Object, String> Smap2) throws Exception{
+		
+		String Sname;
+		String sql;
+		int tid = 0;
+		int sid=0;
+		int did=1;
+		int lid;
+		List Llist = new LinkedList<>();
+		List Llist2 = new LinkedList<>();
+		Object stringCellValue = null;
+		StringBuffer sb;
+		StringBuffer sb2;
+		FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+		
+		int flag;
+		
+		for (int i = 0; i < num; i++) {
+			flag=0;
+			//遍历sheet name  根据sname得到sid 线卡名得到lid  did自增   拼接插入数据库语句
+			if(workbook.getSheetName(i).trim().contains("槽位带宽")){
+				//1,sid  根据sname  tid 共同得到
+				Sname = workbook.getSheetName(i).substring(workbook.getSheetName(i).indexOf(" ")+1);
+				if(Sname.contains("高速槽位")){
+					Sname = "CE-"+Sname.substring(0, Sname.indexOf("网"))+"(H)";
+				}else if (Sname.contains("低速槽位")) {
+					Sname = "CE-"+Sname.substring(0, Sname.indexOf("网"))+"(L)";
+				}else {
+					Sname = "CE-"+Sname.substring(0, Sname.indexOf("网"));
+				}
+				//得到tid
+				String Ntname = workbook.getSheetName(i).substring(0, workbook.getSheetName(i).indexOf(" "));
+				for(Map.Entry entry:typemap.entrySet()){
+				    if(Ntname.equals(entry.getValue())){
+				    	tid =  (int) entry.getKey();
+				    	break;
+				    }
+				}
+				//根据sname  tid  求得sid
+				for(Map.Entry sentry2:Smap2.entrySet()){
+				    if(Sname.equals(sentry2.getValue())){
+				    	if (sentry2.getKey().toString().substring(0, sentry2.getKey().toString().indexOf("-")).equals(String.valueOf(tid))) {
+							sid = Integer.parseInt(sentry2.getKey().toString().substring(sentry2.getKey().toString().indexOf("-")+1));
+							break;
+						}else{
+							continue;
+						}
+				    }
+				}
+				
+			    //2,得到该sheet对象     遍历每个row  得到lname  得到lid  拼接插入语句
+			    Sheet sheet = workbook.getSheet(workbook.getSheetName(i));
+			    //根据型号 得到sheet的列数取值
+			    int lastRowNum = sheet.getLastRowNum();
+			    int startCellNum = 0;
+			    int endCellNum = 0;
+			    if (Ntname.equals("CE12808S")) {
+			    	endCellNum = 6;
+				}else if (Ntname.equals("CE12804S")) {
+					endCellNum = 4;
+				}else if (Ntname.equals("CE12816") || Ntname.equals("CE12812") || Ntname.equals("CE12808") || Ntname.equals("CE12804")) {
+					endCellNum = 8;
+				}
+			    
+			    sb = new StringBuffer();
+				sb2 = new StringBuffer();
+			    sb.append("insert into T_TOOLS_EYC_TYPE_DETAIL_CN ");
+				sb2.append("insert into T_TOOLS_EYC_TYPE_DETAIL_EN ");
+			    //循环遍历所有行 row
+			    for (int rowNum = 3; rowNum < lastRowNum; rowNum++) {
+					Row row = sheet.getRow(rowNum);
+					//判断下 每行的第一个cell 不等于线卡  才进行操作
+						if (!row.getCell(0).getStringCellValue().equals("")) {
+							Llist.clear();
+							//判断list2 是否存在  存在的话  先把list2存库 再清空 再执行这个循环
+							if (Llist2.size()>0 && !Llist2.contains("不支持")) {
+								sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual union all ");
+							    Llist2.clear();
+							    did++;
+							}else if (Llist2.contains("不支持")) {
+								sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    Llist2.clear();
+							    did++;
+							}
+							
+							//遍历行的指定列数的cell
+							for (int cellNum = startCellNum; cellNum < endCellNum; cellNum++) {
+							Cell cell = row.getCell(cellNum);
+							
+							if (cell!=null && cell.toString()!="" && !cell.toString().contains("ROUNDUP")) {
+								int type = cell.getCellType();
+								switch (type) {
+								case Cell.CELL_TYPE_NUMERIC:
+									stringCellValue = (int)cell.getNumericCellValue()*0.8;
+									break;
+								case Cell.CELL_TYPE_STRING:
+									stringCellValue = cell.getStringCellValue();
+									stringCellValue = stringCellValue.toString().replaceAll(" ", "");
+									if (stringCellValue.toString().contains("(")) {
+										stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("(")-1).trim();
+										//根据lname 得到lid 装进list
+										for(Map.Entry entry:linemap.entrySet()){
+										    if(stringCellValue.equals(entry.getValue())){
+										    	lid =  (int) entry.getKey();
+										    	stringCellValue = lid;
+										    	break;
+										    }
+										}
+										if (stringCellValue instanceof String) {
+											Blid++;
+									    	//此lname  linecard表中不存在  将此lname新增进去linecard表
+									    	//得到linecard表最大id  id++  语句插入赋值此id保存
+											linemap.put(Blid, stringCellValue.toString());
+									    	String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+Blid+",'"+stringCellValue+"',0,'0','0')";
+									    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+Blid+",'"+stringCellValue+"',0,'0','0')";
+									    	pstem = conn.prepareStatement(lsql);
+										    pstem.executeQuery();
+										    pstem.close();
+										    pstem = conn.prepareStatement(lsql2);
+										    pstem.executeQuery();
+										    pstem.close();
+										    stringCellValue = Blid;
+										    break;
+										}
+										
+									}else if (stringCellValue.toString().contains("（")) {
+										stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("（")-1).trim();
+										for(Map.Entry entry:linemap.entrySet()){
+										    if(stringCellValue.equals(entry.getValue())){
+										    	lid =  (int) entry.getKey();
+										    	stringCellValue = lid;
+										    	break;
+										    }
+										}
+										//stringCellValue 在linecard里存在 有int值  就不执行以下代码
+										if (stringCellValue instanceof String) {
+											Blid++;
+											linemap.put(Blid, stringCellValue.toString());
+									    	String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+Blid+",'"+stringCellValue+"',0,'0','0')";
+									    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+Blid+",'"+stringCellValue+"',0,'0','0')";
+									    	pstem = conn.prepareStatement(lsql);
+										    pstem.executeQuery();
+										    pstem.close();
+										    pstem = conn.prepareStatement(lsql2);
+										    pstem.executeQuery();
+										    pstem.close();
+										    stringCellValue = Blid;
+										    break;
+										}
+									}
+									break;
+								       }
+								          Llist.add(stringCellValue);
+							        }else if (cell.toString().contains("ROUNDUP")) {
+							        	CellValue evaluate = evaluator.evaluate(cell);
+							        	stringCellValue = (int)(evaluate.getNumberValue()*0.8);
+							        	Llist.add(stringCellValue);
+									}
+							   }
+							//拼接插入数据库语句   select 1,1,1,'ALL',144,288,0,0,0,0,'1' from dual union all
+							if (Ntname.equals("CE12808S") && !Llist.contains("不支持") && !sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && !sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual union all ");
+							    Llist.add(6, 0);
+							    Llist.add(7, 0);
+							    did++;
+							}else if (Ntname.equals("CE12804S") && !Llist.contains("不支持") && !sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && !sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+",0,0,0,0,'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+",0,0,0,0,'1' from dual union all ");
+							    Llist.add(4, 0);
+							    Llist.add(5, 0);
+							    Llist.add(6, 0);
+							    Llist.add(7, 0);
+							    did++;
+							}else if ((Ntname.equals("CE12816") || Ntname.equals("CE12812") || Ntname.equals("CE12808") || Ntname.equals("CE12804")) && !Llist.contains("不支持") && !sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && !sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+","+Llist.get(6)+","+Llist.get(7)+",'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+","+Llist.get(6)+","+Llist.get(7)+",'1' from dual union all ");
+							    did++;
+							}else if (Llist.contains("不支持") && !sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && !sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    did++;
+							}else if (Ntname.equals("CE12808S") && !Llist.contains("不支持") && sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual union all ");
+							    Llist.add(6, 0);
+							    Llist.add(7, 0);
+							    flag++;
+							    did++;
+							}else if (Ntname.equals("CE12804S") && !Llist.contains("不支持") && sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+",0,0,0,0,'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+",0,0,0,0,'1' from dual union all ");
+							    Llist.add(4, 0);
+							    Llist.add(5, 0);
+							    Llist.add(6, 0);
+							    Llist.add(7, 0);
+							    flag++;
+							    did++;
+							}else if ((Ntname.equals("CE12816") || Ntname.equals("CE12812") || Ntname.equals("CE12808") || Ntname.equals("CE12804")) && !Llist.contains("不支持") && sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+","+Llist.get(6)+","+Llist.get(7)+",'1' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+","+Llist.get(6)+","+Llist.get(7)+",'1' from dual union all ");
+							    flag++;
+							    did++;
+							}else if (Llist.contains("不支持") && sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+							    flag++;
+							    did++;
+							}else if (sheet.getRow(rowNum+1).getCell(0).getStringCellValue().equals("") && !sheet.getRow(rowNum+1).getCell(1).getStringCellValue().equals("")) {
+								//Llist 暂存
+								if (Ntname.equals("CE12808S")) {
+									Llist.add(6, 0);
+									Llist.add(7, 0);
+									Llist2.addAll(Llist);
+									Llist.clear();
+								}else if (Ntname.equals("CE12804S")) {
+									Llist.add(4, 0);
+									Llist.add(5, 0);
+									Llist.add(6, 0);
+									Llist.add(7, 0);
+									Llist2.addAll(Llist);
+									Llist.clear();
+								}else if (Ntname.equals("CE12816") || Ntname.equals("CE12812") || Ntname.equals("CE12808") || Ntname.equals("CE12804")) {
+									Llist2.addAll(Llist);
+									Llist.clear();
+								}
+							}
+						}else if (row.getCell(0).getStringCellValue().equals("")) {
+							//处理list2  用list2 拼接插入语句
+							Cell cell = row.getCell(1);
+							if (cell!=null && cell.toString()!=""){
+								stringCellValue = cell.getStringCellValue();
+								Llist2.set(1, Llist2.get(1)+stringCellValue.toString());
+							}else {
+								flag++;
+							}
+						}
+						if (flag>=1) {
+							break;
+						}
+				     }
+			   
+			    //遍历结束所有行
+			    if (Llist2.size()==0) {
+			    	did=did-1;
+				}
+			    
+			    if (Llist2.size()>0 && !Llist2.contains("不支持")) {
+			    	sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual union all ");
+			    	sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual union all ");
+			    	sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual ");
+			    	sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',"+Llist2.get(2)+","+Llist2.get(3)+","+Llist2.get(4)+","+Llist2.get(5)+","+Llist2.get(6)+","+Llist2.get(7)+",'1' from dual ");
+			    	did++;
+			    	Llist2.clear();
+				}else if (Llist2.size()>0 && Llist2.contains("不支持")) {
+					sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+				    sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual union all ");
+				    sb.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual ");
+				    sb2.append("select "+did+","+sid+","+Llist2.get(0)+",'"+Llist2.get(1)+"',0,0,0,0,0,0,'0' from dual ");
+				    did++;
+				    Llist2.clear();
+				}else if (!Llist.contains("不支持")) {
+					sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual ");
+			    	sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',"+Llist.get(2)+","+Llist.get(3)+","+Llist.get(4)+","+Llist.get(5)+",0,0,'1' from dual ");
+			    	did++;
+				}else if (Llist.contains("不支持")) {
+					sb.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual ");
+				    sb2.append("select "+did+","+sid+","+Llist.get(0)+",'"+Llist.get(1)+"',0,0,0,0,0,0,'0' from dual ");
+				    did++;
+				}
+			    
+				sb.append("where rownum<1");
+				sb2.append("where rownum<1");
+				Llist.clear();
+				pstem = conn.prepareStatement(sb.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(sb2.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+				 }
+			}
+	}
+
+	//4,存取推荐  不推荐  支持  不支持信息   管理推荐信息
+	private void saveRecAndSup(int numberOfSheets,Workbook workbook, Map<Integer, String> typemap, 
+			int blid,Map<Integer, String> linemap,Map<Integer, String> Smap,int bsid,Map<Object, String> Smap2) throws Exception {
+	    
+	    String NRecfinalinfo = "";
+	    String Supfinalinfo = "";
+	    String Recfinalinfo = "";
+	    Sheet sheet = null;
+	    
+	    //1,处理CE12800网板配置表
+	    for (int i = 0; i < numberOfSheets; i++) {
+			if(workbook.getSheetName(i).trim().contains("CE12800网板配置")){
+			sheet = workbook.getSheet(workbook.getSheetName(i));
+			do12800(sheet,typemap,linemap,blid,Smap,bsid,NRecfinalinfo,Supfinalinfo,Recfinalinfo);
+			   }
+			}
+		
+		//2,处理CE12800S网板配置表
+	    for (int i = 0; i < numberOfSheets; i++) {
+			if(workbook.getSheetName(i).trim().contains("CE12800S网板配置")){
+			sheet = workbook.getSheet(workbook.getSheetName(i));
+			do12800s(sheet,typemap,linemap,blid,Smap,bsid,NRecfinalinfo,Supfinalinfo,Recfinalinfo,Smap2);
+			   }
+			}
+	    
+	    //处理其他网板配置表  看用的哪一个表格布局样式  选择使用
+	    /*for (int i = 0; i < numberOfSheets; i++) {
+			if(workbook.getSheetName(i).trim().contains("CE12800E网板配置")){
+			sheet = workbook.getSheet(workbook.getSheetName(i));
+			//do12800s(sheet,typemap,linemap,blid,Smap,bsid,NRecfinalinfo,Supfinalinfo,Recfinalinfo,Smap2);
+			do12800(sheet,typemap,linemap,blid,Smap,bsid,NRecfinalinfo,Supfinalinfo,Recfinalinfo);
+			   }
+			}*/
+	}
+	
+	//处理12800表方法
+	public void do12800(Sheet sheet,Map<Integer, String> typemap,Map<Integer, String> linemap,int blid,Map<Integer, String> Smap,
+			int bsid,String NRecfinalinfo,String Supfinalinfo,String Recfinalinfo) throws Exception{
+		
+		int startCellNum = 0;
+	    int endCellNum;
+	    List Llist = new LinkedList<>();
+	    String stringCellValue;//cell0
+	    int tid=0;
+	    int lid = 0;
+	    int sid = 0;
+	    String sname;
+	    String Sname;
+	    String recvalue;
+	    int flag=0;
+	    String tname = null;
+	    
+	    StringBuffer Recsql;
+	    StringBuffer NotRecsql;
+	    StringBuffer NotSupsql;
+	    StringBuffer RecsqlE;
+	    StringBuffer NotRecsqlE;
+	    StringBuffer NotSupsqlE;
+	    
+	    Recsql = new StringBuffer();
+	    NotRecsql = new StringBuffer();
+	    NotSupsql = new StringBuffer();
+	    RecsqlE = new StringBuffer();
+	    NotRecsqlE = new StringBuffer();
+	    NotSupsqlE = new StringBuffer();
+
+	    Recsql.append("insert into T_TOOLS_RECOMMEND_CN ");
+	    RecsqlE.append("insert into T_TOOLS_RECOMMEND_EN ");
+	    NotRecsql.append("insert into T_TOOLS_UNRECOMMEND_CN ");
+	    NotRecsqlE.append("insert into T_TOOLS_UNRECOMMEND_EN ");
+	    NotSupsql.append("insert into T_TOOLS_UNSUPPORT_CN ");
+	    NotSupsqlE.append("insert into T_TOOLS_UNSUPPORT_EN ");
+	    
+		        //遍历tname  处理该表
+				for(Map.Entry entry:typemap.entrySet()){
+					Llist.clear();
+					tname = entry.getValue().toString().replaceAll("CE128", "");//04
+					//1,tid
+					tid = (int) entry.getKey();
+					Row titlerow = sheet.getRow(0);
+					endCellNum = titlerow.getLastCellNum();
+					//遍历titlerow 得到该tname所在的列号
+					for (int i = startCellNum; i < endCellNum; i++) {
+						if (titlerow.getCell(i).getStringCellValue().toString().contains(tname)) {
+							//保存i
+							Llist.add(i);
+						}
+					}
+					if (Llist.size()>0) {
+						//得到该tname下的推荐信息  不推荐  不支持信息  
+						for (int i = 1; i < sheet.getLastRowNum(); i++) {
+							Row row = sheet.getRow(i);
+							//遍历的是每行数据  
+							if (row!=null) {
+								if (!row.getCell(0).getStringCellValue().equals("")) {
+									lid = 0;
+									flag = 0;
+									
+									//每遍历一行  得到lname  进而得到lid
+									stringCellValue = row.getCell(0).toString();
+									stringCellValue = stringCellValue.toString().replaceAll(" ", "");
+									if (stringCellValue.toString().contains("(")) {
+										stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("(")-1).trim();
+										for(Map.Entry lentry:linemap.entrySet()){
+										    if(stringCellValue.equals(lentry.getValue())){
+										    	lid =  (int) lentry.getKey();
+										    	break;
+										    }
+										}
+										
+										//以上都查不到   新增到linecard表
+										if (lid==0) {
+											blid++;
+											linemap.put(blid, stringCellValue.toString());
+											String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+									    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+									    	pstem = conn.prepareStatement(lsql);
+										    pstem.executeQuery();
+										    pstem.close();
+										    pstem = conn.prepareStatement(lsql2);
+										    pstem.executeQuery();
+										    pstem.close();
+										    lid = blid;
+										}
+										}else if (stringCellValue.toString().contains("（")) {
+											stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("（")-1).trim();
+											for(Map.Entry lentry:linemap.entrySet()){
+											    if(stringCellValue.equals(lentry.getValue())){
+											    	lid =  (int) lentry.getKey();
+											    	break;
+											    }
+											}
+											if (lid==0) {
+												blid++;
+												linemap.put(blid, stringCellValue.toString());
+												String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+										    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+										    	pstem = conn.prepareStatement(lsql);
+											    pstem.executeQuery();
+											    pstem.close();
+											    pstem = conn.prepareStatement(lsql2);
+											    pstem.executeQuery();
+											    pstem.close();
+											    lid = blid;
+											}
+										}
+									//推荐：遍历该行list所含cell值
+									for (int j = 0; j < Llist.size(); j++) {
+										sid = 0;
+										//拼接sname
+										sname = titlerow.getCell((int) Llist.get(j)).getStringCellValue().toString();
+										Sname = "CE-SFU" + tname + sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3);
+										if (sname.contains(tname + sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3)+"(") || sname.contains(tname + sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3)+"（")) {
+											if (sname.contains("高速槽位")) {
+												Sname = "CE-SFU" + tname + sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3) + "(H)";
+											}else if (sname.contains("低速槽位")) {
+												Sname = "CE-SFU" + tname + sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3) + "(L)";
+											}
+										}
+										
+										//3,sid
+										for(Map.Entry sentry:Smap.entrySet()){
+										    if(Sname.equals(sentry.getValue())){
+										    	sid =  (int) sentry.getKey();
+										    	break;
+										    }
+										}
+										
+										if (sid==0) {
+											bsid++;
+									    	String ssql = "insert into t_tools_eyc_type_stencil_cn values ("+bsid+","+tid+",'"+Sname+"','0')";
+									    	String ssql2 = "insert into t_tools_eyc_type_stencil_en values ("+bsid+","+tid+",'"+Sname+"','0')";
+									    	pstem = conn.prepareStatement(ssql);
+										    pstem.executeQuery();
+										    pstem.close();
+										    pstem = conn.prepareStatement(ssql2);
+										    pstem.executeQuery();
+										    pstem.close();
+										    Smap.put(bsid, Sname);
+										    sid=bsid;
+										}
+										
+										Cell cell = row.getCell((int) Llist.get(j));
+										//对cell的值做判断  是否包含 不推荐 不支持
+										if (cell.getStringCellValue().toString().contains("不推荐")) {
+											NotRecsql.append("select "+lid+","+sid+" from dual union all ");
+											NotRecsqlE.append("select "+lid+","+sid+" from dual union all ");
+											NRecfinalinfo = "select "+lid+","+sid+" from dual ";
+										}else if (cell.getStringCellValue().toString().contains("不支持")) {
+											NotSupsql.append("select "+lid+","+sid+" from dual union all ");
+											NotSupsqlE.append("select "+lid+","+sid+" from dual union all ");
+											Supfinalinfo = "select "+lid+","+sid+" from dual ";
+										}else if (!cell.getStringCellValue().toString().contains("不推荐") && !cell.getStringCellValue().toString().contains("不支持")) {
+											if (flag==0) {
+												recvalue = cell.getStringCellValue().toString().substring(0, 3);
+												recvalue = sname.substring(sname.indexOf(tname)+2, sname.indexOf(tname)+3)+"-"+recvalue;
+												Recsql.append("select "+tid+","+lid+",'"+recvalue+"' from dual union all ");
+												RecsqlE.append("select "+tid+","+lid+",'"+recvalue+"' from dual union all ");
+												Recfinalinfo = "select "+tid+","+lid+",'"+recvalue+"' from dual ";
+											}
+											flag++;
+										}
+									}
+								}
+							}else if (row==null || row.getCell(0).getStringCellValue().equals("")) {
+								break;
+							}
+						}
+					}
+				}
+				
+				Recsql.append(Recfinalinfo);
+				RecsqlE.append(Recfinalinfo);
+			    NotRecsql.append(NRecfinalinfo);
+			    NotRecsqlE.append(NRecfinalinfo);
+			    NotSupsql.append(Supfinalinfo);
+			    NotSupsqlE.append(Supfinalinfo);
+				
+				Recsql.append("where rownum<1");
+				RecsqlE.append("where rownum<1");
+			    NotRecsql.append("where rownum<1");
+			    NotRecsqlE.append("where rownum<1");
+			    NotSupsql.append("where rownum<1");
+			    NotSupsqlE.append("where rownum<1");
+			    
+				pstem = conn.prepareStatement(Recsql.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(RecsqlE.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(NotRecsql.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(NotRecsqlE.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(NotSupsql.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+			    pstem = conn.prepareStatement(NotSupsqlE.toString());
+			    pstem.executeQuery();
+			    pstem.close();
+	}
+	
+	//处理12800s表方法
+	public void do12800s(Sheet sheet,Map<Integer, String> typemap,Map<Integer, String> linemap,int blid,Map<Integer, String> Smap,
+			int bsid,String NRecfinalinfo,String Supfinalinfo,String Recfinalinfo,Map<Object, String> Smap2) throws Exception{
+		
+	    String stringCellValue;//cell0
+	    int tid=0;
+	    int lid = 0;
+	    int sid = 0;
+	    String sname;
+	    String Sname;
+	    String recvalue;
+	    int flag=0;
+	    String tname = null;
+	    List list = new LinkedList<>();
+	    List list2 = new LinkedList<>();
+	    String sql;
+	    
+	    StringBuffer Recsql;
+	    StringBuffer NotRecsql;
+	    StringBuffer NotSupsql;
+	    StringBuffer RecsqlE;
+	    StringBuffer NotRecsqlE;
+	    StringBuffer NotSupsqlE;
+	    
+	    Recsql = new StringBuffer();
+	    NotRecsql = new StringBuffer();
+	    NotSupsql = new StringBuffer();
+	    RecsqlE = new StringBuffer();
+	    NotRecsqlE = new StringBuffer();
+	    NotSupsqlE = new StringBuffer();
+
+	    Recsql.append("insert into T_TOOLS_RECOMMEND_CN ");
+	    RecsqlE.append("insert into T_TOOLS_RECOMMEND_EN ");
+	    NotRecsql.append("insert into T_TOOLS_UNRECOMMEND_CN ");
+	    NotRecsqlE.append("insert into T_TOOLS_UNRECOMMEND_EN ");
+	    NotSupsql.append("insert into T_TOOLS_UNSUPPORT_CN ");
+	    NotSupsqlE.append("insert into T_TOOLS_UNSUPPORT_EN ");
+	    
+	    Row row1 = sheet.getRow(1);
+		int ln = row1.getLastCellNum();
+		for (int i = 1; i <= ln; i++) {
+			Cell cell2 = row1.getCell(i);
+			if (cell2==null || cell2.getStringCellValue().equals("A类型")) {
+				//到达新的A类型了  或到尽头了 
+				if (list.size()>0) {
+					//遍历sheet每一行 
+					for (int k = 2; k < sheet.getLastRowNum(); k++) {
+						Row row = sheet.getRow(k);
+						//遍历的是每行数据  
+						if (row!=null) {
+							if (!row.getCell(0).getStringCellValue().equals("")) {
+								lid = 0;
+								flag = 0;
+								
+								//每遍历一行  得到lname  进而得到lid
+								stringCellValue = row.getCell(0).toString();
+								stringCellValue = stringCellValue.toString().replaceAll(" ", "");
+								if (stringCellValue.toString().contains("(")) {
+									//2,得到lid
+									stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("(")-1).trim();
+									for(Map.Entry lentry:linemap.entrySet()){
+									    if(stringCellValue.equals(lentry.getValue())){
+									    	lid =  (int) lentry.getKey();
+									    	break;
+									    }
+									}
+									//以上都查不到   新增到linecard表
+									if (lid==0) {
+										blid++;
+										linemap.put(blid, stringCellValue.toString());
+										String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+								    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+								    	pstem = conn.prepareStatement(lsql);
+									    pstem.executeQuery();
+									    pstem.close();
+									    pstem = conn.prepareStatement(lsql2);
+									    pstem.executeQuery();
+									    pstem.close();
+									    lid = blid;
+									}
+									}else if (stringCellValue.toString().contains("（")) {
+										stringCellValue = stringCellValue.toString().substring(0, stringCellValue.toString().indexOf("（")-1).trim();
+										for(Map.Entry lentry:linemap.entrySet()){
+										    if(stringCellValue.equals(lentry.getValue())){
+										    	lid =  (int) lentry.getKey();
+										    	break;
+										    }
+										}
+										if (lid==0) {
+											blid++;
+											linemap.put(blid, stringCellValue.toString());
+											String lsql = "insert into T_TOOLS_EYC_TYPE_LINECARD_CN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+									    	String lsql2 = "insert into T_TOOLS_EYC_TYPE_LINECARD_EN values ("+blid+",'"+stringCellValue+"',0,'0','0')";
+									    	pstem = conn.prepareStatement(lsql);
+										    pstem.executeQuery();
+										    pstem.close();
+										    pstem = conn.prepareStatement(lsql2);
+										    pstem.executeQuery();
+										    pstem.close();
+										    lid = blid;
+										}
+									}
+								
+								//推荐：遍历该行list2所含cell值
+								for (int j = 0; j < list2.size(); j++) {
+									sid = 0;
+									//推荐  三个值比较 存最左边 ， 不推荐 不支持  直接存该sid下的lid值，  三个map  每次存前 清空，拼接存储sql语句
+									//拼接sname  sname = "CE-SFU"+list.get(j).toString().replaceAll("类型", "")+"-S";
+									sname = row1.getCell((int) list2.get(j)).getStringCellValue().toString().replaceAll("类型", "")+"-S";
+									Sname = "CE-SFU" + sname;
+									
+									//3,sid   这块出问题   sid不仅仅要根据sname  也要根据tid
+									//根据sname  tid  求得sid
+									for(Map.Entry sentry2:Smap2.entrySet()){
+									    if(Sname.equals(sentry2.getValue())){
+									    	if (sentry2.getKey().toString().substring(0, sentry2.getKey().toString().indexOf("-")).equals(String.valueOf(tid))) {
+												sid = Integer.parseInt(sentry2.getKey().toString().substring(sentry2.getKey().toString().indexOf("-")+1));
+												break;
+											}else{
+												continue;
+											}
+									    }
+									}
+									
+									if (sid==0) {
+										bsid++;
+								    	String ssql = "insert into t_tools_eyc_type_stencil_cn values ("+bsid+","+tid+",'"+Sname+"','0')";
+								    	String ssql2 = "insert into t_tools_eyc_type_stencil_en values ("+bsid+","+tid+",'"+Sname+"','0')";
+								    	pstem = conn.prepareStatement(ssql);
+									    pstem.executeQuery();
+									    pstem.close();
+									    pstem = conn.prepareStatement(ssql2);
+									    pstem.executeQuery();
+									    pstem.close();
+									    Smap2.put(tid+"-"+bsid, Sname);
+									    sid=bsid;
+									}
+									
+									Cell cell = row.getCell((int) list2.get(j));
+									//对cell的值做判断  是否包含 不推荐 不支持
+									if (cell.getStringCellValue().toString().contains("不推荐")) {
+										NotRecsql.append("select "+lid+","+sid+" from dual union all ");
+										NotRecsqlE.append("select "+lid+","+sid+" from dual union all ");
+										//保留最后一次的信息  
+										NRecfinalinfo = "select "+lid+","+sid+" from dual ";
+									}else if (cell.getStringCellValue().toString().contains("不支持")) {
+										NotSupsql.append("select "+lid+","+sid+" from dual union all ");
+										NotSupsqlE.append("select "+lid+","+sid+" from dual union all ");
+										Supfinalinfo = "select "+lid+","+sid+" from dual ";
+									}else if (!cell.getStringCellValue().toString().contains("不推荐") && !cell.getStringCellValue().toString().contains("不支持")) {
+										if (flag==0) {
+											recvalue = cell.getStringCellValue().toString().substring(0, 3);
+											recvalue = sname.replaceAll("-S", "")+"-"+recvalue;
+											Recsql.append("select "+tid+","+lid+",'"+recvalue+"' from dual union all ");
+											RecsqlE.append("select "+tid+","+lid+",'"+recvalue+"' from dual union all ");
+											Recfinalinfo = "select "+tid+","+lid+",'"+recvalue+"' from dual ";
+										}
+										flag++;
+									}
+								}
+						      }
+						  }else if (row==null || row.getCell(0).getStringCellValue().equals("")) {
+						           break;
+					           }
+					     }
+				  }
+				
+				list.clear();
+				list2.clear();
+				
+				if (i<ln) {
+					tname = sheet.getRow(0).getCell(i).getStringCellValue().toString();
+					for(Map.Entry entry:typemap.entrySet()){
+						if (entry.getValue().equals(tname)) {
+							//1，得到tid
+							tid = (int) entry.getKey();
+							break;
+						}
+					}	
+				}
+				
+			}
+			if (i<ln) {
+				list.add(row1.getCell(i).getStringCellValue());
+				list2.add(i);
+			}
+		}
+		
+		Recsql.append(Recfinalinfo);
+		RecsqlE.append(Recfinalinfo);
+	    NotRecsql.append(NRecfinalinfo);
+	    NotRecsqlE.append(NRecfinalinfo);
+	    NotSupsql.append(Supfinalinfo);
+	    NotSupsqlE.append(Supfinalinfo);
+		
+		Recsql.append("where rownum<1");
+		RecsqlE.append("where rownum<1");
+	    NotRecsql.append("where rownum<1");
+	    NotRecsqlE.append("where rownum<1");
+	    NotSupsql.append("where rownum<1");
+	    NotSupsqlE.append("where rownum<1");
+	    
+		pstem = conn.prepareStatement(Recsql.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	    pstem = conn.prepareStatement(RecsqlE.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	    pstem = conn.prepareStatement(NotRecsql.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	    pstem = conn.prepareStatement(NotRecsqlE.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	    pstem = conn.prepareStatement(NotSupsql.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	    pstem = conn.prepareStatement(NotSupsqlE.toString());
+	    pstem.executeQuery();
+	    pstem.close();
+	}
+	
+	//求得sheet表真实行数
+	public int getRealRowNum(Sheet sheet){
+		CellReference cellReference = new CellReference("A4");
+		boolean flag = false;
+		for (int i = cellReference.getRow(); i <= sheet.getLastRowNum();) {
+			Row r = sheet.getRow(i);
+			if(r == null){
+				sheet.shiftRows(i+1, sheet.getLastRowNum(),-1);
+				continue;
+			}
+			flag = false;
+			for(Cell c:r){
+				if(c.getCellType() != Cell.CELL_TYPE_BLANK){
+					flag = true;
+					break;
+				}
+			}
+			if(flag){
+				i++;
+				continue;
+			}
+			else{
+				if(i == sheet.getLastRowNum())
+					sheet.removeRow(r);
+				else
+				    sheet.shiftRows(i+1, sheet.getLastRowNum(),-1);
+			}
+		}
+		int rownum=sheet.getLastRowNum()+1;
+		return rownum;
+	}
+	
+	//清空该用户下的除手动维护表格以外的相关数据表数据
+	public void clearData() throws Exception{
+		String sql;
+		String table;
+		
+	    //批量清空数据库表  手动维护的表 不清空
+	    sql = "select table_name from all_tables WHERE owner='SCOTT'";
+	    pstem = conn.prepareStatement(sql);
+	    ResultSet executeQuery = pstem.executeQuery();
+	    while (executeQuery.next()) {
+	    	table = executeQuery.getString("table_name");
+	    	if(!table.equals("T_TOOLS_EYC_TYPE_EN") && !table.equals("T_TOOLS_EYC_TYPE_CN") && !table.equals("T_TOOLS_EYC_TYPE_LEFTNAME_CN") 
+	    			&& !table.equals("T_TOOLS_EYC_TYPE_RIGHTNAME_CN") && !table.equals("T_TOOLS_POWER_TYPE_CN") && !table.equals("T_TOOLS_EYC_TYPE_LEFTNAME_EN") 
+	    			&& !table.equals("T_TOOLS_EYC_TYPE_RIGHTNAME_EN") && !table.equals("T_TOOLS_POWER_TYPE_EN")){
+	    		sql = "delete from "+table;
+			    pstem = conn.prepareStatement(sql);
+			    pstem.executeUpdate();
+			    sql = "truncate table "+table;
+			    pstem = conn.prepareStatement(sql);
+			    pstem.executeUpdate();
+	    	}
+		}
+	    pstem.close();
+	}
+	
+	// T_TOOLS_EYC_TYPE_CN 数据tname map
+	public Map<Integer, String> getTypemap() throws Exception{
+		tMap = new HashMap<Integer, String>();
+		tMap2 = new HashMap<Integer, String>();
+		String tname;
+		int tid;
+		String sql = "select t.t_name,t.t_id from t_tools_eyc_type_cn t";
+	    pstem = conn.prepareStatement(sql);
+	    ResultSet executeQuery = pstem.executeQuery();
+	    while (executeQuery.next()) {
+	    	tname = executeQuery.getString("t_name");
+	    	tid = executeQuery.getInt("t_id");
+	    	tMap.put(tid, tname);
+	    	tMap2.put(tid, tname);
+	    }
+	    pstem.close();
+		return tMap;
+	}
+	
+	// T_TOOLS_EYC_TYPE_LINECARD_CN 数据lmap
+	public Map<Integer, String> getLinemap() throws Exception{
+		lMap = new HashMap<Integer, String>();
+		String lname;
+		int lid;
+		try {
+		String sql = "select l.l_name,l.l_id from t_tools_eyc_type_linecard_cn l";
+		pstem = conn.prepareStatement(sql);
+		ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+			lname = executeQuery.getString("l_name");
+			lid = executeQuery.getInt("l_id");
+			lMap.put(lid, lname);
+		}
+	} finally {
+		pstem.close();
+	}
+		return lMap;
+	}
+	
+	// T_TOOLS_EYC_TYPE_STENCIL_CN 数据smap
+	public Map<Integer, String> getSmap() throws Exception{
+		SMap = new HashMap<Integer, String>();
+		String Sname;
+		int Sid;
+		String sql = "select s.s_name,s.s_id from t_tools_eyc_type_stencil_cn s";
+		pstem = conn.prepareStatement(sql);
+		ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+			Sname = executeQuery.getString("s_name");
+			Sid = executeQuery.getInt("s_id");
+			SMap.put(Sid, Sname);
+		}
+		pstem.close();
+		return SMap;
+	}
+	
+	// T_TOOLS_EYC_TYPE_STENCIL_CN 数据smap2 包含tid
+	public Map<Object, String> getSmap2() throws Exception{
+		SMap2 = new HashMap<Object, String>();
+		String Sname;
+		int Sid;
+		int Tid;
+		String sql = "select s.s_name,s.s_id,s.t_id from t_tools_eyc_type_stencil_cn s";
+		pstem = conn.prepareStatement(sql);
+		ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+			Sname = executeQuery.getString("s_name");
+			Sid = executeQuery.getInt("s_id");
+			Tid = executeQuery.getInt("t_id");
+			SMap2.put(Tid+"-"+Sid, Sname);
+		}
+		pstem.close();
+		return SMap2;
+	}
+	
+	//T_TOOLS_EYC_TYPE_CN 最大值tid
+	public int getBtid() throws Exception{
+		int Btid = 0;
+		try {
+		String sql = "select t_id from t_tools_eyc_type_cn order by t_id desc";
+	    pstem = conn.prepareStatement(sql);
+	    ResultSet executeQuery = pstem.executeQuery();
+	    while (executeQuery.next()) {
+	    	Btid = executeQuery.getInt("t_id");
+	    	break;
+	    }
+		} finally {
+			pstem.close();
+		}
+		return Btid;
+	}
+	
+	//t_tools_eyc_type_linecard_cn 最大值lid
+	public int getBlid() throws Exception{
+		int Blid = 0;
+		try {
+		String sql = "select l_id from t_tools_eyc_type_linecard_cn order by l_id desc";
+		pstem = conn.prepareStatement(sql);
+		ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+			Blid = executeQuery.getInt("l_id");
+			break;
+		}
+	} finally {
+		pstem.close();
+	}
+		return Blid;
+	}
+	
+	//T_TOOLS_EYC_TYPE_STENCIL_CN 最大值sid
+	public int getBsid() throws Exception{
+		int Bsid = 0;
+		try {
+			String sql = "select s_id from t_tools_eyc_type_stencil_cn order by s_id desc";
+			pstem = conn.prepareStatement(sql);
+			ResultSet executeQuery = pstem.executeQuery();
+			while (executeQuery.next()) {
+				Bsid = executeQuery.getInt("s_id");
+				break;
+			}
+		} finally {
+			pstem.close();
+		}
+		return Bsid;
+	}
+}
