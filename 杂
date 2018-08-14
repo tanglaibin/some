@@ -325,12 +325,12 @@ DC LMT补丁网站维护
 风险管理平台维护与新增功能开发
 
 完成平台网站图表度量功能开发，通过jfreechart实时展示系统数据；完成系统定时任务开发，通过web.xml添加listener，编写监听程序，定期通过公共邮箱给相关人员发送邮件；完成平台网站页面添加初审按钮，并新增初审通过、初审打回功能开发；完成系统处理人处理风险时，文件上传功能开发。
-主要涉及SSH、jfreechart、mysql、javamail、html、js、CSS、ajax等技术。
+主要涉及SSH、jfreechart、mysql、javamail、html、js、CSS、ajax、正则表达式、三元表达式等技术。
 
 性能查询工具，后台数据维护优化需求
 
 完成网站管理系统页面，上传excel文件，一次性导入数据功能开发。
-涉及oracle数据库、SSM、POI、html、js、CSS、ajax等技术。
+涉及oracle数据库、SSM、POI、html、js、CSS、ajax、正则表达式、三元表达式等技术。
 
 
 
