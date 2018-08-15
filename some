@@ -1,3 +1,6 @@
+https://blog.csdn.net/iqxtreme/article/details/49686399?%3E
+
+
 1，通过js清空div中的内容
 document.getElementById('BIGDraw').innerHTML = "";
 $('#BIGDraw').html("");
