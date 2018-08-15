@@ -1,22 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>test</title>
-<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
-</head>
-<body>
-<div id="app">
-  <p>{{ message }}</p>
-</div>
+Vue.js 的核心是一个允许你采用简洁的模板语法来声明式的将数据渲染进 DOM 的系统。
 
-<script>
-new Vue({
-  el: '#app',
-  data: {
-    message: 'Hello Vue.js!'
-  }
-})
-</script>
-</body>
-</html>
+
+
+
+
+
