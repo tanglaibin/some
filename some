@@ -312,28 +312,24 @@ String endDate = "";
 endDate= dateFormat.format(date);
 
 
-28，拼接sql语句
+28，占位符 拼接sql语句
 sql = String.format("update t_tools_eyc_type_en set T_DELETE=0 where t_name='%s'",tname);
 sql = String.format("insert into T_TOOLS_EYC_TYPE_CN values ('%s','%s','1')",Btid,Ntname);
 pstem = conn.prepareStatement(sql);
 pstem.executeQuery();
 pstem.close();
 
-29，
-DC LMT补丁网站维护
+29，js 参数传递 中文乱码
+加密
+var clarifyConclusion= encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[4].value));
+解密
+window.onload = function() {
+       <%
+       String ymclarifyConclusion = java.net.URLDecoder.decode(request.getParameter("clarifyConclusion"),"UTF-8").trim();
+       %>
+ }
 
-前端页面下拉框添加数据、将radio单选按钮改为下拉选框样式，excel表单导出等维护工作，完成验收。
-主要涉及到mysql数据库、SSH框架、html、js、POI、css等技术。
 
-风险管理平台维护与新增功能开发
-
-完成平台网站图表度量功能开发，通过jfreechart实时展示系统数据；完成系统定时任务开发，通过web.xml添加listener，编写监听程序，定期通过公共邮箱给相关人员发送邮件；完成平台网站页面添加初审按钮，并新增初审通过、初审打回功能开发；完成系统处理人处理风险时，文件上传功能开发。
-主要涉及SSH、jfreechart、mysql、javamail、html、js、CSS、ajax、正则表达式、三元表达式等技术。
-
-性能查询工具，后台数据维护优化需求
-
-完成网站管理系统页面，上传excel文件，一次性导入数据功能开发。
-涉及oracle数据库、SSM、POI、html、js、CSS、ajax、正则表达式、三元表达式等技术。
 
 
 
