@@ -1,0 +1,164 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+<script type="text/javascript">
+$(function() {
+	
+	$('.multipleText').each(function() {
+		var thisNode = $(this);
+		var contentNode = $(this).parents("table:first").find("tr:last td");
+		$(this).click(function() {
+			if(contentNode.css("display") == "none"){
+				contentNode.css("display","block");
+				contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
+				contentNode.find('input').each(function() {
+					if(thisNode.val().indexOf($(this).val()) != -1){
+						$(this).css("background-color","#6A6AFF");
+					}
+				});
+			}
+			else{
+				contentNode.css("display","none");
+			}
+		});
+		/**
+		 * 增加二级目录显示
+		 * */
+		var firstLevel=contentNode.find('input[class="first-level directory"]');
+		firstLevel.each(function(){
+			var secondLevel=$(this).next();
+			$(this).click(function(){
+				if(secondLevel.css('display')=='none'){
+					secondLevel.css("display","block");
+					secondLevel.find('input').css("background-color","fff").attr("readonly","readonly");
+					secondLevel.find('input').each(function() {
+						if(thisNode.val().indexOf($(this).val()) != -1){
+							$(this).css("background-color","#6A6AFF");
+						}
+					});
+				}else{
+					secondLevel.css("background-color","#6A6AFF");
+					secondLevel.css("display","none");
+				}
+			});
+			
+		});
+		
+		contentNode.find('input').on("click",function() {
+			changeColor(this);
+		});
+		contentNode.find('a:first').click(function() {
+			setTextValue(thisNode,contentNode.find('input'));
+		});
+		contentNode.find("a:last").click(function() {
+			clearTextValue(thisNode,contentNode.find('input'));
+		});
+	});
+});
+
+function setTextValue(thisNode, td) {
+	var newValue = "";
+	td
+			.each(function() {
+				if (($(this).css("background-color") == "#6a6aff" || $(
+						this).css("background-color") == "rgb(106, 106, 255)")
+						&& (!$(this).hasClass(
+								'first-level directory'))) {
+					newValue = newValue + ',' + $(this).val().trim();
+				}
+			});
+	thisNode.attr("title", newValue.substring(1, newValue.length));
+	thisNode.attr("value", newValue.substring(1, newValue.length));
+	td.parent().css("display", "none");
+}
+
+function clearTextValue(thisNode, td) {
+	td.each(function() {
+		$(this).css("background-color", "");
+	});
+	thisNode.attr("title", "");
+	thisNode.attr("value", "");
+	td.parent().css("display", "none");
+}
+
+function changeColor(thisNode) {
+	//若二级目录有被选中 则一级目录只收起不变色	
+	if($(thisNode).hasClass('first-level directory')){
+		var noneSelected=true;
+		$(thisNode).next().find('input').each(function(){
+			if($(this).css("background-color") == "#6a6aff" || $(this).css("background-color") == "rgb(106, 106, 255)"){
+				$(thisNode).css("background-color","#6a6aff");
+				noneSelected=false;
+				return;
+			}
+		});
+		if(noneSelected){
+			$(thisNode).css("background-color","");
+			return;
+		}
+		return;
+	}
+	console.log('prepare to change color');
+	if($(thisNode).css("background-color") == "#6a6aff" || $(thisNode).css("background-color") == "rgb(106, 106, 255)"){
+		$(thisNode).css("background-color","");
+	} else{
+		$(thisNode).css("background-color","#6A6AFF");
+	}
+}
+</script>
+</head>
+<body>
+<table>
+<tr>
+				<td>
+				设备形态<font color="#FF0000">*</font></td><td>
+					<table>
+						<tr>
+							<td style="padding-left: 0px;">
+								<input name="devicemodels" class="multipleText" readonly="readonly"/> 
+							</td>
+						</tr>
+						<tr>
+							<td style="display: none;border-style: none;width: 18px; position: absolute;">
+								<input type="text" value="CloudEngine 12800" class="first-level directory">
+								<div style="display: none;border-style: none;width: 18px; ">
+									<input type="text" value="   全形态" class="fullForm"><br>
+									<input type="text" value="   04"><br>
+								</div>
+								
+								<input type="text" value="CloudEngine 8800" class="first-level directory">
+								<div style="display: none;border-style: none;width: 18px; ">
+									<input type="text" value="   全形态" class="fullForm"><br>
+									<input type="text" value="   8860EI"><br>
+								</div>
+								
+								<input type="text" value="CloudEngine 7800" class="first-level directory">
+								<div style="display: none;border-style: none;width: 18px; ">
+									<input type="text" value="   全形态" class="fullForm"><br>
+									<input type="text" value="   7855EI"><br>
+								</div>
+								<input type="text" value="CloudEngine 6800" class="first-level directory">
+								<div style="display: none;border-style: none;width: 18px; ">
+									<input type="text" value="   全形态" class="fullForm"><br>
+									<input type="text" value="   6810-24S2Q-LI"><br>
+								</div>
+								<input type="text" value="CloudEngine 5800" class="first-level directory">
+								<div style="display: none;border-style: none;width: 18px; ">
+									<input type="text" value="   全形态" class="fullForm"><br>
+									<input type="text" value="   5810-24T4S-EI"><br>
+								</div>
+								<span><a href="javascript:void(0);"style="margin-left: 40px;">ok</a><a href="javascript:void(0);"style="margin-left:15px;">clear</a></span>
+							</td>
+						</tr>
+					</table>
+				</td>
+				</tr>
+				</table>
+				
+</body>
+</html>
