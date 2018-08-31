@@ -1,47 +1,99 @@
+一，用户模块
+1，strust2中 action设置cookie  保存用户账户密码信息
+// 如果选择保存cookie一周则保存一周
+cookie.addCookie(this.getResponse(),"userPassword",users.getUserPassword(),7 * 24 * 60 * 60);
+cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 7 * 24 * 60 * 60);
+// 如果选择保存cookie一个月则保存一个月
+cookie.addCookie(this.getResponse(),"userPassword",users.getUserPassword(),30 * 24 * 60 * 60);
+cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 30 * 24 * 60 * 60);
+// 如果选择保存cookie一年则保存一年
+cookie.addCookie(this.getResponse(),"userPassword",users.getUserPassword(),365 * 24 * 60 * 60);
+cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 365 * 24 * 60 * 60);
+// 如果选择保存cookie一天则保存一天
+cookie.addCookie(this.getResponse(), "userPassword", users.getUserPassword(), 24 * 60 * 60);
+cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 24 * 60 * 60);
+
+2，设置session域值
+this.getRequest().getSession().setAttribute("employeeId", users.getEmployeeId());
+
+3，jsp页面写java代码得到值  后面用值
+<%@ page language="java" pageEncoding="GBK"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+<%
+	// 读取返回的错误信息
+	String message = (String) request.getAttribute("message");
+	if(message == null){
+		message = "";
+	}
+	// 取得用户工号
+	String loginUserName = (String) request.getSession().getAttribute("loginUserName");
+%>
+<html>
+
+用值——
+<%=message%>
 
 
-DC LMT补丁网站  
-1. 维护业务组特性增加MQC、镜像、cpcar、eth-trunk、m-lag、芯片可靠性、TRILL、支撑
+4，页面加载完  指定方法 
+<body class="" onload="init()">
+
+5，校验用户名是否为空
+if(trim(userName) == ""){
+					alert("用户名不能为空！");
+					document.getElementById("userName").focus();
+					return false;
+				}
 
 
-select m.name from dir_module m, dir_module1 m1, dir_department dep where m.module_id = m1.id and m1.department = dep.id and dep.name = '维护业务组' order by m.name asc
+6，只能为英文数字校验
+只能为英数字
+function chkEisu(objVal){
+    var checkVal = objVal;
+	if (checkVal == undefined || checkVal == ""){
+	    return true;
+	}
+	var i;
+	var c;
+	for(i = 0; i < checkVal.length; i++){
+		c = checkVal.charCodeAt(i);
+		if (( c >= 0x0030 && c <= 0x0039 ) || ( c >= 0x0041 && c <= 0x005a ) || ( c >= 0x0061 && c <= 0x007a )){
+		}else{
+            return false;
+		}
+	}
+    return true;
+}
 
-2. excel表单导出时增加导出现网版本
-字段，这样做统计的时候可以看到合入的是不是这个版本发生的网上问题 //ok
-
-
-3. 新建需求页面，是否是安全问题、是否可维可靠问题、对装备有什么影响三个选项，由radio单选改为下拉选框
-
-
-4.冯可荣(f00373274) 2018-06-13 09:19
-昂  
-有的问题在V2R1SPH0013录入 评审完了之后  关联到其他补丁  然后就直接剪走了  
-是不是数据库哪里搞错了
-冯可荣(f00373274) 2018-06-13 09:21
-举个例子   问题A在V2R1SPH016补丁录入评审了  然后在V1R5SPH018这个版本的补丁也合入了这个问题  开发人员在那边录入的时候   V2R1SPH016补丁就查询不到这个问题了
-
-http://10.171.147.93/project/loginaction/init.action  (现网环境访问地址)
-
-http://10.165.79.103:8080/vrplmt/loginaction/init.action
-
-http://localhost:8080/vrplmt/loginaction/init.action
-
-
-登录用户 admin 123456
-
-
-http://nkgsvn04-rd:6801/svn/EBG_DCLMT_CODE_SVN/维护部虚拟小组状态/维护部工具/工具代码/DCN LMT工具Q4/11DCN LMT管理平台功能增强与优化/源码
-
-ip：10.171.147.93
-用户名：Administrator
-密码：_Wk3dHCW
+7，
 
 
 
-C:\workspace\apache-tomcat-7.0.27\apache-tomcat-7.0.27\
-上面这个是远程位置的tomcat位置
-以后每次打好war包后，就放在这个目录的webapps文件夹下面
-记得每次打包的时候，把包名改成project
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
