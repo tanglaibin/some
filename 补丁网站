@@ -137,8 +137,16 @@ document.forms[0].action = "<%=request.getContextPath()%>/xxx/xxx.action";
 document.forms[0].submit();
 
 
-12,
-
+12,刷新页面 转发至新页面  <META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/vrplmt/loginaction/init.action">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+	<head>
+	    <META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">
+	</head>
+	<body>
+		<p>Loading ...</p>
+	</body>
+</html>
 
 
 
