@@ -65,15 +65,62 @@ function chkEisu(objVal){
 }
 
 7，特殊字符排查校验，例如："'"
-
+function special_Chk(){
+	var str = $('#chexk').val();
+	var hanTxt="'";
+	var chkRst = "true";
+	var c = "";
+	for(i = 0; i < str.length; i++){
+		c = str.charAt(i);
+		if(hanTxt.indexOf(c) != -1 ){
+			chkRst = "false";
+			break;
+		}
+	}
+	return chkRst;
+}
 
 
 
 8,jsp struts2 S标签
-
+引入S标签：<%@ taglib prefix="s" uri="/struts-tags"%>
+创建form表单：<s:form action="/loginaction/login" method="post">
+遍历：iterator
+<s:iterator value="xxxList">
+	<tr>
+		<td>
+			<span><s:property value="versionName" /></span>
+		</td>
+		<td>
+			<span><s:property value="toBeRuledNum" /></span>
+		</td>
+		<td>
+			<span><s:property value="toBePlanedNum" /></span>
+		</td>
+		<td>
+			<span><s:property value="planedNum" /></span>
+		</td>
+		<td>
+			<span><s:property value="releasedNum" /></span>
+		</td>
+	</tr>
+</s:iterator>
+日期：<s:date name="lastLogin" format="HH:mm:ss"/>
+文本输入框：<s:textfield id="xx" name="userVo.userName" size="18" maxlength="10" onkeydown="if(event.keyCode == 13){xxx()}" cssStyle="height:20;width:135"/>
+密码输入框：<s:password id="xxx" name="userVo.userPassword" size="18" maxlength="18" onkeydown="if(event.keyCode == 13){xxx()}" cssStyle="height:20;width:135"/>
+下拉选框：<s:select id="xxx" name="userVo.savetoday" headerValue="保存一天" headerKey="1" list="#{'2':'保存一周','3':'保存一月','4':'保存一年'}" onkeydown="if(event.keyCode == 13){xxx()}"></s:select>
+if  else:
+<s:set name="type" value="type"></s:set>
+<s:if test="#type == 0">																
+	<a href="###" class="xxx" onclick="linkLink('<s:property value="url"/>')">·<s:property value="name"/></a>				                								
+</s:if>
+<s:else>																
+	<a href="###" class="xxx" onclick="linkLink('<%=request.getContextPath()%>/linkDir/<s:property value="url"/>')">·<s:property value="name"/></a>				                								
+</s:else>
 
 
 9,input等元素enter键按下去执行方法()
+onkeydown="if(event.keyCode == 13){xxx()}"
 
 
 10,
