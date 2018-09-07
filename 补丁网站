@@ -210,10 +210,37 @@ function validate() {
 		alert(data);
 	}
 
+十四，frameset 用于构建后台管理页面
+<html>
+<head>
+<!-- 消除缓存 -->
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Pragma" content="no-cache" />
+<title>xxx</title>
+</head>
+<frameset id="allFrame" name="allFrame" rows="150,*" cols="*"
+	frameborder="no" border="0" framespacing="0" noresize>
 
+	<frame src="<%=request.getContextPath() %>/top.jsp"
+		name="topFrame" scrolling="auto" noresize="noresize" id="topFrame"
+		title="topFrame" noresize />
 
+	<frameset name="bottomFrame" rows="*" cols="410,*" framespacing="0"
+		border="0" noresize>
 
+		<frame src="<%=request.getContextPath() %>/left.jsp"
+			name="leftFrame" id="leftFrame" scrolling="auto" noresize />
 
+		<frame
+			src="<%=request.getContextPath() %>/right.jsp"
+			name="rightFrame" id="rightFrame" scrolling="auto" noresize />
+
+	</frameset>
+</frameset>
+</html>
+
+window.parent.frames["rightFrame"].location = "<%=request.getContextPath()%>/page/message/searchReceiveMessage.action?menuid=0";
 
 
 
