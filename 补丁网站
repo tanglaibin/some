@@ -1,5 +1,5 @@
 
-1，strust2中 action设置cookie  保存用户账户密码信息【action中】
+一，strust2中 action设置cookie  保存用户账户密码信息【action中】
 // 如果选择保存cookie一周则保存一周
 cookie.addCookie(this.getResponse(),"userPassword",users.getUserPassword(),7 * 24 * 60 * 60);
 cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 7 * 24 * 60 * 60);
@@ -13,10 +13,10 @@ cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 365 * 24 *
 cookie.addCookie(this.getResponse(), "userPassword", users.getUserPassword(), 24 * 60 * 60);
 cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 24 * 60 * 60);
 
-2，设置session域值【action中】
+二，设置session域值【action中】
 this.getRequest().getSession().setAttribute("employeeId", users.getEmployeeId());
 
-3，jsp页面写java代码得到值  后面用值
+三，jsp页面写java代码得到值  后面用值
 <%@ page language="java" pageEncoding="GBK"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%
@@ -34,10 +34,10 @@ this.getRequest().getSession().setAttribute("employeeId", users.getEmployeeId())
 <%=message%>
 
 
-4，页面加载完  指定方法 
+四，页面加载完  指定方法 
 <body class="" onload="init()">
 
-5，校验用户名是否为空
+五，校验用户名是否为空
 if(trim(userName) == ""){
 	alert("用户名不能为空！");
 	document.getElementById("userName").focus();
@@ -45,7 +45,7 @@ if(trim(userName) == ""){
 }
 
 
-6，只能为英文数字校验
+六，只能为英文数字校验
 只能为英数字
 function chkEisu(objVal){
     var checkVal = objVal;
@@ -64,7 +64,7 @@ function chkEisu(objVal){
     return true;
 }
 
-7，特殊字符排查校验，例如："'"
+七，特殊字符排查校验，例如："'"
 function special_Chk(){
 	var str = $('#chexk').val();
 	var hanTxt="'";
@@ -82,7 +82,7 @@ function special_Chk(){
 
 
 
-8,jsp struts2 S标签
+八,jsp struts2 S标签
 引入S标签：<%@ taglib prefix="s" uri="/struts-tags"%>
 创建form表单：<s:form action="/loginaction/login" method="post">
 遍历：iterator
@@ -120,11 +120,11 @@ if  else判断:
 隐藏域：<s:hidden id="xxx" name="xxx"></s:hidden>
 
 
-9,input等元素enter键按下去执行方法()
+九,input等元素enter键按下去执行方法()
 onkeydown="if(event.keyCode == 13){xxx()}"
 
 
-10,注册方法 打开新窗口
+十,注册方法 打开新窗口
 function regist(){
 	var url = "<%=request.getContextPath()%>/xxx/xxx.action";
 	var params = "height=360, width=600,top=300, left=300, resizable=1,toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no";
@@ -132,12 +132,12 @@ function regist(){
 }
 
 
-11，js  取得form  并指定action
+十一，js  取得form  并指定action
 document.forms[0].action = "<%=request.getContextPath()%>/xxx/xxx.action";
 document.forms[0].submit();
 
 
-12,刷新页面 转发至新页面  <META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/vrplmt/loginaction/init.action">
+十二,刷新页面 转发至新页面  <META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/vrplmt/loginaction/init.action">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 	<head>
@@ -149,13 +149,44 @@ document.forms[0].submit();
 </html>
 
 
+十三,DWR框架技术  用于js中直接调用java函数
+配置：
+1，jar包：dwr-3.0.jar
+2，web.xml：
+<servlet>
+<servlet-name>dwr</servlet-name>
+<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+<init-param>
+<param-name>debug</param-name>
+<param-value>true</param-value>
+</init-param>
+</servlet>
+<servlet-mapping>
+<servlet-name>dwr</servlet-name>
+<url-pattern>/dwr/*</url-pattern>
+</servlet-mapping>
+3，dwr.xml
+<!DOCTYPE dwr PUBLIC
+"-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN"
+"http://www.getahead.ltd.uk/dwr/dwr10.dtd">
 
+<dwr>
+<allow>
+<create javascript="UserDAOAjax" creator="new">
+<param name="class" value="org.thj.UserDAOAjax"></param>
+</create>
+<create javascript="MyProjectDao" creator="new">
+<param name="class" value="org.thj.MyProjectDao"></param>
+</create>
+<convert match="org.thj.User" converter="bean"></convert>
+</allow> 
+</dwr>
 
-
-
-
-
-
+4，java类
+5，jsp引用
+<script type="text/javascript" src="dwr/engine.js"></script><%--固定写法--%>
+<script type="text/javascript" src="dwr/util.js"></script>
+<script type="text/javascript" src="dwr/interface/MyProjectDao.js"></script><%--由框架自动生成,文件名根据DWR文件而来--%>
 
 
 
