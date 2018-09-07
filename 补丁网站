@@ -152,45 +152,63 @@ document.forms[0].submit();
 十三,DWR框架技术  用于js中直接调用java函数
 配置：
 1，jar包：dwr-3.0.jar
+
 2，web.xml：
 <servlet>
-<servlet-name>dwr</servlet-name>
-<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
-<init-param>
-<param-name>debug</param-name>
-<param-value>true</param-value>
-</init-param>
+	<servlet-name>dwr-invoker</servlet-name>
+	<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+	<init-param>
+		<param-name>debug</param-name>
+		<param-value>true</param-value>
+	</init-param>
+	<init-param>
+		<param-name>crossDomainSessionSecurity</param-name>
+		<param-value>false</param-value>
+	</init-param>
+	<init-param>
+		<param-name>allowScriptTagRemoting</param-name>
+		<param-value>true</param-value>
+	</init-param>
 </servlet>
 <servlet-mapping>
-<servlet-name>dwr</servlet-name>
-<url-pattern>/dwr/*</url-pattern>
+	<servlet-name>dwr-invoker</servlet-name>
+	<url-pattern>/dwr/*</url-pattern>
 </servlet-mapping>
-3，dwr.xml
-<!DOCTYPE dwr PUBLIC
-"-//GetAhead Limited//DTD Direct Web Remoting 1.0//EN"
-"http://www.getahead.ltd.uk/dwr/dwr10.dtd">
+
+3，dwr.xml  【放在WEB-INF目录下】
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" "http://getahead.org/dwr//dwr30.dtd">
 
 <dwr>
-<allow>
-<create javascript="UserDAOAjax" creator="new">
-<param name="class" value="org.thj.UserDAOAjax"></param>
-</create>
-<create javascript="MyProjectDao" creator="new">
-<param name="class" value="org.thj.MyProjectDao"></param>
-</create>
-<convert match="org.thj.User" converter="bean"></convert>
-</allow> 
+	<allow>
+		<create javascript="Demo" creator="new">
+			<param name="class" value="test.dwr.Demo"></param>
+		</create>
+	</allow>
 </dwr>
 
 4，java类
+package test.dwr;
+
+public class Demo {
+	public String test(String a){
+		return a+"哈哈哈哈";
+	}
+}
+
 5，jsp引用
 <script type="text/javascript" src="dwr/engine.js"></script><%--固定写法--%>
-<script type="text/javascript" src="dwr/util.js"></script>
-<script type="text/javascript" src="dwr/interface/MyProjectDao.js"></script><%--由框架自动生成,文件名根据DWR文件而来--%>
+<script type="text/javascript" src="dwr/util.js"></script><%--固定写法--%>
+<script type="text/javascript" src="dwr/interface/Demo.js"></script><%--由框架自动生成,文件名根据DWR文件而来--%>
 
+<body onload="validate()">
 
-
-
+function validate() {
+		Demo.test("dddd",callBack);
+	}
+	function callBack(data) {
+		alert(data);
+	}
 
 
 
