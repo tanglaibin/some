@@ -283,7 +283,6 @@ function fff(id,verId){
 		var ctr=document.getElementById("txtId").createTextRange();
 		ctr.collapse(false);
 		ctr.select();
-		
 	}
 
 编辑状态 失去焦点 保存：
