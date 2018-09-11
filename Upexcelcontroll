@@ -60,11 +60,13 @@ public class UpexcelController {
 	List list;
 	Map<Integer, String> tMap;
 	Map<Integer, String> tMap2;
+	Map<Integer, String> tMap3;
 	Map<Integer, String> lMap;
 	Map<Integer, String> SMap;
 	Map<Object, String> SMap2;
 	String tname;
 	String sql;
+	String resultStr;
 	
 	private static Logger logger = (Logger) LoggerFactory
 			.getLogger(UpexcelController.class);
@@ -101,7 +103,6 @@ public class UpexcelController {
 		
 		try {
 			//获取上传上来的excel文件   存入指定位置暂存
-			//MultipartResolver resolver = new CommonsMultipartResolver(request.getSession().getServletContext());
 			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 			Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 			
@@ -129,23 +130,15 @@ public class UpexcelController {
 			workbook = WorkbookFactory.create(is);
 			int numberOfSheets = workbook.getNumberOfSheets();
 			
+			//先将tmap中数据，状态置为1  防止因误上传错误的excel文件，导致状态都为0
+			set1(typemap);
+			
 			//1,读取  存 T_TOOLS_EYC_TYPE_CN/EN 及T_TOOLS_EYC_TYPE_STENCIL_CN/EN数据   
 			//2,读取  存 T_TOOLS_EYC_TYPE_LINECARD_CN/EN数据  
 			doTypeline(workbook,numberOfSheets,typemap,Btid);
 			
-			if (!tMap2.isEmpty()) {
-				for(Map.Entry entry:tMap2.entrySet()){
-					tname = entry.getValue().toString();
-					sql = String.format("update t_tools_eyc_type_cn set T_DELETE=0 where t_name='%s'",tname);
-					pstem = conn.prepareStatement(sql);
-				    pstem.executeQuery();
-				    pstem.close();
-				    sql = String.format("update t_tools_eyc_type_en set T_DELETE=0 where t_name='%s'",tname);
-				    pstem = conn.prepareStatement(sql);
-				    pstem.executeQuery();
-				    pstem.close();
-				    }
-			}
+			//0
+			set0(tMap2);
 			
 			//t_tools_eyc_type_linecard_cn 最大值lid
 			int Blid = getBlid();
@@ -163,17 +156,57 @@ public class UpexcelController {
 			int Blid2 = getBlid();
 			//4，管理推荐信息模块   T_TOOLS_RECOMMEND_CN   T_TOOLS_UNRECOMMEND_CN   T_TOOLS_UNSUPPORT_CN
 			saveRecAndSup(numberOfSheets,workbook,typemap,Blid2,linemap,Smap,bsid,Smap2);
-
+			
+			Map<Integer, String> tmap = getTypemap2();
 			is.close();
 			conn.close();
-			String resultStr = "ok";
-			return resultStr;
-			} catch (Exception e) {
-			e.printStackTrace();
-			conn.close();
-			String resultStr = "no";
-			return resultStr;
+			
+			if(!tmap.isEmpty()){
+				resultStr = "ok";
+			}else if(tmap.isEmpty()){
+				resultStr = "no";
 			}
+			return resultStr;
+			   } catch (Exception e) {
+			     e.printStackTrace();
+			     conn.close();
+			     resultStr = "no";
+			     return resultStr;
+			   }
+	}
+	
+	
+	//将tmap中数据，状态置为1方法
+	public void set1(Map<Integer, String> typemap) throws Exception{
+		if (!typemap.isEmpty()) {
+			for(Map.Entry entry:typemap.entrySet()){
+				tname = entry.getValue().toString();
+				sql = String.format("update t_tools_eyc_type_cn set T_DELETE=1 where t_name='%s'",tname);
+				pstem = conn.prepareStatement(sql);
+			    pstem.executeQuery();
+			    pstem.close();
+			    sql = String.format("update t_tools_eyc_type_en set T_DELETE=1 where t_name='%s'",tname);
+			    pstem = conn.prepareStatement(sql);
+			    pstem.executeQuery();
+			    pstem.close();
+			    }
+		}
+	}
+	//将tmap中数据，状态置为0方法
+	public void set0(Map<Integer, String> tMap2) throws Exception{
+		if (!tMap2.isEmpty()) {
+			for(Map.Entry entry:tMap2.entrySet()){
+				tname = entry.getValue().toString();
+				sql = String.format("update t_tools_eyc_type_cn set T_DELETE=0 where t_name='%s'",tname);
+				pstem = conn.prepareStatement(sql);
+			    pstem.executeQuery();
+			    pstem.close();
+			    sql = String.format("update t_tools_eyc_type_en set T_DELETE=0 where t_name='%s'",tname);
+			    pstem = conn.prepareStatement(sql);
+			    pstem.executeQuery();
+			    pstem.close();
+			    }
+		}
 	}
 	
 	//1,读取  存 T_TOOLS_EYC_TYPE_CN/EN 及T_TOOLS_EYC_TYPE_STENCIL_CN/EN数据   
@@ -1137,6 +1170,22 @@ public class UpexcelController {
 		return tMap;
 	}
 	
+	public Map<Integer, String> getTypemap2() throws Exception{
+		tMap3 = new HashMap<Integer, String>();
+		String tname;
+		int tid;
+		String sql = "select t.t_name,t.t_id from t_tools_eyc_type_cn t where t.T_DELETE = 1";
+		pstem = conn.prepareStatement(sql);
+		ResultSet executeQuery = pstem.executeQuery();
+		while (executeQuery.next()) {
+			tname = executeQuery.getString("t_name");
+			tid = executeQuery.getInt("t_id");
+			tMap3.put(tid, tname);
+		}
+		pstem.close();
+		return tMap3;
+	}
+	
 	// T_TOOLS_EYC_TYPE_LINECARD_CN 数据lmap
 	public Map<Integer, String> getLinemap() throws Exception{
 		lMap = new HashMap<Integer, String>();
@@ -1243,4 +1292,5 @@ public class UpexcelController {
 		}
 		return Bsid;
 	}
+
 }

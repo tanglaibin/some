@@ -1,0 +1,169 @@
+jQuery 入口函数:
+$(document).ready(function(){
+    // 执行代码
+});
+或者
+$(function(){
+    // 执行代码
+});
+JavaScript 入口函数:
+window.onload = function () {
+    // 执行代码
+}
+jQuery 入口函数与 JavaScript 入口函数的区别：
+jQuery 的入口函数是在 html 所有标签(DOM)都加载之后，就会去执行。
+JavaScript 的 window.onload 事件是等到所有内容，包括外部图片之类的文件加载完后，才会执行。
+
+
+5，js 遍历相同类，相同的类，当点击某个类时，添加方法
+$('.multipleText').each(function() {
+	var thisNode = $(this);
+	var contentNode = $(this).parents("table:first").find("tr:last td");
+	$(this).click(function() {
+		if(contentNode.css("display") == "none"){
+		contentNode.css("display","block");
+		contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
+		contentNode.find('input').each(function() {
+		if(thisNode.val().indexOf($(this).val()) != -1){
+		$(this).css("background-color","#6A6AFF");
+		}
+	});
+}
+	else{
+	contentNode.css("display","none");
+	}
+});
+}
+
+
+
+7，js，找到类自己的parent（上一级标签），及找到其他对应的标签，对其进行操作
+<table>
+	<tr>
+	<td style="padding-left: 0px;">
+	<input name="devicemodels" class="multipleText" readonly="readonly"/> 
+	</td>
+	</tr>
+
+	<tr>
+	<td style="display: none;border-style: none;width: 18px; position: absolute;">
+		<input type="text" value="CloudEngine 12800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE12800全形态" class="fullForm"><br>		
+		</div>
+		<input type="text" value="CloudEngine 8800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE8800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 7800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE7800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 6800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE6800全形态" class="fullForm"><br>
+		</div>
+		<input type="text" value="CloudEngine 5800" class="first-level directory">
+		<div style="display: none;border-style: none;width: 18px; ">
+		<input type="text" value="CE5800全形态" class="fullForm"><br>
+		</div>
+	</td>
+	</tr>
+</table>
+
+//找到自己类的上一个table，并找到table里的最后一个td，对其进行操作
+var contentNode = $(this).parents("table:first").find("tr:last td");
+
+
+
+8，任何标签元素，选中它，点击操作
+$('.multipleText').each【遍历得到this】
+$(this).click(function() {【添加click方法】
+
+
+9，得到css属性值，根据css值判断
+var thisNode = $(this);【得到jquery对象】
+if(contentNode.css("display") == "none"){【取css值】
+	contentNode.css("display","block");
+	contentNode.find('input').css("background-color","fff").attr("readonly","readonly");
+}
+
+11，jquery 获取当前对象下一个对象
+var secondLevel=$(this).next();
+
+
+12,检查页面所有input，是否值为空，输入的字数是否超过指定值
+var array = new Array("developer","progroup","characteristic","probSource","devicemodels","problemvers","probdes","probconditions","probcause","proaffect","amendment","riskType","riskLevel");
+var tip = new Array("跟踪闭环责任人","项目组","特性","问题来源","设备形态","存在问题版本","问题描述","问题触发条件","问题根因","问题影响","修改方案","风险类别","风险等级");
+【js新建数组】
+for(var i=0;i<array.length;i=i+1){
+	var node = document.getElementsByName(array[i])[0];【获取name的所有对象的第一个对象的值】
+	if($.trim($(node).val()) == ""){【判断值是否为空】
+	alert(tip[i]+"不能为空");
+	return false;
+		}
+	var textLength = document.getElementsByName(array[i])[0].value;
+	if(textLength.length>500)【判断值字符长度是否超过指定长度】
+		{
+	alert(tip[i]+"字数超过500");
+	return false;
+		}
+	}
+
+
+18，js选择多个标签元素  对他们添加css属性
+ $(".menu ul li a").click(function () {
+        $(this).css("color", "#990033");
+        $(this).parent().nextAll().children().css("color", "#666666");
+        $(this).parent().prevAll().children().css("color", "#666666");
+        $(".sub_bound li").each(function () {
+            $(this).css("background", "#66ccee");
+        });
+    });	
+
+20，div show hide 				
+<div id="ectype01">
+$("#ectype01").show();				
+$("#linecardid").hide();				
+$(".linecardclass").hide();	
+
+
+
+22，鼠标经过 赋予功能方法
+$("#otherstool").mouseover(function(){
+	$("#OtherToolDiv").show();
+});				
+				
+鼠标离开 赋予功能方法				
+$("#otherstool").mouseout(function(){
+	$("#OtherToolDiv").hide();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
