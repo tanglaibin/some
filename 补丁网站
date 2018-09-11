@@ -127,7 +127,7 @@ if  else判断:
 	<a href="###" class="xxx" onclick="linkLink('<%=request.getContextPath()%>/linkDir/<s:property value="url"/>')">·<s:property value="name"/></a>				                								
 </s:else>
 2，取值判断 设置ifelse
- <s:if test="#xxx != null && #xxx != ''">//xxx  xxx2为遍历的对象的一个属性值
+ <s:if test="#req.xxx != null && #req.xxx != ''">//xxx  xxx2为遍历的对象req的一个属性值
  <td id="aaa" class="bbb" ondblclick="fff('<s:property value="id"/>','<s:property value="verId"/>')"><s:property value="xxx"/></td>
  </s:if>
  <s:else>
