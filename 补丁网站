@@ -320,6 +320,18 @@ function ChangePatchQuestiontesterText(id){
 URLDecoder.decode(xxx, "UTF-8");
 2,new String(getWebPatchQuestiontester.getBytes("ISO8859_1"), "GBK");
 
+十七，新窗口 数据 传到打开之前的窗口
+两个页面引入相同的js
+js中写方法：
+function getDevice(devicemodel) {
+document.getElementById("involvedBoard").value = devicemodel;
+}
+
+function selectT() {
+var devicemodelList = document.getElementsByName("devicemodels");
+window.opener.getDevice(devicemodelList[0].value);
+window.close();
+}
 
 
 
