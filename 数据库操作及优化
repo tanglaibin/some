@@ -1,7 +1,8 @@
 sql:
 
-1,修改字段值
+1,更新字段值  批量更新
 update r_problem set workStatus =1 where workStatus = 4
+UPDATE dir_module SET NAME ='L3_IPv4', description ='L3_IPv4' WHERE id = 375;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 376;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 443;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 947;
 
 2,选择
 select * from r_problem where workStatus !=2 and workStatus !=5
@@ -47,9 +48,6 @@ dir_version D on B.verid=D.id left join patch E on B.patchid=E.id left join dir_
 where 1=1 and A.requirementVersionSrc = 0  and 
 B.patchid = '784' 
 order by A.product,A.patch, A.id, B.verid
-
-
-
 
 
 
