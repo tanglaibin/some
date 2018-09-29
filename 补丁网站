@@ -13,6 +13,45 @@ cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 365 * 24 *
 cookie.addCookie(this.getResponse(), "userPassword", users.getUserPassword(), 24 * 60 * 60);
 cookie.addCookie(this.getResponse(), "userName", users.getUserName(), 24 * 60 * 60);
 
+cookie方法：
+1，添加cookie
+public static void addCookie(HttpServletResponse response, String name, String value, int maxAge)
+    {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setPath("/");
+        if (maxAge > 0)
+            cookie.setMaxAge(maxAge);
+        response.addCookie(cookie);
+    }
+2，获取cookie
+public static String getCookieByName(HttpServletRequest request, String name)
+    {
+        Map<String, Cookie> cookieMap = cookie.readCookieMap(request);
+        if (cookieMap.containsKey(name))
+        {
+            Cookie cookie = (Cookie) cookieMap.get(name);
+            return cookie.getValue();
+        }
+        else
+        {
+            return null;
+        }
+    }
+protected static Map<String, Cookie> readCookieMap(HttpServletRequest request)
+    {
+        Map<String, Cookie> cookieMap = new HashMap<String, Cookie>();
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies)
+        {
+            for (int i = 0; i < cookies.length; i++)
+            {
+                cookieMap.put(cookies[i].getName(), cookies[i]);
+            }
+        }
+        return cookieMap;
+    }
+
+
 二，设置session域值【action中】
 this.getRequest().getSession().setAttribute("employeeId", users.getEmployeeId());
 
@@ -154,7 +193,9 @@ document.forms[0].action = "<%=request.getContextPath()%>/xxx/xxx.action";
 document.forms[0].submit();
 
 
-十二,刷新页面 转发至新页面  <META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">    <META HTTP-EQUIV="Refresh" CONTENT="0;URL=/vrplmt/loginaction/init.action">
+十二,刷新页面 转发至新页面  
+<META HTTP-EQUIV="Refresh" CONTENT="20;URL=dd.html">    
+<META HTTP-EQUIV="Refresh" CONTENT="0;URL=/vrplmt/loginaction/init.action">
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 	<head>
