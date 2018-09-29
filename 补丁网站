@@ -333,12 +333,199 @@ window.opener.getDevice(devicemodelList[0].value);
 window.close();
 }
 
+if(window.opener.document.getElementById("tblVersion")){
+var tempRows = window.opener.document.getElementById("tblVersion").rows;
+
+十七，java调用外部python文件，并调用里面的方法
+1，导入jar包  jython
+@SuppressWarnings("resource")
+PythonInterpreter interpreter = new PythonInterpreter(); 
+interpreter.execfile("D:\\py\\auth.py");
+PyFunction func = (PyFunction)interpreter.get("w3auth",PyFunction.class);  
+
+String username =userVo.getUserName();
+String password =userVo.getUserPassword() ;
+PyObject pyobj = func.__call__(new PyString(username), new PyString(password)); 
+
+十八，httpclient
+1，导入httpclient jar包
+
+带参数的访问：— — — —
+//创建一个httpclient对象
+CloseableHttpClient httpClient = HttpClients.createDefault();
+//创建一个uri对象
+URIBuilder uriBuilder = new URIBuilder("https://login.huawei.com/login/login.do");
+uriBuilder.addParameter("uid",userVo.getUserName());
+uriBuilder.addParameter("password",userVo.getUserPassword());
+uriBuilder.addParameter("verifyCode","2345");
+uriBuilder.addParameter("actionFlag","loginAuthenticate");
+uriBuilder.addParameter("loginMethod","login");
+HttpGet get = new HttpGet(uriBuilder.build());
+//执行请求
+CloseableHttpResponse response =httpClient.execute(get);
+HttpEntity entity =response.getEntity();
+String string = EntityUtils.toString(entity,"utf-8");
+//关闭httpclient
+response.close();
+httpClient.close();
 
 
+十九，LDAP账号验证
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import javax.naming.Context;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
 
+public class Test2
+{
+    private static final String INITCTX = "com.sun.jndi.ldap.LdapCtxFactory";
+    private static final String SIMPLE = "simple";
+    private static final String TLS = "tls";
+    private static final String[] RETURN_ATTRIBUTES = new String[]{"samaccountname", "extensionattribute1"};
 
+    public class AcountInfo{
+    
+    	public AcountInfo(String str1, String str2)
+        {
+            this.str1 = str1;
+            this.str2 = str2;
+        }
 
+        public String str1;
 
+        public String str2;
+
+        public String getUsername()
+        {
+            return str1 + ":" + str2;
+        }
+    }
+    
+    private String ldapServiceAddress = "ldap://ldap-ad-gslb.huawei.com:389";
+    
+    public AcountInfo authenticate(String userName, String passwordStr){
+        LdapContext lCtx = null;
+        try
+        {
+            lCtx = new InitialLdapContext(getEnv(userName, passwordStr), null);
+
+            SearchControls searchCtls = new SearchControls();
+            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            // 这里如果不设置该属性，默认返回所有属性
+            searchCtls.setReturningAttributes(RETURN_ATTRIBUTES);
+
+            String baseDn = "DC=china,DC=huawei,DC=com";
+            String searchFilter = "(&(objectClass=user)(|(sn=" + userName
+                    + ")(sAMAccountName=" + userName + ")))";
+
+            // 查询用户
+            NamingEnumeration<SearchResult> namingEnum = lCtx.search(baseDn,
+                    searchFilter, searchCtls);
+
+            List<AcountInfo> lstLdapUser = getUsersFromResults(namingEnum);
+            if (lstLdapUser.size() == 1)
+            {
+                return lstLdapUser.get(0);
+            }
+        }
+        catch (NamingException e)
+        {
+            System.out.println("auth failed:" + e);
+        }
+        finally
+        {
+            if (lCtx != null)
+            {
+                try
+                {
+                    lCtx.close();
+                }
+                catch (NamingException e)
+                {
+                    System.out.println("close failed:" + e);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取UserInfo对象列表
+     * 
+     * @param results
+     * @return List<UserInfo>
+     * @throws NamingException
+     */
+    private List<AcountInfo> getUsersFromResults(
+            NamingEnumeration<SearchResult> results) throws NamingException
+    {
+        List<AcountInfo> userList = new ArrayList<AcountInfo>();
+        while (results != null && results.hasMoreElements())
+        {
+            SearchResult sr = results.next();
+            Attributes attrs = sr.getAttributes();
+            userList.add(attr2User(attrs));
+        }
+        return userList;
+    }
+
+    /**
+     * 将Attributes里面的数据转换到UserInfo对象里面
+     * 
+     * @param attrs
+     * @return UserInfo
+     * @throws NamingException
+     */
+    private AcountInfo attr2User(Attributes attrs) throws NamingException
+    {
+        AcountInfo user = new AcountInfo(
+                valueOfAttribute(attrs, RETURN_ATTRIBUTES[0]),
+                valueOfAttribute(attrs, RETURN_ATTRIBUTES[1]));
+        return user;
+    }
+
+    /**
+     * 基于key获取value
+     * 
+     * @param attrs
+     * @param key
+     * @return String
+     * @throws NamingException
+     */
+    private static String valueOfAttribute(Attributes attrs, String key)
+            throws NamingException
+    {
+        Attribute attr = attrs.get(key);
+        return attr != null ? (String) attr.get() : "";
+    }
+
+    /**
+     * 组装InitialLdapContext所需的环境参数
+     * 
+     * @param userName
+     * @param password
+     * @return env
+     */
+    private Hashtable<Object, Object> getEnv(String userName, String password)
+    {
+        Hashtable<Object, Object> env = new Hashtable<Object, Object>();
+        env.put(Context.INITIAL_CONTEXT_FACTORY, INITCTX);
+        env.put(Context.PROVIDER_URL, ldapServiceAddress);
+        env.put(Context.SECURITY_AUTHENTICATION, SIMPLE);
+        env.put(Context.SECURITY_PRINCIPAL, "CHINA\\" + userName);
+        env.put(Context.SECURITY_CREDENTIALS, password);
+        env.put(Context.SECURITY_PROTOCOL, TLS);
+        return env;
+    }
+}
 
 
 
