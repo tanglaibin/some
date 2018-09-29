@@ -207,6 +207,10 @@ document.forms[0].submit();
 </html>
 
 
+jsp页面：
+<% response.sendRedirect("security/vlogin.action"); %>
+
+
 十三,DWR框架技术  用于js中直接调用java函数
 配置：
 1，jar包：dwr-3.0.jar
@@ -567,26 +571,6 @@ public class Test2
         return env;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
