@@ -1,6 +1,21 @@
 https://blog.csdn.net/iqxtreme/article/details/49686399?%3E
 
 
+http://icollege.isoftstone.com/pages/learner/course_chapter.jsp?courseId=563&courseUserId=1555
+十大纲领：CCCDB,DCBCD
+信息安全：ABDDB,CDBBA,ABBAA,CACCC
+廉洁自律：DBDCC ,DDDAB
+费用管理：CCADB ABDDB
+总结汇报：BAABC,DACBD
+企业微信：BDCCD,DBBDD
+日清邮件：DBACD,CDBAB
+考勤管理：DABCB,BDAAB
+客户服务：BBADB,D,A,AC,CD,BC
+工作方法：DACDA,D,D,BC,BD，BCD（错误）
+会议管理：BCBBD,DDDDC
+
+
+
 1，通过js清空div中的内容
 document.getElementById('BIGDraw').innerHTML = "";
 $('#BIGDraw').html("");
