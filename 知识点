@@ -1,0 +1,230 @@
+
+Relational Database Management System：关系数据库管理系统
+
+
+
+
+<!-- 配置Post请求乱码 -->  web.xml
+  <filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>utf-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+
+ 处理get请求乱码：
+ 
+
+$("#edit_customer_form").serialize()   前端序列化  中文转码
+
+some:
+spring容器：contextConfigLocation
+
+<c:forEach items="${itemList }" var="item" varStatus="stu">  //varStatus  循环次数  ${stu.index}
+
+返回数据
+reuqest.setAttribute(arg0, arg1);
+制定页面
+reuqest.getRequestDispatcher("").forward(reuqest, response);   //dispather后面要写页面的全路径名，比如：/web-inf/...
+
+请求转发：url不发生改变；request域中数据可以带过去；return "forward：xxx.action";
+重定向：发生改变，request域中数据不能带过去;return "redirect：xxx.action";【springmvc  用model替代request域，数据都能带过去】
+
+
+相对路径：不以/开头，为相对路径；
+绝对路径：以/开头。
+
+异步请求时，requestbody  responsebody 能将java对象和json串互相转换。post，get  区别。<url-pattern>/*</url-pattern> ；  /  拦截所有，但不包括.jsp   /*  拦截所有，包括.jsp；
+
+5种创建对象得方式：
+使用New关键字	是
+使用Class类的newInstance	是
+使用Constructor类的newInstance方法	是
+使用clone方法	否
+使用反序列化得方法	否
+newInstance方法就是大家所说的反射。事实上Class的newInstance方法内部调用Constructor的newInstance方法。这也是众多框架，如Spring、Hibernate、Struts等使用后者的原因。
+
+《Java编程思想》
+
+一般在多表上创建外键约束。
+alter table xxx add foreign key(id) references xxx(id);
+
+多表之间的联合查询：
+笛卡尔积：多表无条件的联合查询。
+内连接：
+外连接：左  右外连接
+子查询：
+
+分页
+powerdesigner  er图  建数据库  DBA
+逻辑外键
+数据库连接池：dbcp，druid
+
+arraylist数组
+linkedlist双向循环列表
+set集合 无需 不允许重复
+
+
+队列 add
+值栈 push
+
+
+
+create user scott identified by 1234;
+grant connect,resource,dba to scott;
+
+onkeydown="onEnter('deliverperson',event)"
+onkeydown="onEnter1('modifier',event)"
+
+远程ip：10.171.149.152
+oracle 密码：1234Qwer
+w00215231
+GBMu6!4v
+
+ajax
+dwr
+iframe
+jquery ui
+
+
+w00284213   123
+王海： w00215231    1
+
+常用：
+<link rel="stylesheet" href="a.css" type="text/css" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/Calendar.js"></script>
+$("#div").removeAttr("style"); 
+$("#div2").removeClass("abc");
+$('#xxx').html("");
+document.getElementById("xx").innerHTML = 
+$("input[type='checkbox']").attr('value')
+$("input[type='checkbox']").is(':checked')
+window.location = "<%=request.getContextPath()%>/xxx.jsp";
+window.open("<%=request.getContextPath()%>/xxx.jsp","_blank");
+
+File f=new File("D:\\upexcel");
+if (!f.exists()) {
+f.mkdir();
+}
+
+var tbl = window.opener.document.getElementById("tblVersion");
+str = str.substr(0, str.indexOf('_'));
+
+
+输入命令：netstat -ano，列出所有端口的情况。在列表中我们观察被占用的端口，比如是49157，首先找到它。
+
+查看被占用端口对应的PID，输入命令：netstat -aon|findstr "49157"，回车，记下最后一位数字，即PID,这里是2720
+
+继续输入tasklist|findstr "2720"，回车，查看是哪个进程或者程序占用了2720端口，结果是：svchost.exe
+
+或者是我们打开任务管理器，切换到进程选项卡，在PID一列查看2720对应的进程是谁，如果看不到PID这一列,如下图：
+
+则我们点击查看--->选择列，将PID(进程标示符)前面的勾打上，点击确定。
+
+这样我们就看到了PID这一列标识，看一下2720对应的进程是谁，如果没有，我们把下面的显示所有用户的进程前面的勾打上，就可以看到了，映像名称是svchost.exe，描述是，Windows的主进程,与上面命令查看的完全一致。
+
+结束该进程：在任务管理器中选中该进程点击”结束进程“按钮，或者是在cmd的命令窗口中输入：taskkill /f /t /im Tencentdl.exe。
+
+
+BOM:
+window
+location
+history
+
+DOM
+事件+函数
+页面广告：定时器
+
+jquery 2.0往上版本  不支持ie678  要用1.几版本
+Hbuilder编辑前端  有提示
+jquery对象 $ .val()  dom对象 .value
+
+restful  传递json数据
+socket
+
+maven  module  聚合工程  继承parent  平级的工程也能继承
+
+svn服务端 客户端  visualsvn 
+eclipse svn
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
