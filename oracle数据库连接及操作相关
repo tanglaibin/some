@@ -64,12 +64,28 @@ List<E> list = new ArrayList<E>();
 		return list;
 
 
+九，字符集编码  服务端与客户端编码要一致  否则会中文乱码
+系统变量
+NLS_LANG
+AMERICAN_AMERICA.AL32UTF8
+或 SIMPLIFIED CHINESE_CHINA.ZHS16GBK
 
 
+十，plsql连接远程oracle数据库
+D:\plsql\instantclient_11_2\NETWORK\ADMIN\tnsnames.ora
+修改客户端文件  添加远程数据库地址等信息
+galaxy_nj =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.120.58.183)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = orcla1)
+    )
+  )
 
 
-
-
+plsql登录界面数据库为：galaxy_nj
 
 
 
