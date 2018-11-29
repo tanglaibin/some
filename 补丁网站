@@ -573,4 +573,459 @@ public class Test2
 }
 
 
+20,判断单选按钮是否选中 选中的给他赋值value
+if(document.getElementsByName("issafeName")[0].checked == true){
+	document.getElementById("issafe").value = "0";
+}else if(document.getElementsByName("issafeName")[1].checked == true){
+	document.getElementById("issafe").value = "1";
+}
+
+
+
+<s:set name="issafeName" value="issafe"></s:set>
+<s:if test="#issafeName==0">            
+<span class="STYLE4"><input type="radio" name="issafeName" checked="true"/><s:text name="YES"/><!-- 是 --></span>
+<span class="STYLE4"><input type="radio" name="issafeName" /><s:text name="NO"/><!-- 否1 --></span>
+</s:if>
+<s:else>                  
+<span class="STYLE4"><input type="radio" name="issafeName" /><s:text name="YES"/><!-- 是 --></span>
+<span class="STYLE4"><input type="radio" name="issafeName" checked="true" /><s:text name="NO"/><!-- 否1 --></span>
+</s:else>
+
+
+21，js提取字符串中汉字  去除汉字
+ //js只提取汉字  
+function GetChinese(strValue) {  
+    if(strValue!= null && strValue!= ""){  
+        var reg = /[\u4e00-\u9fa5]/g;   
+        return strValue.match(reg).join("");  
+    }  
+    else  
+        return "";  
+}  
+ //js去掉汉字  
+function RemoveChinese(strValue) {  
+    if(strValue!= null && strValue != ""){  
+        var reg = /[\u4e00-\u9fa5]/g;   
+       return strValue.replace(reg, "");   
+    }  
+    else  
+        return "";  
+} 
+
+
+
+22，jsp页面，由备份的下拉选框数据，恢复原始下拉选框下拉列表数据
+备份的下拉选框数据：
+<td style="display:none">
+	<s:select size="1" class="putValue10" id="budingMaker_bak" name="budingMaker_bak" headerKey="" headerValue="--请选择--" list="budingMakerList" listKey="name" listValue="name" style='height:24px;width: 95px;' ></s:select>
+</td>  
+恢复原始下拉选框下拉列表数据：
+var budingMaker = document.getElementById("budingMaker");
+budingMaker.options.length = 0;
+	var budingMakerBak = document.getElementById("budingMaker_bak");
+	for(var i = 0; i < budingMakerBak.options.length; i++) {
+			var tempOption = document.createElement("option");
+			tempOption.text = budingMakerBak.options[i].text;    
+			tempOption.value = budingMakerBak.options[i].value;   
+			budingMaker.add(tempOption);
+	}
+
+
+23，jsp页面得到struts值栈值  赋值  前提是由action转发携带值栈值而来
+<%
+String c1 = request.getAttribute("xxx").toString();
+%>
+
+<%=c1%>
+
+24，PLSQL Developer连接远程oracle配置
+https://blog.csdn.net/dorothy1224/article/details/56282706
+
+25，
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		
+		
+
+
+$("#edit_customer_form").serialize()   前端序列化  中文转码
+
+some:
+spring容器：contextConfigLocation
+
+<c:forEach items="${itemList }" var="item" varStatus="stu">  //varStatus  循环次数  ${stu.index}
+
+返回数据
+reuqest.setAttribute(arg0, arg1);
+制定页面
+reuqest.getRequestDispatcher("").forward(reuqest, response);   //dispather后面要写页面的全路径名，比如：/web-inf/...
+
+请求转发：url不发生改变；request域中数据可以带过去；return "forward：xxx.action";
+重定向：发生改变，request域中数据不能带过去;return "redirect：xxx.action";【springmvc  用model替代request域，数据都能带过去】
+
+
+相对路径：不以/开头，为相对路径；
+绝对路径：以/开头。
+
+异步请求时，requestbody  responsebody 能将java对象和json串互相转换。post，get  区别。<url-pattern>/*</url-pattern> ；  /  拦截所有，但不包括.jsp   /*  拦截所有，包括.jsp；
+
+5种创建对象得方式：
+使用New关键字	是
+使用Class类的newInstance	是
+使用Constructor类的newInstance方法	是
+使用clone方法	否
+使用反序列化得方法	否
+newInstance方法就是大家所说的反射。事实上Class的newInstance方法内部调用Constructor的newInstance方法。这也是众多框架，如Spring、Hibernate、Struts等使用后者的原因。
+
+《Java编程思想》
+
+一般在多表上创建外键约束。
+alter table xxx add foreign key(id) references xxx(id);
+
+多表之间的联合查询：
+笛卡尔积：多表无条件的联合查询。
+内连接：
+外连接：左  右外连接
+子查询：
+
+分页
+powerdesigner  er图  建数据库  DBA
+逻辑外键
+数据库连接池：dbcp，druid
+
+arraylist数组
+linkedlist双向循环列表
+set集合 无需 不允许重复
+
+
+队列 add
+值栈 push
+
+
+
+create user scott identified by 1234;
+grant connect,resource,dba to scott;
+
+onkeydown="onEnter('deliverperson',event)"
+onkeydown="onEnter1('modifier',event)"
+
+远程ip：10.171.149.152
+oracle 密码：1234Qwer
+w00215231
+GBMu6!4v
+
+ajax
+dwr
+iframe
+jquery ui
+
+
+w00284213   123
+王海： w00215231    1
+
+常用：
+<link rel="stylesheet" href="a.css" type="text/css" />
+<script type="text/javascript" src="<%=request.getContextPath()%>/js/Calendar.js"></script>
+$("#div").removeAttr("style"); 
+$("#div2").removeClass("abc");
+$('#xxx').html("");
+document.getElementById("xx").innerHTML = 
+$("input[type='checkbox']").attr('value')
+$("input[type='checkbox']").is(':checked')
+window.location = "<%=request.getContextPath()%>/xxx.jsp";
+window.open("<%=request.getContextPath()%>/xxx.jsp","_blank");
+
+File f=new File("D:\\upexcel");
+if (!f.exists()) {
+f.mkdir();
+}
+
+var tbl = window.opener.document.getElementById("tblVersion");
+str = str.substr(0, str.indexOf('_'));
+
+
+输入命令：netstat -ano，列出所有端口的情况。在列表中我们观察被占用的端口，比如是49157，首先找到它。
+查看被占用端口对应的PID，输入命令：netstat -aon|findstr "49157"，回车，记下最后一位数字，即PID,这里是2720
+继续输入tasklist|findstr "2720"，回车，查看是哪个进程或者程序占用了2720端口，结果是：svchost.exe
+或者是我们打开任务管理器，切换到进程选项卡，在PID一列查看2720对应的进程是谁，如果看不到PID这一列,如下图：
+则我们点击查看--->选择列，将PID(进程标示符)前面的勾打上，点击确定。
+这样我们就看到了PID这一列标识，看一下2720对应的进程是谁，如果没有，我们把下面的显示所有用户的进程前面的勾打上，就可以看到了，映像名称是svchost.exe，描述是，Windows的主进程,与上面命令查看的完全一致。
+结束该进程：在任务管理器中选中该进程点击”结束进程“按钮，或者是在cmd的命令窗口中输入：taskkill /f /t /im Tencentdl.exe。
+
+
+BOM:
+window
+location
+history
+
+DOM
+事件+函数
+页面广告：定时器
+
+jquery 2.0往上版本  不支持ie678  要用1.几版本
+Hbuilder编辑前端  有提示
+jquery对象 $ .val()  dom对象 .value
+
+restful  传递json数据
+socket
+
+maven  module  聚合工程  继承parent  平级的工程也能继承
+
+svn服务端 客户端  
+visualsvn 
+eclipse svn
+subversion  tortoisesvn 
+
+
+select count(c.aguid) mibTotal,
+count(c.mguid) mibCoverage,
+c.module 
+from (select a.module, max(a.guid) aguid, max(m.guid) mguid 
+from t_ens_mib_base a 
+LEFT JOIN t_ens_mib_match m 
+ON (m.fk_mib = a.guid) 
+where 1 = 1 and a.pdu='LSW' group by a.PDU,
+a.guid,
+a.enname,
+a.module,
+a.VERSION,
+a.PRODUCT) c 
+group by c.module
+
+使用group by 时，有一个规则需要遵守，即出现在select列表中的字段，如果没有在组函数中，那么必须出现在group by 子句中。（select中的字段不可以单独出现，必须出现在group语句中或者在组函数中。）
+
+
+pieData: {
+	datas: [
+		{
+			value: 10,
+			name: "覆盖"
+		},
+		{
+			value: 100,
+			name: "未覆盖"
+		}
+	],
+	legend: ["覆盖", "未覆盖"]
+}
+
+给以上value赋值：
+//this.pieData.datas[0].value=mibPieDataTmp.mibCoverage;
+//this.pieData.datas[1].value=mibPieDataTmp.nonCoverage;
+
+
+SELECT count(*)FROM (select 'x' from t_ens_mib_base a, t_ens_mib_match m where m.fk_mib = a.guid and a.pdu='LSW' group by a.PDU,a.guid,a.module,a.enname,a.VERSION,a.PRODUCT)
+
+
+
+NVL函数是一个空值转换函数
+NVL（表达式1，表达式2）
+如果表达式1为空值，NVL返回值为表达式2的值，否则返回表达式1的值。该函数的目的是把一个空值（null）转换成一个实际的值。其表达式的值可以是数字型、字符型和日期型。但是表达式1和表达式2的数据类型必须为同一个类型。
+对数字型： NVL（ comm,0);
+对字符型 NVL( TO_CHAR(comm), 'No Commission')
+对日期型 NVL（hiredate,' 31-DEC-99')
+
+
+查询基线表中，分模块，查询该模块中，基线匹配情况sql  匹配数与总体基线数——
+select count(c.aguid) mibTotal,count(c.mguid) mibCoverage,c.module from (
+
+select a.module, max(a.guid) aguid, max(m.guid) mguid from t_ens_mib_base a LEFT JOIN t_ens_mib_match m ON (m.fk_mib = a.guid) where 1 = 1 and a.pdu='LSW' group by a.PDU,a.guid,a.enname,a.module,a.VERSION,a.PRODUCT
+
+) c group by c.module
+
+
+
+
+group by 多个字段
+group by:
+等于说 是按照你所 group by 的 东西进行分组 ，然后再对分组内的东西进行操作
+group by 子句将查询结果按某一列或多列的值分组，值相等的为一组
+
+select Cno，count(sno)
+from sc
+group by cno;
+cno为课程号，sno为学号，sc表为选课表
+该语句对查询结果按cno的值分组，所有具有相同cno的值元组为一组，然后对每一组，作用聚集函数count计算，以求得该组的学生人数
+
+要取什么字段，必须要把它group分组，使其字段中，相同的归类到一起才行，否则select不到。
+可以这样理解吧，一个group是为前面取字段服务的，在那个字段group下，取得那个字段的值。
+
+
+
+select c.guid guid, 
+			c.enname enname,
+			c.cnname cnname ,
+			c.node_oid oid, 
+			c.times times, 
+			c.module,
+			c.node_name,
+			c.max_access 
+	  from (select nvl(SUM(m.mTime), 0) times,
+					a.enname,
+					NVL(TO_CHAR(a.cnname), '—') cnname,
+					a.node_oid,
+a.guid,
+max(a.module) module,
+a.node_name,
+a.max_access 
+		  from t_ens_mib_base a
+			 LEFT JOIN t_ens_mib_match m
+			  ON (m.fk_mib = a.guid)
+			  where 1=1 and a.pdu='LSW'
+		  and a.module='ENTITY-MIB'
+		  group by a.guid, 
+						a.module, 
+						a.enname,
+						a.cnname, 
+						a.node_oid, 
+						a.node_name,
+						a.max_access) c order by c.times desc nulls last
+
+
+vue 项目调试方法——
+webpack dev config js
+devtool: '#source-map'替换成
+devtool: '#cheap-module-eval-source-map'
+设置好之后，在vue项目调试的时候，代码里面标注debugger的时候就能看到对应的代码了，非常方便。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
