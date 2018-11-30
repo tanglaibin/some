@@ -51,9 +51,50 @@ order by A.product,A.patch, A.id, B.verid
 
 
 
-sql优化  数据库优化：
-1，尽量使用列名代替*号；
-2，
+9，group by 多个字段  left join结果集
+数据是以基线表left join匹配表得出的  基线表中 基线匹配到一次，连同匹配表中数据，列出来一次，但是基线数据是一样的，因为是相同的基线；只需要根据需要的数据，group一次即可，得到匹配次数。
+
+按照guid分组后，结果集表中，每条基线，除了匹配表中后面的数据被合并，原来的数据都一样。
+对需要取值的字段，采用聚合函数：SUM(m.mTime
+其他原来的基线数据，直接max封装取出来。因为值只有一个。
+				select nvl(SUM(m.mTime), 0) times,
+                    max(a.enname) enname,
+                    max(a.cnname) cnname,
+					max(a.node_oid) node_oid,
+					max(a.guid) guid,
+					max(a.module) module,
+					max(a.node_name) node_name,
+					max(a.max_access) max_access
+                            from t_ens_mib_base a
+                            LEFT JOIN t_ens_mib_match m
+                            ON (m.fk_mib = a.guid)
+		                    where 1=1 and a.pdu='LSW'
+                            and a.module='ENTITY-MIB'
+                            group by a.guid
+										 
+
+
+下面的方式结果一样，但是过多的group没啥意义，因为字段里值都一样。
+							select nvl(SUM(m.mTime), 0) times,
+							a.enname,
+							NVL(TO_CHAR(a.cnname), '—') cnname,
+							a.node_oid,
+							a.guid,
+							max(a.module) module,
+							a.node_name,
+							a.max_access 
+                              from t_ens_mib_base a
+                                 LEFT JOIN t_ens_mib_match m
+                                  ON (m.fk_mib = a.guid)
+		                          where 1=1 and a.pdu='LSW'
+                              and a.module='ENTITY-MIB'
+                              group by a.guid, 
+											a.module, 
+											a.enname,
+											a.cnname, 
+											a.node_oid, 
+											a.node_name,
+											a.max_access
 
 
 
