@@ -1,5 +1,40 @@
 sql:
 
+
+数据库插入防止重复值：
+declare
+  jilu_guid number;
+begin
+  select count(*)
+    into jilu_guid
+    from tlb t
+   where pdu = 'DC'
+     and version = 'R19'
+     and subsys = 'huawei'
+     and feature = 'a'
+     and xpath = 'b4'
+     and type is null  //不能写 type = ''
+     and operation is null
+     and delflag = 0
+     and source = 'api';
+  if jilu_guid = 0 then
+    insert into tlb
+      (pdu,
+       version,
+       subsys,
+       feature,
+       xpath,
+       type,
+       operation,
+       delflag,
+       source)
+    values
+      ('DC', 'R19', 'huawei', 'a', 'b4', '', '', 0, 'api');
+  end if;
+end;
+
+
+
 1,更新字段值  批量更新
 update r_problem set workStatus =1 where workStatus = 4
 UPDATE dir_module SET NAME ='L3_IPv4', description ='L3_IPv4' WHERE id = 375;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 376;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 443;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 947;
