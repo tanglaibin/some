@@ -111,12 +111,12 @@
 			
 
 		<if test="start == 0">
+		
 			SELECT count(*)
 			FROM (select 'x'
-			from t_ens_yang_base a
-			where 1=1
+			from t_ens_yang_base a 
 			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-				and a.pdu=#{yvo.pdu}
+				 a.pdu=#{yvo.pdu}
 			</if>
 			<if
 				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -141,13 +141,11 @@
 
 		<!-- api文档中被匹配到的yang文件总数 -->
 		<if test="start == 1">
-			SELECT count(*)
-			FROM (select 'x'
-			from t_ens_yang_base a,
-			t_test_yang_match m
-			where m.yang_guid = a.guid
-			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-				and a.pdu=#{yvo.pdu}
+		select sum(t.mguid) counts from
+				(select count(c.guid) mguid from
+				(select * from yang_base a where   
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				a.pdu=#{yvo.pdu}
 			</if>
 			<if
 				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -156,8 +154,7 @@
 			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
 				and a.subsys=#{yvo.subsys}
 			</if>
-			<if
-				test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
 				and a.feature=#{yvo.feature}
 			</if>
 			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
@@ -166,7 +163,15 @@
 			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 				and a.xpath like '%${yvo.xpath}%'
 			</if>
-			group by a.guid,a.subsys,m.guid)
+				) b LEFT JOIN yang_match c on (b.guid=c.yang_guid
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and c.pdu=#{yvo.pdu}
+			</if>
+			<if
+				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and c.version=#{yvo.version}
+			</if>
+				) GROUP BY b.guid) t
 		</if>
 	</select>
 
@@ -176,20 +181,13 @@
 		resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
 		
 		<if test="start == 0">
-		select count(c.aguid) yangTotal,
-		count(c.mguid) yangCoverage,
-		c.subsys
-		from (select a.subsys, max(a.guid) aguid, max(m.guid) mguid
-		from
-		t_ens_yang_base a
-		LEFT JOIN t_test_yang_match m
-		ON (m.yang_guid = a.guid)
-		where 1 = 1
+		select t.subsys,count(t.guid) yangTotal,sum(t.mguid) yangCoverage from
+				(select a.subsys,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
+				where
 		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			and a.pdu=#{yvo.pdu}
+			a.pdu=#{yvo.pdu}
 		</if>
-		<if
-			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
 			and a.version=#{yvo.version}
 		</if>
 		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
@@ -201,14 +199,10 @@
 		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
 			and a.subsys=#{yvo.subsys}
 		</if>
-		<if
-			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
 			and a.feature=#{yvo.feature}
 		</if>
-		group by a.subsys,
-		a.guid,
-		m.guid) c
-		group by c.subsys
+				group by a.subsys,a.guid)t GROUP BY t.subsys
 		</if>
 		
 		
@@ -354,28 +348,12 @@
 		
 		
 		<if test="start == 0">
-		select *
-		from (select rownum r,
-		t.subsys,
-		t.feature,
-		t.yangTotal,
-		t.yangCoverage
-		from (
-		select count(aguid) yangTotal,
-		count(mguid) yangCoverage,
-		c.subsys,
-		c.feature
-		from (select a.subsys,
-		a.feature,
-		max(a.guid) aguid,
-		max(m.guid) mguid
-		from t_ens_yang_base a
-		LEFT JOIN
-		t_test_yang_match m
-		ON (m.yang_guid = a.guid)
-		where 1=1
-		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			and a.pdu=#{yvo.pdu}
+			select *
+		from (select rownum r, t.subsys,t.feature,count(t.guid) yangTotal,sum(t.mguid) yangCoverage from
+				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
+				where 
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			 a.pdu=#{yvo.pdu}
 		</if>
 		<if
 			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -394,13 +372,8 @@
 			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
 			and a.feature=#{yvo.feature}
 		</if>
-		group by a.subsys,
-		a.feature,
-		a.guid,
-		m.guid) c
-		group by
-		c.subsys,c.feature) t
-		     <![CDATA[
+				group by a.subsys,a.feature,a.guid)t GROUP BY t.subsys,t.feature
+		 <![CDATA[
 				where rownum <= #{yvo.endRow})
 				where r > #{yvo.startRow}
 			]]>
@@ -451,13 +424,13 @@
 
 
 		<if test="start == 0">
-			select count(t.counts)
-			from (select count(*) counts from
-			(select a.subsys,a.feature
-			from t_ens_yang_base a
-			where 1 = 1
-			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-				and a.pdu=#{yvo.pdu}
+		select count(*)
+			from (
+		select t.subsys,t.feature,count(t.guid) aguid,sum(t.mguid) mguid from
+				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
+				where
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				 a.pdu=#{yvo.pdu}
 			</if>
 			<if
 				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -469,7 +442,7 @@
 			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 				and a.xpath like '%${yvo.xpath}%'
 			</if>
-			group by a.subsys,a.feature) c group by c.subsys,c.feature) t
+				group by a.subsys,a.feature,a.guid)t GROUP BY t.subsys,t.feature)y
 		</if>
 
 	</select>
@@ -479,27 +452,15 @@
 	<!-- yang xpath 列表 -->
 	<select id="getyangXpathList"
 		resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
+		
 		select *
-		from (select rownum r,
-		t.xpath,
-		t.guid,
-		t.subsys,
-		t.feature,
-		t.yangCover2
-		from(
-		select b.xpath,b.guid,
-		count(m.guid) yangCover2,
-		max(m.guid) mguid,
-		max(b.guid) bguid,
-		b.subsys,
-		b.feature
-		from ( select a.xpath,a.guid,a.subsys,a.feature from t_ens_yang_base a
-		where 1=1
-		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			and a.pdu=#{yvo.pdu}
+		from (select rownum r, max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid) yangCover2 from
+				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from yang_base a LEFT JOIN yang_match c on(a.guid=c.yang_guid) 
+				where
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			a.pdu=#{yvo.pdu}
 		</if>
-		<if
-			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
 			and a.version=#{yvo.version}
 		</if>
 		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
@@ -515,17 +476,9 @@
 		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 			and a.xpath like '%${yvo.xpath}%'
 		</if>
-		group by a.xpath,a.guid,a.subsys,a.feature )
-		b LEFT JOIN t_test_yang_match m
-		ON (b.guid = m.yang_guid
-		<if
-			test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
-			and m.product=#{yvo.product}
-		</if>
-		) group by b.xpath,b.guid,b.subsys,b.feature,m.guid order by
+				GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath order by
 		yangCover2 desc
-		) t 
-		     <![CDATA[
+		<![CDATA[
 				where rownum <= #{yvo.endRow})
 				where r > #{yvo.startRow}
 			]]>
@@ -582,12 +535,12 @@
        
        
        <if test="start == 0">
-		select count(*) counts
-		from (select 'x'
-		from t_ens_yang_base a
-		where 1 = 1
-		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			and a.pdu=#{yvo.pdu}
+			 select count(*)from(
+				select max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid) yangcover from
+				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from yang_base a LEFT JOIN yang_match c on(a.guid=c.yang_guid) 
+				where
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			a.pdu=#{yvo.pdu}
 		</if>
 		<if
 			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -606,32 +559,35 @@
 		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 			and a.xpath like '%${yvo.xpath}%'
 		</if>
-		group by a.xpath)
+				GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath)y
 		</if>
 	</select>
 
 
 	<!--获得yang下匹配数据详细数据列表 -->
-	<select id="getyangDetail"
-		resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
-		select max(a.value) value,max(a.operation) operation,max(a.type) type from
-		t_test_yang_match a
-		where 1=1
-		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			and a.pdu=#{yvo.pdu}
+	<select id="getyangDetail" resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
+	
+	select c.value,c.operation,c.type from
+				(select * from yang_base a where
+				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			 a.pdu=#{yvo.pdu}
 		</if>
 		<if
 			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
 			and a.version=#{yvo.version}
 		</if>
 		<if
-			test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
-			and a.product=#{yvo.product}
+			test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
 		</if>
-		<if test="yvo.guid != null and yvo.guid != '' and yvo.guid != 'ALL'">
-			and a.yang_guid=#{yvo.guid}
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
 		</if>
-		group by a.yang_guid
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath=#{yvo.xpath}
+		</if>
+				)b
+				left join yang_match c on (b.guid=c.yang_guid) GROUP BY c.value,c.operation,c.type
 	</select>
 
 
