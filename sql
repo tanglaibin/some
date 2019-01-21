@@ -111,12 +111,11 @@
 			
 
 		<if test="start == 0">
-		
 			SELECT count(*)
 			FROM (select 'x'
-			from t_ens_yang_base a 
+			from t_ens_yang_base a where 1=1 
 			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-				 a.pdu=#{yvo.pdu}
+				 and a.pdu=#{yvo.pdu}
 			</if>
 			<if
 				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -143,7 +142,7 @@
 		<if test="start == 1">
 		select sum(t.mguid) counts from
 				(select count(c.guid) mguid from
-				(select * from yang_base a where   
+				(select * from t_ens_yang_base a where   
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 				a.pdu=#{yvo.pdu}
 			</if>
@@ -163,7 +162,7 @@
 			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 				and a.xpath like '%${yvo.xpath}%'
 			</if>
-				) b LEFT JOIN yang_match c on (b.guid=c.yang_guid
+				) b LEFT JOIN t_test_yang_match c on (b.guid=c.yang_guid
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 				and c.pdu=#{yvo.pdu}
 			</if>
@@ -182,7 +181,7 @@
 		
 		<if test="start == 0">
 		select t.subsys,count(t.guid) yangTotal,sum(t.mguid) yangCoverage from
-				(select a.subsys,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
+				(select a.subsys,a.guid,count(c.guid) mguid from t_ens_yang_base a left join t_test_yang_match c on(a.guid=c.yang_guid) 
 				where
 		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 			a.pdu=#{yvo.pdu}
@@ -224,7 +223,7 @@
 				and t.xpath like '%${yvo.xpath}%'
 			</if>
 			and t.product=#{yvo.product}
-			) b,(select * from t_ens_yang_base c where
+			) b,(select * from t_ens_t_ens_yang_base c where
 			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 				c.pdu=#{yvo.pdu}
 			</if>
@@ -349,11 +348,16 @@
 		
 		<if test="start == 0">
 			select *
-		from (select rownum r, t.subsys,t.feature,count(t.guid) yangTotal,sum(t.mguid) yangCoverage from
-				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
-				where 
+		from (select rownum r,
+		y.subsys,
+		y.feature,
+		y.yangTotal,
+		y.yangCoverage
+		from (select t.subsys,t.feature,count(t.guid) yangTotal,sum(t.mguid) yangCoverage from
+				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from t_ens_yang_base a left join t_test_yang_match c on(a.guid=c.yang_guid) 
+				where 1=1
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			 a.pdu=#{yvo.pdu}
+			 and a.pdu=#{yvo.pdu}
 		</if>
 		<if
 			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -372,7 +376,7 @@
 			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
 			and a.feature=#{yvo.feature}
 		</if>
-				group by a.subsys,a.feature,a.guid)t GROUP BY t.subsys,t.feature
+				group by a.subsys,a.feature,a.guid)t GROUP BY t.subsys,t.feature)y
 		 <![CDATA[
 				where rownum <= #{yvo.endRow})
 				where r > #{yvo.startRow}
@@ -427,7 +431,7 @@
 		select count(*)
 			from (
 		select t.subsys,t.feature,count(t.guid) aguid,sum(t.mguid) mguid from
-				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from yang_base a left join yang_match c on(a.guid=c.yang_guid) 
+				(select a.subsys,a.feature,a.guid,count(c.guid) mguid from t_ens_yang_base a left join t_test_yang_match c on(a.guid=c.yang_guid) 
 				where
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 				 a.pdu=#{yvo.pdu}
@@ -454,8 +458,13 @@
 		resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
 		
 		select *
-		from (select rownum r, max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid) yangCover2 from
-				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from yang_base a LEFT JOIN yang_match c on(a.guid=c.yang_guid) 
+		from (select rownum r,
+		y.xpath,
+		y.subsys,
+		y.feature,
+		y.yangCover2
+		from(select max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid) yangCover2 from
+				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from t_ens_yang_base a LEFT JOIN t_test_yang_match c on(a.guid=c.yang_guid) 
 				where
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 			a.pdu=#{yvo.pdu}
@@ -477,7 +486,7 @@
 			and a.xpath like '%${yvo.xpath}%'
 		</if>
 				GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath order by
-		yangCover2 desc
+		yangCover2 desc)y
 		<![CDATA[
 				where rownum <= #{yvo.endRow})
 				where r > #{yvo.startRow}
@@ -537,7 +546,7 @@
        <if test="start == 0">
 			 select count(*)from(
 				select max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid) yangcover from
-				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from yang_base a LEFT JOIN yang_match c on(a.guid=c.yang_guid) 
+				(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from t_ens_yang_base a LEFT JOIN t_test_yang_match c on(a.guid=c.yang_guid) 
 				where
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
 			a.pdu=#{yvo.pdu}
@@ -568,9 +577,9 @@
 	<select id="getyangDetail" resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
 	
 	select c.value,c.operation,c.type from
-				(select * from yang_base a where
+				(select * from t_ens_yang_base a where 1=1 
 				<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
-			 a.pdu=#{yvo.pdu}
+			and a.pdu=#{yvo.pdu}
 		</if>
 		<if
 			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
@@ -586,8 +595,8 @@
 		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
 			and a.xpath=#{yvo.xpath}
 		</if>
-				)b
-				left join yang_match c on (b.guid=c.yang_guid) GROUP BY c.value,c.operation,c.type
+			)b left join t_test_yang_match c on (b.guid=c.yang_guid) 
+			GROUP BY c.value,c.operation,c.type
 	</select>
 
 
