@@ -34,6 +34,62 @@ begin
 end;
 
 
+产品数据：
+    select * from t_test_yang_match
+    DC：
+    select distinct(a.product) as name from
+    (select m.product from t_test_yang_match m where m.pdu='DC' and m.version='V2R19C00')a group by a.product order by a.product desc
+    AR：
+    select distinct(a.product)as name from
+    (select m.product from t_test_yang_match m where m.pdu='AR' and m.version='V3R19C00')a group by a.product
+    
+
+    产品下
+    1，产品下的基线总数  pdu：ar  version V3R19C00 product AR3260 
+    pdu 版本下很多产品 特定产品下基线数量？
+    中间表，pdu 版本相等的所有情况，再根据pdu 版本 product筛选
+    select count(*)from
+    (select b.guid from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' group by b.guid)
+    
+    select count(*)from
+          (select b.guid from 
+          (select a.*,m.product,m.source testsource from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+             where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name' group by b.guid)
+    
+    select * from t_ens_yang_base b where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name'
+    
+    
+    1，产品下的基线  被匹配到的总数
+    select 'x' from 
+    (select b.guid from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' group by b.guid) c ,
+    t_test_yang_match d where c.guid=d.yang_guid group by c.guid
+    2，产品下 柱形图数据 分领域展示  覆盖数据:要清楚展示的是什么！——展示的是产品等条件下领域内的基线总数、基线被覆盖到的次数，
+    基线被覆盖到的次数不是计算基线被覆盖了多少次，而是基线被覆盖到，就计数一次。
+    
+    统计的是领域下的基线总数  基线覆盖次数  同一个基线被覆盖了多少次 只能算这个基线被覆盖到。
+    select e.subsys,count(e.guid) total,count(e.mguid) cover from
+    (select c.guid,c.subsys,max(d.guid) mguid from 
+    (select b.guid,b.subsys from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys)e group by e.subsys
+    
+    3，表格数据 展示的是领域下 每个特性下的覆盖数：特性下的基线总数、被覆盖的总数
+    select e.subsys,e.feature,count(e.guid) total,count(e.mguid) cover from
+    (select c.guid,c.subsys,c.feature,max(d.guid) mguid from 
+    (select b.guid,b.subsys,b.feature from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys,b.feature) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys,c.feature)e group by e.subsys,e.feature
+
+
+
+
+
 
 1,更新字段值  批量更新
 update r_problem set workStatus =1 where workStatus = 4
