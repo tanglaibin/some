@@ -824,7 +824,400 @@ If you are trying to display a particular file type (for example, a WAV or PDF),
 							
 							
 							
-							
+		some:
+
+
+新的32为jdk1.8地址：C:\Program Files (x86)\Java\jdk1.8.0_191\bin
+旧的64位jdk1.8：C:\jdk1.8\Java\jdk1.8.0_131
+
+Program/BigData/FCollector/FCollector
+
+GetCalculatorResult
+GetLeftResult
+
+CE-L16CQ-FG，CE-L08CQ-FG，CE-L48XS-FG1，CEL24LQED-E，CE-L48XS-FD，CE-L04CF-EF\MD\EC，CE-L36CQ-FG，CE-L36CQ-FD1，CE-L36CQ-SD
+
+
+
+一边做把一些随时记录下来
+
+some：
+
+mib页面：vue  echarts  springmvc  mybatis-sql
+微服务：springboot 模块:
+
+Jackson 使用注解映射前端接收参数与JavaBean属性——
+1.@JsonIgnoreProperties(ignoreUnknown = true): 忽略未知的属性，如果前端传一些不存在的属性，自动过滤掉
+2.@JsonInclude(JsonInclude.Include.NON_NULL): 假如后端偷懒，直接向前端传PO或则把多个接口的VO用单个JavaBean实现，该注解的作用是只解析字段为不为null（也可为：NON_EMPTY，NON_DEFAULT等等）的属性，这样一些为空的属性就不会被解析传到前端
+3.@JsonProperty("case_name")：映射前后端参数，前端传case_name，后端解析成caseName,后端传数据前会把caseName解析为case_name再传给前端
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CoverageMibpo implements Serializable {
+
+@JsonProperty("max_access")
+private String maxAccess;
+
+为保证双向传递，需要自定义处理嵌入SpringMVC
+
+swagger2 ：扫描定义的controller包，页面展示测试微服务接口；  
+controller类接口自动化测试：
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AlarmOverviewControllerTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlarmOverviewControllerTest.class);
+    private MockMvc mockMvc;
+
+    /**
+     * web项目上下文
+     */
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    /**
+     * 所有测试方法执行之前执行该方法
+     */
+    @Before
+    public void before() {
+        //获取mockmvc对象实例
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    /**
+     * 根据返回的Json串转成Map
+     *
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    private static Map jsonBodyToMap(MockHttpServletResponse response) throws Exception {
+        byte[] bodyContent = null;
+        Map map = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        bodyContent = response.getContentAsByteArray();
+        map = objectMapper.readValue(bodyContent, Map.class);
+        return map;
+    }
+
+
+    @Test
+    public void getPDUList() throws Exception {
+        String urlAll = "/alarmAnalysis/pdu?pdu=FW&productLine=ENS";
+        testMvcResult(urlAll);
+    }
+
+
+    private void testMvcResult(String urlAll) throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(urlAll)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        LOGGER.info(result.getResponse().toString());
+    }
+}
+
+yang文件（excel+chm解析）：
+springboot  纯java项目  执行task——  
+
+pom parent继承——
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.0.6.RELEASE</version>
+	<relativePath/>
+</parent>
+
+task——
+@Component
+@Order(1)
+public class TaskRunner implements ApplicationRunner {
+
+    @Autowired
+    YangService yangService;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        String resultFilename = "result.txt";
+
+        String apiName="CloudEngine 6810LI V200R005C00 NETCONF YANG API参考.chm";
+        yangService.getApiData(apiName);
+    }
+}
+
+
+获取项目根目录——
+private String filePath = new File(".").getAbsolutePath();
+ChmFile chmFile = new ChmFile(filePath + File.separator + "file" + File.separator + apiName);
+
+带.号分隔——
+String[] yangs = linkText.split("\\.yang");
+
+反转字符  截取英文 截取到中文停止  -编码值——
+String s1 = yangs[m];
+s1 = new StringBuilder(s1).reverse().toString();
+StringBuffer sbf = new StringBuffer();
+char[] charArray = s1.toCharArray();
+for (int n = 0; n < charArray.length; n++) {
+	if ((charArray[n] >= 65) && (charArray[n] <= 122)) {
+		sbf.append(charArray[n]);
+	}else if(charArray[n] == 45){
+		sbf.append(charArray[n]);
+	}else if((charArray[n] >= 0x4e00) && (charArray[n] <= 0x9fbb)){
+		break;
+	}
+}
+
+
+dao——
+@Mapper
+public interface AlarmBaseMapper {
+
+    @Select("select* from t_ens_alarm_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "alarmId", column = "alarm_id"),
+            @Result(property = "alarmType", column = "alarm_type")
+    })
+    List<Alarm> selectByPduVersion(@Param("pdu") String pdu, @Param("version")String version);
+
+    @Select("select * from t_ens_alarm_base where alarm_id = #{alarm.alarmId} and pdu = #{alarm.pdu} and version = #{alarm.version}")
+    int isAlarmExisted(@Param("alarm") Alarm alarm);
+
+    @Insert("insert into " +
+            "t_ens_alarm_base(" +
+                "alarm_id," +
+                "enname," +
+                "cnname," +
+                "module," +
+                "alarm_type," +
+                "createtime," +
+                "pdu," +
+                "version," +
+                "feature" +
+            ") " +
+            "values(" +
+                "#{alarm.alarmId}," +
+                "#{alarm.enName}," +
+                "#{alarm.cnName}," +
+                "#{alarm.module}," +
+                "#{alarm.alarmType}," +
+                "#{alarm.createTime}," +
+                "#{alarm.pdu}," +
+                "#{alarm.version}," +
+                "#{alarm.feature}" +
+            ")")
+    int insertAlarm(@Param("alarm") Alarm alarm);
+
+    @Delete("delete from t_ens_alarm_base where pdu=#{alarm.pdu} and version = #{alarm.version} and alarm_id = #{alarm.alarmId}")
+    int deleteAlarm(@Param("alarm") Alarm alarm);
+
+}
+
+
+@Mapper
+public interface CmdBaseMapper {
+
+    @Select("select* from t_ens_cli_base where pdu = #{pdu} and version = #{version} and product= #{product}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "cmdIndex", column = "cmd_index"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersion(@Param("pdu") String pdu, @Param("version") String version, @Param("product") String product);
+
+    @Select("select distinct mid,feature,subsys from t_ens_cli_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "feature", column = "feature"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersioNoProduct(@Param("pdu") String pdu, @Param("version") String version);
+
+    @Update("update t_ens_cli_base " +
+            "set mid = #{cmd.mid}" +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "cmd_index=#{cmd.cmdIndex}")
+    int updateCmd(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "guid=#{cmd.guid}")
+    int updateCmdVrp(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdVrpByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMidNoProduct(@Param("cmd") Cmd cmd);
+}
+
+
+maven添加本地jar包   
+mvn install:install-file -Dfile=C:\Users\twx580078\Desktop\jchmlib-0.5.4\jchmlib-master-0.5.4.jar -DgroupId=org.apache.jchmlib -DartifactId=jchmlib -Dversion=0.5.4 -Dpackaging=jar
+
+
+gradle编译jar包   jchmlib
+
+
+递归  
+private void getYangG(ChmTopicsTree tree5, ChmFile chmFile, String yangfilename) {
+	String title = tree5.title;
+	String path = tree5.path;
+	ChmUnitInfo chmUnitInfo = chmFile.resolveObject(path);
+	String s = chmFile.retrieveObjectAsString(chmUnitInfo);
+	Document doc = Jsoup.parse(s);
+	Element body = doc.body();
+	Elements links = body.getElementsByTag("td");
+	if (links.size()>0){
+		Element tbodyFirst = links.get(0);
+		String operate = tbodyFirst.text();
+		if ("get".equals(operate)){
+			Element tbodySecond = links.get(1);
+			//得到XPATH
+			String xPathText = tbodySecond.text();
+			//获得get方法请求示例内容
+			Elements pres = body.getElementsByTag("pre");
+			Element firstPre = pres.first();
+			String firstPreText = firstPre.text();
+			//存库 .yang  堆叠全局信息 get方法 XPATH 请求示例内容
+			YangData yangData = new YangData();
+			yangData.setYangFileName(yangfilename);
+			yangData.setxPath(xPathText);
+			yangData.setOperate(operate);
+			yangData.setYangMethodName(title);
+			yangData.setRequestContent(firstPreText);
+			yangMapper.insertYangData(yangData);
+		}
+	}
+
+	if (tree5.children.size()>0){
+		LinkedList<ChmTopicsTree> children = tree5.children;
+		for (int i=0;i<children.size();i++){
+			ChmTopicsTree tree = children.get(i);
+			getYangG(tree,chmFile,yangfilename);
+		}
+	}
+}
+
+
+log文件分析：大数据hardoop  linux  flume  spark等
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
 							
 							
 							
