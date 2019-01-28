@@ -1,0 +1,1700 @@
+/******************************************************
+  Copyright (C) 2014-2018 Huawei Technologies Co., Ltd. All rights reserved.
+  
+Module description & tree structure
+tree:
+module: huawei-device
+   +--rw device
+   |  +--rw name?                string
+   |  +--rw domain-name?         string
+   |  +--rw management-ip?       inet:ip-prefix
+   |  +--rw description?         string
+   |  +--rw user-interfaces
+   |  |  +--rw user-interface* [name]
+   |  |     +--rw name                   string
+   |  |     +--rw authentication-mode?   enumeration
+   |  |     +--rw protocol?              enumeration
+   |  +--rw servers
+   |  |  +--rw stelnet-server
+   |  |  |  +--rw enabled?        boolean
+   |  |  |  +--rw service-port?   inet:port-number
+   |  |  +--rw telnet-server
+   |  |     +--rw enabled?        boolean
+   |  |     +--rw service-port?   inet:port-number
+   |  +--rw agile-controllers
+   |     +--rw type?               string
+   |     +--rw agile-controller* [address vpn-instance]
+   |        +--rw address         inet:host
+   |        +--rw port?           inet:port-number
+   |        +--rw vpn-instance    string
+   +--ro device-state
+   |  +--ro name?                        string
+   |  +--ro domain-name?                 string
+   |  +--ro model?                       string
+   |  +--ro device-fault-light-status
+   |  |  +--ro status-list* [slot-index]
+   |  |     +--ro slot-index    string
+   |  |     +--ro mode?         device-fault-light-mode
+   |  |     +--ro keeptime?     uint32
+   |  +--ro power-info
+   |  |  +--ro power-list* [id]
+   |  |     +--ro id                string
+   |  |     +--ro mode?             enumeration
+   |  |     +--ro state?            enumeration
+   |  |     +--ro rated-power?      uint32
+   |  |     +--ro current?          int32
+   |  |     +--ro voltage?          int32
+   |  |     +--ro realtime-power?   int32
+   |  +--ro temperature-info
+   |  |  +--ro temperature-list* [slot-index sensor-id]
+   |  |     +--ro slot-index                string
+   |  |     +--ro sensor-id                 string
+   |  |     +--ro state?                    enumeration
+   |  |     +--ro temperature?              int32
+   |  |     +--ro lower-threshold?          int32
+   |  |     +--ro lower-resume-threshold?   int32
+   |  |     +--ro upper-threshold?          int32
+   |  |     +--ro upper-resume-threshold?   int32
+   |  +--ro cellular-info
+   |  |  +--ro cellular-list* [index]
+   |  |     +--ro index           string
+   |  |     +--ro model?          string
+   |  |     +--ro manufacturer?   string
+   |  |     +--ro version?        string
+   |  +--ro working-mode {cloud-management-mode}?
+   |  |  +--ro current-mode?       device-working-mode
+   |  |  +--ro next-reboot-mode?   device-working-mode
+   |  +--ro esn?                         string
+   |  +--ro mac-address?                 yang:phys-address
+   |  +--ro vendor?                      string
+   |  +--ro state?                       enumeration
+   |  +--ro version?                     string
+   |  +--ro patch-version?               string
+   |  +--ro configuration-file
+   |  |  +--ro current-file-name?              string
+   |  |  +--ro current-file-hash-value?        string
+   |  |  +--ro resumed-configuration-status?   resumed-configuration-status
+   |  +--ro clock
+   |  |  +--ro current-datetime?   yang:date-and-time
+   |  |  +--ro boot-datetime?      yang:date-and-time
+   |  |  +--ro up-times?           uint64
+   |  +--ro resource
+   |  |  +--ro cpu
+   |  |  |  +--ro total?        uint32
+   |  |  |  +--ro free?         uint32
+   |  |  |  +--ro unreserved?   uint32
+   |  |  +--ro memory
+   |  |  |  +--ro total?   uint32
+   |  |  |  +--ro free?    uint32
+   |  |  +--ro unreserved-memory
+   |  |     +--ro total?   uint32
+   |  |     +--ro free?    uint32
+   |  +--ro performance
+   |  |  +--ro cpu-using-rate?           uint16
+   |  |  +--ro cpu-forward-using-rate?   uint16
+   |  |  +--ro memory-using-rate?        uint16
+   |  |  +--ro storages-using-rate
+   |  |     +--ro storage-using-rate* [device]
+   |  |        +--ro device        string
+   |  |        +--ro type?         enumeration
+   |  |        +--ro total-size?   uint32
+   |  |        +--ro used-size?    uint32
+   |  x--ro perfermance
+   |  |  +--ro cpu-using-rate?        uint16
+   |  |  +--ro memory-using-rate?     uint16
+   |  |  +--ro storages-using-rate
+   |  |     +--ro storage-using-rate* [device]
+   |  |        +--ro device        string
+   |  |        +--ro type?         enumeration
+   |  |        +--ro total-size?   uint32
+   |  |        +--ro used-size?    uint32
+   |  +--ro position
+   |  |  +--ro status?          enumeration
+   |  |  +--ro longitude?       decimal64
+   |  |  +--ro latitude?        decimal64
+   |  |  +--ro speed?           decimal64
+   |  |  +--ro satellite-num?   uint32
+   |  |  +--ro altitude?        decimal64
+   |  +--ro user-define-info
+   |  |  +--ro extension?            string
+   |  |  +--ro token?                string
+   |  |  +--ro local-manage-ip?      inet:ip-prefix
+   |  |  +--ro stack-status?         enumeration
+   |  |  +--ro system-mac-address?   yang:phys-address
+   |  +--ro boards
+   |  |  +--ro board* [slot]
+   |  |     +--ro slot          uint8
+   |  |     +--ro name?         string
+   |  |     +--ro interfaces
+   |  |        +--ro interface*   if:interface-ref
+   |  +--ro interfaces
+   |  |  +--ro interface*   if:interface-ref
+   |  +--ro device-config-status {device-ready-notification}?
+   |  |  +--ro config-status?    config-status
+   |  |  +--ro status-message?   string
+   |  +--ro upstream-interfaces
+   |     x--ro interface*            if:interface-ref
+   |     +--ro upstream-interface* [name]
+   |     |  +--ro name                   if:interface-ref
+   |     |  +--ro correlate-interface?   if:interface-ref
+   |     |  +--ro status?                enumeration
+   |     +--ro management-vlan-id  uint16
+   |     +--ro management-vlan-ip  inet:ip-address-no-zone
+   +--rw set-factory-config-file
+   |  +--rw (operate-type)?
+   |     +--:(type)
+   |     |  +--rw type?        identityref
+   |     +--:(file-name)
+   |        +--rw file-name?   string
+   +--rw set-alarm-threshold
+   |  +--rw alarm-threshold* [type one-level two-level]
+   |     +--rw type         identityref
+   |     +--rw one-level    union
+   |     +--rw two-level    union
+   +--rw position-config
+   |  +--rw position-source?   identityref
+   |  +--rw position-enable?   boolean
+   +--rw config-temperature-threshold
+      +--rw slot-index         string
+      +--rw lower-threshold    int32
+      +--rw upper-threshold    int32
+rpcs:
+   +---x set-tempsns-threshold
+   |  +---w input
+   |     +---w slot-index         string
+   |     +---w sensor-id          uint32
+   |     +---w major-threshold    uint32
+   +---x system-restart
+   |  +---w input
+   |     +---w parameter?   string
+   +---x switch-working-mode {cloud-management-mode}?
+   |  +---w input
+   |     +---w next-reboot-working-mode    device-working-mode
+   |     +---w reboot2new?                 boolean
+   +---x register-status-notify
+   |  +---w input
+   |     +---w register-success?       boolean
+   |     +---w register-fail-reason?   uint32
+   +---x system-blink
+   |  +---w input
+   |     +---w time?   uint16
+   +---x restore-factory-config
+   |  +---w input
+   |     +---w enable?                       boolean
+   |     +---w keep-service-configuration?   boolean
+   +---x unregister-notify
+   |  +---w input
+   |     +---w unregister-reason?   enumeration
+   +---x config-fault-light-status
+   |  +---w input
+   |     +---w slot-index?   string
+   |     +---w mode          device-fault-light-mode
+   |     +---w keeptime?     uint32
+   +---x get-board-reboot-type
+   |  +---w input
+   |  |  +---w slot-index?   string
+   |  +--ro output
+   |     +--ro reboot-type-list* [slot-index time]
+   |        +--ro slot-index     string
+   |        +--ro time           string
+   |        +--ro reboot-type?   string
+   +---x get-board-reset-reason
+   |  +---w input
+   |  |  +---w slot-index?   string
+   |  +--ro output
+   |     +--ro reason-list* [slot-index reset-time]
+   |        +--ro slot-index    string
+   |        +--ro reset-time    string
+   |        +--ro reason?       string
+   +---x get-board-history-reset-reason
+   |  +---w input
+   |  |  +---w slot-index    string
+   |  +--ro output
+   |     +--ro reason-list* [slot-index reset-time]
+   |        +--ro slot-index    string
+   |        +--ro reset-time    string
+   |        +--ro reason?       string
+   +---x get-system-reset-reason
+   |  +--ro output
+   |     +--ro reason-list* [name time]
+   |        +--ro name      string
+   |        +--ro time      string
+   |        +--ro reason?   string
+   +---x get-system-connect-fail-reason
+   |  +--ro output
+   |     +--ro reason-list* [time]
+   |        +--ro time      string
+   |        +--ro reason?   string
+   +---x reset-board
+   |  +---w input
+   |     +---w slot-index      string
+   |     +---w reset-reason?   enumeration
+   +---x sync-system-date-time
+   |  +---w input
+   |     +---w sys-datetime    yang:date-and-time
+   +---x board-register-status-notify
+      +---w input
+         +---w register-status-list* [slot-index]
+            +---w slot-index              string
+            +---w register-success?       boolean
+            +---w register-fail-reason?   uint32
+notifications:
+   +---n board-event
+   |  +--ro slot?         -> /device-state/boards/board/slot
+   |  +--ro name?         -> /device-state/boards/board[slot = current()/../slot]/name
+   |  +--ro interfaces
+   |  |  +--ro interface*   if:interface-ref
+   |  +--ro event?        enumeration
+   +---n device-config-status {device-ready-notification}?
+   |  +--ro config-status?    config-status
+   |  +--ro status-message?   string
+   +---n sysmac-switch-event
+      +--ro new-sysmac?   yang:phys-address
+
+*/
+
+module huawei-device {
+  namespace "urn:huawei:params:xml:ns:yang:huawei-device";
+  prefix dev;
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  import ietf-interfaces {
+    prefix if;
+  }
+
+  organization "Huawei Technologies Co., Ltd.";
+  contact "Huawei Industrial Base
+           Bantian, Longgang
+           Shenzhen 518129
+           People's Republic of China
+           Website: http://www.huawei.com
+           Email: support@huawei.com";
+  description
+    "This module contains a collection of YANG definitions for the
+     configuration of huawei device properties.";
+  
+  revision "2018-08-22" {
+    description 
+      "edited by switch: add new leaf in upstream-interfaces, recording management vlan id and ip information.";
+  }
+  revision "2018-08-17" {
+    description "edited by ar: add upstream interface and correlate interface.";
+  }
+  
+  revision "2018-08-07" {
+    description "edited by ar: add agile-controllers container.";
+  }
+  
+  revision "2018-07-19" {
+    description "edited by switch: modify stack-status leaf, add sysmac-switch-event notification, system-mac-address leaf and rpc board-register-status-notify.";
+  }
+
+  revision "2018-07-02" {
+    description "edited by wlan: support report local manage ip.";
+  }
+  
+  revision "2018-06-14" {
+    description "edited by switch: add rpc reset-board and leaf stack-status.";
+  }
+
+  revision "2018-06-06" {
+    description "edited by EC-IoT: add cellular-info.";
+  }          
+     
+  revision "2018-06-05" {
+    description "edited by EC-IoT: add configuration-file hash value.";
+  }     
+     
+  revision "2018-05-18" {
+    description
+      "Modify organization information, add contact information and modify rpc restore-factory-config for description mistake.";
+  }
+  revision 2018-04-17 {
+    description "edited by LSW: change the condition of leaf register-fail-reason.";
+  }
+     
+  revision 2018-03-28 {
+    description "edited by AR: add synchronize system date-time rpc function.";
+  }
+  
+  revision 2018-03-22 {
+      description "Add factory type.";
+  }
+
+
+  revision 2018-03-15 {
+    description "Add 'perfermance' to keep compatible in firewall products.";
+  }
+
+  revision 2018-03-12 {
+    description "Add access network device.";
+  }
+
+  revision "2017-11-29" {
+    description
+      "V2.1 edited by Switch: ad fault-light status function, temperature / power information information;
+      add reset-reason related rpc function.";      
+  }
+
+  revision "2017-09-05" {
+    description
+      "V2.0 repaired yang loading error for leaf status-message.";
+  }
+
+  revision "2017-08-18" {
+    description
+      "V1.9 Modify organization information, add contact information and modify rpc restore-factory-config for description mistake.";
+  }
+
+  revision "2017-04-17" {
+    description
+      "V1.8 edited by AR, the new version add support for setting thresholds, 
+      get device sysname and setting location information for source and enable";
+  }
+  
+   revision "2017-02-24" {
+    description
+      "V1.7 edited by AR, the new version added restore-factory-config, factory-config-type, factory-current-config,
+      factory-default-config, restore-factory-config, set-factory-config-file,  
+      for setting the factory tag and setting the factory configuration file contents";
+  }
+  
+   revision "2016-12-01" {
+    description
+      "V1.6 Added configuration-file container, for getting status of configuration file";
+  }
+
+   revision "2016-11-30" {
+    description
+      "V1.5 Modify perfermance to performance,for Spelling mistake";
+  }
+
+  revision "2016-09-05" {
+    description
+      "V1.4 Modify user-interfaces,add all enum";
+  }
+
+  revision "2016-08-18" {
+    description
+      "V1.3 add device-config-status";
+  }
+
+  revision "2016-08-15" {
+    description
+      "V1.2 edited by campus switch, the new version added a new notification(ro upstream-interfaces )
+      and a new device-status to indicate the device is ready for configuration operation or not.";
+  }
+
+  revision "2016-07-15" {
+    description
+      "V1.1 second revision edited by firewall, the new version added a new notification
+      and a new device-status to indicate the device is ready for configuration operation or not.";
+  }
+
+  revision 2014-10-22 {
+    description "V1.0 Initial revision.";
+  }
+
+  /*
+   * feature
+   */
+  feature cloud-management-mode {
+    description
+    "Device support cloud management mode, it will use a default configuration"
+     + " to connect controller, then get new configuration and license from "
+     + " controller. So when a device change to cloud management mode, it should"
+     + " reboot to switch the working mode.";
+  }
+
+  feature device-ready-notification {
+    description
+      "Indicate the notification, when device's config-status changes, this notification will be sended to netconf client";
+  }
+  
+  /*
+   * Identities
+   */
+  identity position-source-type {
+     description "position source types.";
+   }
+
+  identity position-source-from-gps {
+    base position-source-type;
+    description "position source from gps.";
+  }
+
+  identity position-source-from-beidou {
+    base position-source-type;
+    description "position source from beidou.";
+  }
+
+  identity position-source-from-mix {
+    base position-source-type;
+    description "position source from beidou and gps.";
+  }
+
+   identity threshold-type {
+    description "Threshold settings types.";
+  }
+
+  identity cpu-threshold-type {
+    base threshold-type;
+    description "CPU Usage threshold setting.";
+  }
+
+  identity mem-threshold-type {
+    base threshold-type;
+    description "Mem Usage threshold setting.";
+  }
+
+  identity storage-threshold-type {
+    base threshold-type;
+    description "Storage Usage threshold setting.";
+  }
+
+  /* set factory configuration file type definitions */
+  identity factory-config-type {
+    description "Factory configuration settings types.";
+  }
+
+  identity factory-current-config {
+    base factory-config-type;
+    description "Set the current configuration as factory configuration.";
+  }
+
+  identity factory-default-config {
+    base factory-config-type;
+    description "Restore default factory configuration.";
+  }
+
+  identity factory-pre-config {
+    base factory-config-type;
+    description "Restore pre-configured factory configuration.";
+  }
+  /*
+   * typedef
+   */
+  typedef device-fault-light-mode {
+    type enumeration{
+      enum normal {
+        value 1;
+        description "normal mode";
+      }
+      enum under-repair {
+        value 2;
+        description "under-rapair mode";
+      }
+    }
+    description "Device fault-light mode";
+  }
+
+  typedef device-working-mode {
+    type enumeration {
+      enum traditional {
+        value 0;
+        description "Non-cloud-management mode.";
+      }
+      enum cloud-management {
+        value 1;
+        description "Cloud management mode.";
+      }
+    }
+    description "Device working mode status.";
+  }
+
+  typedef config-status {
+    type enumeration {
+      enum ready{
+        description "Device's config-status is ready.";
+      }
+      enum not-ready{
+        description "Device's config-status is not-ready.";
+      }
+    }
+    description "Device's config-status value.";
+  }
+
+  grouping board-event-params {
+    description "Common board-event parameters.";
+    leaf slot {
+      type leafref {
+        path "/device-state/boards/board/slot";
+      }
+    }
+    leaf name {
+      type leafref {
+        path "/device-state/boards/board[slot = current()/../slot]"
+          + "/name";
+      }
+    }
+  }
+
+  typedef resumed-configuration-status {
+    type enumeration {
+      enum success{
+        description "Device's config-status is success.";
+      }
+      enum processing{
+        description "Device's config-status is processing.";
+      }
+      enum fail{
+        description "Device's config-status is fail.";
+      }
+    }
+    description "Device's config-status value.";
+  }
+
+  container device {
+    description "Device group configuration.";
+
+    leaf name {
+      type string;
+      description "The name of device, for example SZ-LG-001.";
+    }
+    
+    leaf domain-name {
+      type string{
+          length "1..255";
+      }
+      description "The domain-name of device, for example www.huawei.com";
+    }
+
+    leaf management-ip {
+      type inet:ip-prefix;
+      description "The management ip address of the device.";
+    }
+
+    leaf description {
+      type string {
+          length "1..255";
+      }
+      description "The description of the device.";
+    }
+
+    container user-interfaces {
+      list user-interface {
+        key name;
+        leaf name {
+          type string;
+          description "The name of user-interface, link 'vty 3' or 'con 0'.";
+        }
+        leaf authentication-mode {
+          type enumeration {
+            enum aaa {
+                description "The user-interface authentication mode is aaa.";
+            }
+            enum password {
+                description "The user-interface authentication mode is password.";
+            }
+          }
+          description "The user-interface authentication mode.";
+        }
+        leaf protocol {
+          type enumeration {
+            enum all {
+                description "The user-interface authentication protocol is all.";
+            }
+            enum ssh {
+                description "The user-interface authentication protocol is ssh.";
+            }
+            enum telnet {
+                description "The user-interface authentication protocol is telnet.";
+            }
+          }
+        }
+      }
+    }
+
+    container servers {
+      container stelnet-server {
+        leaf enabled {
+          type boolean;
+          description "Enable or disable the ssh telnet service.";
+        }
+        leaf service-port {
+          type inet:port-number;
+          description "The ssh telnet server listening port number, default 22.";
+        }
+      }
+
+      container telnet-server {
+        leaf enabled {
+          type boolean;
+          description "Enable or disable the telnet service.";
+        }
+        leaf service-port {
+          type inet:port-number;
+          description "The telnet server listening port number, default 23.";
+        }
+      }
+    }
+    
+    container agile-controllers {
+      description "Agile Controller Configuration";
+
+      leaf type {
+        description "The leaf specifies the type of gile-controllers.";
+        type string {
+          length "1..255";
+        }
+      }
+             
+      list agile-controller {
+        key "address vpn-instance";
+
+        leaf address {
+          type inet:host;
+          description
+            "The leaf uniquely specifies the address of 
+             the Agile Controller. One of the following must 
+             be specified: an ipv4 address, an ipv6 
+             address, or a host name.";
+         }
+         
+         leaf port {
+           type inet:port-number;
+           default 10020;
+           description
+             "The leaf specifies the listening port number of the Agile Controller.";
+         }
+         
+        leaf vpn-instance {
+          description "The leaf specifies the VRF instance name.";
+          type string {
+            length "1..31";
+          }
+        } 
+      }
+    }
+  }
+
+  container device-state {
+    config false;
+    description "Device group operational state.";
+
+    leaf name {
+      type string;
+      description "The sysname of device, for example 'huawei'.";
+    }
+    
+    leaf domain-name {
+      type string{
+          length "1..255";
+      }
+      description "The domain-name of device, for example www.huawei.com";
+    }
+
+    leaf model {
+      type string;
+      description "The model of device, for example 'AR511', 'AR3670'.";
+    }    
+
+    container device-fault-light-status {      
+      description "device fault-light status";
+      list status-list {     
+        key "slot-index";
+        leaf slot-index {
+          type string;          
+          description "slot-index information of board, indicates slot ID.";
+        } 
+        leaf mode {
+          type device-fault-light-mode;
+          default normal;
+          description "Current device fault-light mode status.";
+        }
+        leaf keeptime {
+          when "../mode = 'under-repair'";
+          type uint32;
+          description "time duration set";
+        }
+      }
+    }  
+    
+    container power-info {
+      description "power boards/cards information"; 
+      list power-list { 
+          key "id";              	    
+          leaf id {
+            type string;
+            description "power board slot-id or power card-id, such as 1/PWR1, etc.";
+          }
+          leaf mode {  
+            type enumeration {
+              enum ac{
+                description "Power is ac mode"; 
+              }
+              enum dc{
+                description "Power is dc mode"; 
+              }                        
+              enum hvdc{
+                description "Power is hvdc mode"; 
+              }                  
+              enum unknown{
+                description "Power is unknown mode"; 
+              }                        
+            }
+            description "Power mode";   
+          }                
+          leaf state {
+            type enumeration {
+              enum supply { 
+                description "Power supply status is supply.";
+              }                                            
+              enum not-supply{
+                description "Power supply status is not-supply.";
+              }                       
+            }
+            description "Power supply status";
+          }          
+          leaf rated-power {
+            type uint32;
+            units "mW";
+            description "board rated-power, Only support in box switch.";   
+          }
+          leaf current {
+            type int32;
+            units "mA";
+            description "Current value of power board, support in chassis switch.";
+          }
+          leaf voltage {
+            type int32;
+            units "mV";
+            description "Voltage value of power board, support in chassis switch.";
+          }
+          leaf realtime-power {
+            type int32;
+            units "mW";
+            description "Realtime-power value of power board, support in chassis switch.";
+          }
+      }	    
+    }  
+
+    container temperature-info {
+        description "temperature information of boards, support in box switch.";
+        list temperature-list {
+            key "slot-index sensor-id";
+            leaf slot-index {
+                type string;
+                description "slot-index information of board, indicates slot ID, such as 1/1, etc.";
+            }         
+            leaf sensor-id {
+                type string;
+                description "temperature sensor id (NA for box switch)";
+            }
+            leaf state {
+                type enumeration {
+                  enum normal {
+                    description "Sensor or board temperature status is normal.";
+                  }
+                  enum abnormal {
+                    description "Sensor or board temperature status is abnormal.";
+                  }
+                }
+                description "Sensor or board temperature status.";
+            }          
+            leaf temperature {
+                type int32;
+                units "C";
+                description "Temperature value";
+            }
+            leaf lower-threshold {
+                type int32;
+                units "C";
+                description "Lower temperature threshold";
+            }
+            leaf lower-resume-threshold {
+                type int32;
+                units "C";
+                description "Lower resume temperature threshold";
+            }
+            leaf upper-threshold {
+                type int32;
+                units "C";
+                description "Upper temperature threshold";
+            }
+            leaf upper-resume-threshold {
+                type int32;
+                units "C";
+                description "Upper resume temperature threshold";
+            }    
+        }
+    }
+    
+    container cellular-info {
+        description "cellular information of boards.";
+        
+        list cellular-list {
+            key "index";
+            leaf index {
+                type string;
+                description "cellular slot/Adaptor/interface index information of board, such as 0/0/0, etc.";
+            }
+            leaf model {
+                type string;
+                description "The model of cellular, such as ME909s-120, etc.";
+            }
+            leaf manufacturer {
+                type string;
+                description "The manufacturer of cellular, such as Huawei Technologies Co., Ltd., etc.";
+            }
+            leaf version {
+                type string;
+                description "The version of cellular, such as 11.617.07.10.00, etc.";
+            }
+        }
+    }
+
+    container working-mode {
+      if-feature cloud-management-mode ;
+
+      description "Device working mode.";
+
+      leaf current-mode {
+        type device-working-mode ;
+        description "Current working mode.";
+      }
+
+      leaf next-reboot-mode {
+        type device-working-mode ;
+        description "Working mode to be valid after next boot.";
+      }
+    }
+
+    leaf esn {
+      type string;
+    }
+
+    leaf mac-address {
+      type yang:phys-address;
+      description "The device mac-address";
+    }
+
+    leaf vendor {
+      type string;
+      default "Huawei Technologies Co., Ltd.";
+    }
+
+    leaf state {
+      type enumeration {
+        enum green {
+            description "The device's running state is green.";
+        }
+        enum yellow {
+            description "The device's running state is yellow.";
+        }
+        enum red {
+            description "The device's running state is red.";
+        }
+      }
+      description "The device's running state.";
+    }
+
+    leaf version {
+      type string;
+      description "The software version of device.";
+    }
+
+    leaf patch-version {
+      type string;
+      description "The patch version of device.";
+    }
+
+    container configuration-file {
+      description "The startup file of device.";
+      leaf current-file-name {
+        type string;
+        description "The current configuration file name.";
+      }
+      
+      leaf current-file-hash-value {
+        type string;
+        description "The current configuration file hash value.";
+      }
+
+      leaf resumed-configuration-status {
+        type resumed-configuration-status;
+        description "The status of current configuration file resumed.";
+      }
+    }
+
+    container clock {
+      description "Monitoring of the system date and time properties.";
+      leaf current-datetime {
+        type yang:date-and-time;
+        description "The current system date and time.";
+      }
+      leaf boot-datetime {
+        type yang:date-and-time;
+        description "The system date and time when the system last restarted.";
+      }
+      leaf up-times {
+        type uint64;
+        units "Second";
+        description "The number of seconds the system has been up.";
+      }
+    }
+
+    container resource {
+      description
+        "Device realtime resource infomation";
+
+      container cpu {
+        description "Device realtime compute resource infomation.";
+
+        leaf total {
+          type uint32;
+          description
+            "The total cpu number of device";
+        }
+
+        leaf free {
+          type uint32;
+          description
+            "The free cpu number of device";
+        }
+        leaf unreserved {
+          description
+            "The unreserved cpu number of device";
+          type uint32;
+        }
+      }
+
+      container memory {
+        description "Device realtime memory resource infomation";
+
+        leaf total {
+          type uint32;
+          units "MB";
+          description "The total memory size of device.";
+        }
+
+        leaf free {
+          type uint32;
+          units "MB";
+          description "The free memory size of device.";
+        }
+      }
+      container unreserved-memory {
+
+        leaf total {
+          type uint32;
+          units "MB";
+          description "The total unreserved-memory size of device.";
+        }
+
+        leaf free {
+          type uint32;
+          units "MB";
+          description "The free unreserved-memory size of device.";
+        }
+        description "Device unreserved memory for the 3rd party application";
+      }
+	}
+
+    container performance {
+      description "A collection of device performance data.";
+      leaf cpu-using-rate {
+        type uint16 {
+          range "0..100";
+        }
+        description "The cpu usage of control plane.";
+      }
+      leaf cpu-forward-using-rate {
+        type uint16 {
+          range "0..100";
+        }
+        description "The cpu usage of date plane.";
+      }
+      leaf memory-using-rate {
+        type uint16 {
+          range "0..100";
+        }
+      }
+      container storages-using-rate {
+        list storage-using-rate {
+          key "device";
+          leaf device {
+            type string;
+            description "The storage device name, for example: flash, hdd0, and so on";
+          }
+          leaf type {
+            type enumeration {
+              enum flash {
+                description "The storage device type is flash.";
+              }
+              enum harddisk {
+                description "The storage device type is harddisk.";
+              }
+              enum sd0 {
+                description "The storage device type is sd0.";
+              }
+              enum sd1 {
+                description "The storage device type is sd1.";
+              }
+              enum hotplugable_harddisk {
+                description "The storage device type is hotplugable_harddisk.";
+              }
+            }
+          }
+          leaf total-size {
+            type uint32;
+            units "MB";
+          }
+          leaf used-size {
+            type uint32;
+            units "MB";
+          }
+        }
+      }
+    }
+
+    container perfermance {
+      status deprecated;
+      description "A collection of device perfermace data.";
+      leaf cpu-using-rate {
+        type uint16 {
+          range "0..100";
+        }
+      }
+      leaf memory-using-rate {
+        type uint16 {
+          range "0..100";
+        }
+      }
+      container storages-using-rate {
+        list storage-using-rate {
+          key "device";
+          leaf device {
+            type string;
+            description "The storage device name, for example: flash, hdd0, and so on";
+          }
+          leaf type {
+            type enumeration {
+              enum flash;
+              enum harddisk;
+            }
+          }
+          leaf total-size {
+            type uint32;
+            units "MB";
+          }
+          leaf used-size {
+            type uint32;
+            units "MB";
+          }
+        }
+      }
+    }
+	
+    container position {
+      description "The satellite positioning information.";
+
+      leaf status {
+        type enumeration {
+          enum disable {
+            description "The satellite positioning status is disable.";
+          }
+          enum enable {
+            description "The satellite positioning status is enable.";
+          }
+        }
+      }
+      leaf longitude {
+        type decimal64 {
+          fraction-digits 16;
+        }
+      }
+      leaf latitude {
+        type decimal64 {
+          fraction-digits 16;
+        }
+      }
+      leaf speed {
+        type decimal64 {
+          fraction-digits 10;
+        }
+        units "km/h";
+      }
+      leaf satellite-num {
+        type uint32;
+      }
+      leaf altitude {
+        type decimal64 {
+          fraction-digits 10;
+        }
+        units "metre";
+      }
+    }
+
+    container user-define-info {
+      leaf extension {
+        type string;
+      }
+
+      leaf token {
+        type string;
+        description "Token.";
+      }
+	  
+      leaf local-manage-ip {
+        type inet:ip-prefix;
+        description "The manage ip address used by the device to connect controller.";
+      }
+
+      leaf stack-status {
+        type enumeration {
+          enum single {
+            description "System is not under stack status.";
+            value 0;
+          }
+          enum stack {
+            description "System is under stack status, and has multi member devices.";
+            value 1;
+          }
+        }
+        description "Indicate that whether system is under stack mode, and has multi member devices.";      
+      }
+
+      leaf system-mac-address {
+        type yang:phys-address;
+        description "The system mac-address of the device";
+      }	  
+    }
+
+    container boards {
+      list board {
+        key "slot";
+        leaf slot {
+          type uint8;
+          description "Indicate the board position in chassis.";
+        }
+        leaf name {
+          type string;
+          description "The name of board, for example SRU40, 8FE1GE.";
+        }
+        container interfaces {
+          leaf-list interface {
+            type if:interface-ref;
+          }
+        }
+      }
+    }
+
+    container interfaces {
+      description "List all interfaces in this device.";
+      leaf-list interface {
+        type if:interface-ref;
+      }
+    }
+
+
+    container device-config-status{
+      if-feature device-ready-notification;
+
+      description "Indicate the device is ready for configuration operation or not.";
+
+      leaf config-status {
+        type config-status;
+      }
+
+      leaf status-message {
+        when "../config-status = 'not-ready'";
+        type string;
+        description "Indicate the device's config status details.";
+      }
+    }
+
+    container upstream-interfaces {
+      description "List all upstream interfaces in this device, management vlan id and ip information.";
+      leaf-list interface {
+        status deprecated;
+        type if:interface-ref;
+      }
+      
+      list upstream-interface {
+        description "List all upstream interfaces in this device.";
+        key "name";
+        
+        leaf name {
+          type if:interface-ref;
+          description "The name of the interface.";
+        }
+
+        leaf correlate-interface {
+          type if:interface-ref;
+          description "The correlate-interface of the interface.";
+        }
+
+        leaf status {
+          description "The status of the interface.";
+          type enumeration {
+            enum "controller" {
+              value 1;
+              description "Connection controller interface.";
+            }
+          }
+        }
+      }
+      leaf management-vlan-id {
+        type uint16 {
+          range "1..4094";
+        }
+        description "management vlan id.";
+      }
+      leaf management-vlan-ip {
+        type inet:ip-address-no-zone;
+        description "management vlan ip address.";
+      }
+    }
+  }
+  
+  container set-factory-config-file {
+    description "Specify the restore factory profile.";
+    choice operate-type {
+      leaf type {
+        type identityref {
+            base factory-config-type;
+         }
+        description "Specify the factory profile source.";
+      }
+
+      leaf file-name {
+        type string;
+        description "Set a specified file as factory configuration file.";
+      }
+    }
+  }
+ 
+  container set-alarm-threshold {
+    list alarm-threshold {
+      key "type one-level two-level";
+      leaf type {
+        type identityref {
+          base threshold-type;
+        }
+        description "The type of the specific threshold.";
+      }
+
+      leaf one-level {
+        type union {
+          type uint32;
+        }
+        description "The value of the specific for prompt level alarm.";
+      }
+
+      leaf two-level {
+        type union {
+          type uint32;
+        }
+        description "The value of the specific for severity level alarm.";
+      }
+    }
+  }
+ 
+  container position-config {
+    description "position information configuration";    
+    leaf position-source {
+      type identityref {
+          base position-source-type;
+       }
+      description "Set position source from gps Beidou or mix.";
+     }
+     leaf position-enable {
+       type boolean;
+       description "Enable or disable get position.";
+     }
+  }
+
+  container config-temperature-threshold {
+        description "configure the temperature threshold, support in box switch.";
+        leaf slot-index {
+            type string;
+            mandatory true;
+            description "slot-index information of board, indicates slot ID.";
+        }        
+        leaf lower-threshold {
+            type int32;          
+            units "C";
+            mandatory true;
+            description "lower temperature threshold to be set.";
+        }                
+        leaf upper-threshold {
+            type int32;
+            units "C";
+            mandatory true;
+            description "upper temperature threshold to be set.";
+        }                                                
+  }
+
+  rpc set-tempsns-threshold {
+    description "set threshold for temperature sensors, support in chassis switch.";
+    input {
+      leaf slot-index {
+        type string;
+        mandatory true;
+        description "slot-index information of board, indicates slot ID.";
+      }
+      leaf sensor-id {
+        type uint32 {
+          range "0..127";
+        }
+        mandatory true;
+        description "temperature sensor id.";
+      }
+      leaf major-threshold {
+        type uint32 {
+          range "0..93";
+        }
+        mandatory true;
+        description "upper threshold value";
+      }
+    }    
+  }
+  
+  rpc system-restart {
+    input {
+      leaf parameter {
+        type string;
+      }
+    }
+  }
+
+  rpc switch-working-mode {
+    if-feature cloud-management-mode ;
+
+    input {
+      leaf next-reboot-working-mode {
+        type device-working-mode ;
+
+        mandatory true ;
+        description "Working mode to be valid after next reboot.";
+      }
+
+      leaf reboot2new {
+        type boolean ;
+        default true ;
+        description "Reboot to enable new mode.";
+      }
+    }
+  }
+
+  rpc register-status-notify {
+	  input {
+		  leaf register-success {
+		    type boolean;
+	    }
+		  leaf register-fail-reason {
+			  when "../register-success = 'false'";
+		    type uint32;
+      }
+    }
+  }
+
+  rpc system-blink {
+    input {
+      leaf time {
+        type uint16 {
+          range "0..300";
+        }
+      }
+    }
+  }
+
+  rpc restore-factory-config {
+    description "Restore factory configuration. The operation to be valid after next reboot.";
+    input {    
+      leaf enable {
+        type boolean;
+      }
+
+	  leaf keep-service-configuration {
+		  type boolean;
+		  default true;
+		  description "Kepp the Serive configuration(startup.rdb) or not";
+	  }
+    }
+  }
+
+  rpc unregister-notify {
+    description "Notify device being unregistered.";
+    input {
+      leaf unregister-reason {
+        type enumeration {
+          enum delete-device {
+            description "Notify device is deleted.";
+          }
+        }
+      }
+    }
+  }  
+
+  rpc config-fault-light-status {
+    description "fault-lights remote control.";    
+    input {
+      leaf slot-index {
+        type string;
+        default "0";
+        description "Slot-index information of board, indicates slot ID.";
+      }      
+      leaf mode {
+        type device-fault-light-mode;
+        mandatory true;
+        description "Fault-lights blink mode to be set";
+      }
+      leaf keeptime {
+        when "../mode != 'normal'";
+        type uint32 {
+          range "45..600";
+        }
+        units "seconds";
+        default 45;
+        description "Time of duration";
+      } 
+    }
+     
+  }
+  
+  rpc get-board-reboot-type {
+    description "get board reboot-type info on certain slot.";
+    input {
+      leaf slot-index {
+          type string;
+          description "slot-index information of board.";
+      }            
+    }
+    output {
+      list reboot-type-list {
+        key "slot-index time";
+        leaf slot-index {
+          type string;
+          description "index information of board, it indicates slot ID on box switch.";
+        }
+        leaf time {
+          type string;
+          description "reboot or reset time record";
+        }
+        leaf reboot-type {
+          type string;
+          description "reboot type";
+        }
+      }    
+    }  
+  }
+  
+  rpc get-board-reset-reason {
+    description "get board reset reason.";
+    input {
+      leaf slot-index {
+        type string;
+        description "slot-index information of board, for example: 1/9.";
+      }      
+    }
+    output {
+	    list reason-list {
+		    key "slot-index reset-time" ;
+        leaf slot-index {
+          type string;
+          description "slot-index information of board, for example: 1/9.";
+        }
+
+        leaf reset-time {
+          type string;
+          description "reset time record";
+        }
+
+        leaf reason {
+          type string;
+          description "reset reason detail";
+        }		
+	    }	  
+    }
+  }
+
+  rpc get-board-history-reset-reason
+  {
+    description "get board history reset reason.";
+    input {
+      leaf slot-index {
+        type string;
+        mandatory true;
+        description "Slot-index information of board, for example: 1/9.";
+      }      
+    }
+    output {
+	    list reason-list {
+		    key "slot-index reset-time" ;
+        leaf slot-index {
+          type string;
+          description "slot-index information of board, for example: 1/9.";
+        }
+
+        leaf reset-time {
+          type string;
+          description "reset time record";
+        }
+		
+	leaf reason {
+          type string;
+          description "reset reason detail";
+        }		
+	    }	  
+    }
+  }
+
+  rpc get-system-reset-reason	 {
+    description "get the device reset connection reason.";
+    output {
+	  list reason-list {
+		key "name time" ;
+        leaf name {
+          type string;
+          description "slot of the board";
+        }
+
+        leaf time {
+          type string;
+          description "time of the event record";
+        }
+		
+		    leaf reason {
+          type string;
+          description "reason";
+        }		
+	  }
+	  
+    }
+  }
+
+  rpc get-system-connect-fail-reason {
+    description "get the device connection fail reason.";
+    output {
+	  list reason-list {
+		key "time" ;
+        leaf time {
+          type string;
+          description "time of the event record";
+        }
+		
+		leaf reason {
+          type string;
+          description "reason";
+        }		
+	  }
+	  
+    }
+  }
+  
+  rpc reset-board {
+    description "reset board.";
+    input{
+      leaf slot-index {
+        type string {
+          length "1..255";
+        }
+        mandatory true;
+        description "Slot-index information of board, for example: box-switch: 1, chassis-switch: 1/MPU13.";
+      }
+      leaf reset-reason {
+        type enumeration {
+          enum configuration-disaccord-with-controller
+          {
+            description "Reset for configuration disaccord with controller";
+            value 0;
+          }
+        }
+        description "the reason reason for reset board.";
+      }
+    }    
+  }  
+  rpc sync-system-date-time {
+    description "synchronize system date and time.";
+    input {
+      leaf sys-datetime {
+        type yang:date-and-time;
+        mandatory true;
+        description "system date time.";
+      }      
+    }    
+  }
+
+  rpc board-register-status-notify {
+	input {
+        list register-status-list{
+          key "slot-index";
+          leaf slot-index {
+            type string;
+            mandatory true;
+            description "slot-index information of board, indicates slot ID.";
+          }
+          leaf register-success {
+	    type boolean;
+	  }
+	  leaf register-fail-reason {
+	    when "../register-success = 'false'";
+              type uint32;
+          }
+        }
+    }
+  }
+  
+  notification board-event {
+    description "Board event notifications.";
+
+    uses board-event-params;
+
+    container interfaces {
+      leaf-list interface {
+        type if:interface-ref;
+        description "The interface of board.";
+      }
+    }
+
+    leaf event {
+      type enumeration {
+        enum online {
+            description "Board is online.";
+        }
+        enum failed {
+            description "Board is failed.";
+        }
+        enum normal {
+            description "Board is normal.";
+        }
+        enum offline {
+            description "Board is offline.";
+        }
+      }
+    }
+  }
+
+  notification device-config-status {
+    if-feature device-ready-notification;
+
+    description "Indicate the device is ready for configuration operation or not.";
+
+    leaf config-status {
+      type config-status;
+    }
+
+    leaf status-message {
+      when "../config-status = 'not-ready'";
+      type string;
+      description "Indicate the device's config-status details.";
+    }
+  }
+
+  notification sysmac-switch-event {
+    description "The system-mac address switch event.";
+
+    leaf new-sysmac {
+      type yang:phys-address;
+    }
+  }
+}
