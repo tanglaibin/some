@@ -410,7 +410,215 @@ to_char(insp.time, 'yyyy-mm-dd') time
 </select>
 
 
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huawei.z00448113.dao.AllContrastDao">
 
+    <!-- 风险管理数量-->
+    <select id="riskCount" resultType="com.huawei.z00448113.vo.allcontrastvo.RiskCountPo">
+        select t.risk_type riskType, t.risk_level riskLevel, count(t.risk_level) riskCount
+        from t_ens_risk t
+        where t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        group by t.risk_type,t.risk_level
+    </select>
+
+    <!-- 场景覆盖率-->
+    <select id="getSceneTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from
+        (select   t.rate rate
+        from t_test_scene_datecover t
+        where t.checktime &lt; = to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.pdt_version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc)
+        where rownum = 1
+    </select>
+
+    <!-- 命令行覆盖率-->
+    <select id="getCmdTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from
+        (select t.testcover, t.usertotal
+        from t_test_cmd_datecover t
+        where t.checktime &lt; = to_date(#{selectDate}, 'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.pdt_version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc)
+        where rownum = 1
+    </select>
+
+    <!-- 日志覆盖趋势图-->
+    <select id="getLogTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testcover,t.usertotal
+        from t_test_log_datecover t
+        where t.checktime &lt; = to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 告警覆盖趋势图-->
+    <select id="getAlarmTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testcover,t.usertotal
+        from t_test_alarm_datecover t
+        where t.checktime &lt; = to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 性能覆盖趋势图-->
+    <select id="getBusinessTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testCover,t.userTotal
+        from t_test_business_datecover t
+        where t.checktime &lt; = to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 获得版本下拉框 -->
+    <select id="pdtversionList" resultType="com.huawei.common.entity.vo.InfoPo">
+        select distinct info.pdt_version as name
+        from t_scenes_test_datainfo info
+        where info.PDU = #{pdu}
+        order by info.pdt_version desc
+    </select>
+
+    <!-- 所有环形图-->
+    <select id="getChart" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select t.all_cover allContrastCover,
+        t.all_total allContrastTotal,
+        t.scene_cover subSceneCover,
+        t.scene_total subSceneTotal,
+        t.cmd_cover cmdCover,
+        t.cmd_total cmdTotal,
+        t.log_cover logCover,
+        t.log_total logTotal,
+        t.alarm_cover alarmCover,
+        t.alarm_total alarmTotal
+        <!--t.business_cover businessCover,
+        t.business_total businessTotal-->
+        from t_ens_all_ringchart t
+        where t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+    </select>
+
+    <!-- 性能覆盖饼图数据-->
+    <select id="getBusinessCover" resultType="Integer">
+        select count(distinct ub.type) from
+        t_cube_ens_business ub,
+        t_cube_ens_insp sp,
+        t_scenes_test_business tb ,
+        ebg_custorem_record_info info
+        where ub.fk_insp = sp.guid and tb.type =ub.type
+        and sp.pdu =info.product and sp.site =info.customer_name and info.delflag =0
+        and tb.pdu=#{pdu}
+        and tb.version=#{pdtVersion}
+    </select>
+
+    <select id="getBusinessTotal" resultType="Integer">
+        select count(distinct ub.type)
+        from t_cube_ens_business ub,t_cube_ens_insp sp,ebg_custorem_record_info info
+        where ub.fk_insp = sp.guid
+        and sp.pdu =info.product and sp.site =info.customer_name and info.delflag =0
+        and sp.pdu=#{pdu}
+    </select>
+
+    <!-- 场景覆盖高风险top5 -->
+    <select id="sceneTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select distinct s.subscene name,c.cover/100 coverRate
+        from t_ens_scene_cover c,ebg_customer_scene_id s
+        where c.scene_id =s.scene_id
+        and c.pdu = #{pdu}
+        and c.pdt_version = #{pdtVersion}
+        order by coverRate
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+
+    <!-- 命令行高风险top5 -->
+    <select id="cmdTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select t.risk_name name ,t.risk_rate coverRate
+        from t_test_risk_top5 t
+        where t.risk_type = 1
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        order by t.sort
+    </select>
+
+    <!-- 日志高风险top5 -->
+    <select id="logTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select ue.feature name, te.testTotal/ue.userTotal coverRate
+        from (
+        select b.feature, count(distinct b.guid) userTotal
+        from t_cube_ens_log_match um, t_ens_log_base b
+        where um.log_guid =b.guid
+        and b.pdu = #{pdu}
+        and b.version = #{pdtVersion}
+        group by b.feature
+        ) ue
+        left join (select b.feature, count(distinct b.guid) testTotal
+        from t_ac_ens_log_match tm, t_ens_log_base b ,t_cube_ens_log_match um
+        where tm.log_guid = b.guid
+        and b.guid =um.log_guid
+        and b.pdu = #{pdu}
+        and b.Version = #{pdtVersion}
+        group by b.feature) te on ue.feature = te.feature
+        order by coverRate NULLS FIRST
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+
+    <!-- 告警高风险top5 -->
+    <select id="alarmTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select ue.feature name, te.testTotal/ue.userTotal coverRate
+        from (
+        select b.feature, count(distinct b.guid) userTotal
+        from t_cube_ens_alarm um, t_ens_alarm_base b
+        where um.alarm_guid =b.guid
+        and b.pdu = #{pdu}
+        and b.version = #{pdtVersion}
+        group by b.feature
+        ) ue
+        left join (select b.feature, count(distinct b.guid) testTotal
+        from t_ac_ens_alarm_match tm, t_ens_alarm_base b ,t_cube_ens_alarm um
+        where tm.alarm_guid = b.guid
+        and b.guid =um.alarm_guid
+        and b.pdu = #{pdu}
+        and b.Version = #{pdtVersion}
+        group by b.feature) te on ue.feature = te.feature
+        order by coverRate NULLS FIRST
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+ </mapper>
 
 
 
