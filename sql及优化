@@ -1,0 +1,427 @@
+sql:
+
+
+数据库插入防止重复值：
+declare
+  jilu_guid number;
+begin
+  select count(*)
+    into jilu_guid
+    from tlb t
+   where pdu = 'DC'
+     and version = 'R19'
+     and subsys = 'huawei'
+     and feature = 'a'
+     and xpath = 'b4'
+     and type is null  //不能写 type = ''
+     and operation is null
+     and delflag = 0
+     and source = 'api';
+  if jilu_guid = 0 then
+    insert into tlb
+      (pdu,
+       version,
+       subsys,
+       feature,
+       xpath,
+       type,
+       operation,
+       delflag,
+       source)
+    values
+      ('DC', 'R19', 'huawei', 'a', 'b4', '', '', 0, 'api');
+  end if;
+end;
+
+
+产品数据：
+    select * from t_test_yang_match
+    DC：
+    select distinct(a.product) as name from
+    (select m.product from t_test_yang_match m where m.pdu='DC' and m.version='V2R19C00')a group by a.product order by a.product desc
+    AR：
+    select distinct(a.product)as name from
+    (select m.product from t_test_yang_match m where m.pdu='AR' and m.version='V3R19C00')a group by a.product
+    
+
+    产品下
+    1，产品下的基线总数  pdu：ar  version V3R19C00 product AR3260 
+    pdu 版本下很多产品 特定产品下基线数量？
+    中间表，pdu 版本相等的所有情况，再根据pdu 版本 product筛选
+    select count(*)from
+    (select b.guid from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' group by b.guid)
+    
+    select count(*)from
+          (select b.guid from 
+          (select a.*,m.product,m.source testsource from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+             where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name' group by b.guid)
+    
+    select * from t_ens_yang_base b where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name'
+    
+    
+    1，产品下的基线  被匹配到的总数
+    select 'x' from 
+    (select b.guid from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' group by b.guid) c ,
+    t_test_yang_match d where c.guid=d.yang_guid group by c.guid
+    2，产品下 柱形图数据 分领域展示  覆盖数据:要清楚展示的是什么！——展示的是产品等条件下领域内的基线总数、基线被覆盖到的次数，
+    基线被覆盖到的次数不是计算基线被覆盖了多少次，而是基线被覆盖到，就计数一次。
+    
+    统计的是领域下的基线总数  基线覆盖次数  同一个基线被覆盖了多少次 只能算这个基线被覆盖到。
+    select e.subsys,count(e.guid) total,count(e.mguid) cover from
+    (select c.guid,c.subsys,max(d.guid) mguid from 
+    (select b.guid,b.subsys from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys)e group by e.subsys
+    
+    3，表格数据 展示的是领域下 每个特性下的覆盖数：特性下的基线总数、被覆盖的总数
+    select e.subsys,e.feature,count(e.guid) total,count(e.mguid) cover from
+    (select c.guid,c.subsys,c.feature,max(d.guid) mguid from 
+    (select b.guid,b.subsys,b.feature from 
+    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys,b.feature) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys,c.feature)e group by e.subsys,e.feature
+
+
+
+
+
+
+1,更新字段值  批量更新
+update r_problem set workStatus =1 where workStatus = 4
+UPDATE dir_module SET NAME ='L3_IPv4', description ='L3_IPv4' WHERE id = 375;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 376;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 443;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 947;
+
+2,选择
+select * from r_problem where workStatus !=2 and workStatus !=5
+SELECT * FROM r_problem WHERE developer ='w00215231' and probdes like '%配置assi%'
+
+3,把null值改为0或""
+SELECT IFNULL(filep,'') AS filep FROM r_operate
+
+4,两个表联合查数据，主表某id对应二表id，得到该id对应的具体name。									
+select d.*,l.L_NAME from T_TOOLS_EYC_TYPE_DETAIL_CN d,T_TOOLS_EYC_TYPE_LINECARD_CN l where d.L_ID=l.L_ID  and D_DELETE=1 and S_ID=1 order by D_ID
+
+5,两个表联合查数据，自定义取得哪些字段。
+select s.S_ID,s.S_NAME,t.T_NAME from T_TOOLS_EYC_TYPE_STENCIL_CN s,T_TOOLS_EYC_TYPE_CN t where s.S_DELETE=1 and s.T_ID=t.T_ID order by t.T_ID,s.S_ID
+
+6,多表查询，并将一多表查询结果做为字段。
+select e.*,t.T_NAME from t_TOOLS_eyc_type_cn t,
+	(select d.*,s.T_ID,s.S_NAME,l.L_NAME from 
+	t_TOOLS_eyc_type_detail_cn d,t_TOOLS_eyc_type_stencil_cn s, t_TOOLS_eyc_type_linecard_cn l
+   where s.S_ID=d.S_ID and D_ID=163)e
+  where t.T_ID=e.T_ID
+
+7,mybatis 更新数据库
+update T_TOOLS_EYC_TYPE_DETAIL_CN 
+  		set 
+  		S_ID=#{sId,jdbcType=DECIMAL},
+  		L_ID=#{lId,jdbcType=DECIMAL},
+  		D_PPNAME=#{dPpname,jdbcType=VARCHAR},
+  		D_ONE=#{dOne,jdbcType=DECIMAL},
+  		D_TWO=#{dTwo,jdbcType=DECIMAL},
+  		D_THREE=#{dThree,jdbcType=DECIMAL},
+  		D_FOUR=#{dFour,jdbcType=DECIMAL},
+  		D_FIVE=#{dFive,jdbcType=DECIMAL},
+  		D_SIX=#{dSix,jdbcType=DECIMAL},
+  		D_DELETE=#{dDelete,jdbcType=VARCHAR}
+  		where D_ID=#{dId,jdbcType=DECIMAL}
+
+8，多表联查 left join  *
+select A.*,B.priority as version_priority,B.patchQuestiontester as patchQuestiontester,B.verid as versionid, B.schemeReviewStatu as schemeReviewStatu, B.verPatchType as verPatchType, B.deliverPerson as deliverPerson, D.name as vname, C.name as sname, E.patchversion, B.question, B.iterativeStage, B.remark as conclusion, B.isputin as isputinVersion, dep.name as depName ,B.isRisk as isRisk, B.judgeConclusion as judgeConclusion, B.clarifyConclusion as clarifyConclusion, B.seReviewComment as seReviewComment 
+from patchrequirement A  left join patchrequirement_version B on A.id=B.reqid 
+left join 
+patchrequirement_version_status C on B.status=C.id left join 
+dir_version D on B.verid=D.id left join patch E on B.patchid=E.id left join dir_department dep on dep.id = A.department  
+where 1=1 and A.requirementVersionSrc = 0  and 
+B.patchid = '784' 
+order by A.product,A.patch, A.id, B.verid
+
+
+
+9，group by 多个字段  left join结果集
+数据是以基线表left join匹配表得出的  基线表中 基线匹配到一次，连同匹配表中数据，列出来一次，但是基线数据是一样的，因为是相同的基线；只需要根据需要的数据，group一次即可，得到匹配次数。
+
+按照guid分组后，结果集表中，每条基线，除了匹配表中后面的数据被合并，原来的数据都一样。
+对需要取值的字段，采用聚合函数：SUM(m.mTime
+其他原来的基线数据，直接max封装取出来。因为值只有一个。
+				select nvl(SUM(m.mTime), 0) times,
+                    max(a.enname) enname,
+                    max(a.cnname) cnname,
+					max(a.node_oid) node_oid,
+					max(a.guid) guid,
+					max(a.module) module,
+					max(a.node_name) node_name,
+					max(a.max_access) max_access
+                            from t_ens_mib_base a
+                            LEFT JOIN t_ens_mib_match m
+                            ON (m.fk_mib = a.guid)
+		                    where 1=1 and a.pdu='LSW'
+                            and a.module='ENTITY-MIB'
+                            group by a.guid
+										 
+
+
+下面的方式结果一样，但是过多的group没啥意义，因为字段里值都一样。
+							select nvl(SUM(m.mTime), 0) times,
+							a.enname,
+							NVL(TO_CHAR(a.cnname), '—') cnname,
+							a.node_oid,
+							a.guid,
+							max(a.module) module,
+							a.node_name,
+							a.max_access 
+                              from t_ens_mib_base a
+                                 LEFT JOIN t_ens_mib_match m
+                                  ON (m.fk_mib = a.guid)
+		                          where 1=1 and a.pdu='LSW'
+                              and a.module='ENTITY-MIB'
+                              group by a.guid, 
+											a.module, 
+											a.enname,
+											a.cnname, 
+											a.node_oid, 
+											a.node_name,
+											a.max_access
+
+
+
+
+
+
+sql整理学习————
+
+
+
+
+select A.*,B.priority as version_priority,B.patchQuestiontester as patchQuestiontester,B.verid as versionid, B.schemeReviewStatu as schemeReviewStatu, B.verPatchType as verPatchType, B.deliverPerson as deliverPerson, D.name as vname, C.name as sname, E.patchversion, B.question, B.iterativeStage, B.remark as conclusion, B.isputin as isputinVersion, dep.name as depName ,B.isRisk as isRisk, B.judgeConclusion as judgeConclusion, B.clarifyConclusion as clarifyConclusion, B.seReviewComment as seReviewComment 
+
+from patchrequirement A  
+left join patchrequirement_version B on A.id=B.reqid 
+left join patchrequirement_version_status C on B.status=C.id 
+left join dir_version D on B.verid=D.id 
+left join patch E on B.patchid=E.id 
+left join dir_department dep on dep.id = A.department  
+where 1=1 and A.requirementVersionSrc = 0  and B.patchid = '809' 
+order by A.product,A.patch, A.id, B.verid
+
+
+
+
+select a.createTime,l.patchVersionBrief,a.NPMSNumber,a.CMMNumber,a.description,a.title, a.severity, a.riskLevel, a.maintenance,a.questiontester, a.id,h.isputin,h.priority,h.isRisk,h.remark as conclusion,h.judgeConclusion,h.clarifyConclusion,h.isConclusion,h.seReviewComment,h.iterativeStage,g.fullname as modifier,d.name as departmentName,a.involvedBoard,a.involvedSite,c.fullname as createUser,b.name as decisionVersion,l.patchVersion,h.bdate as bdate,h.remark as remark, h.isPromiseOutside, h.promiseDeliverTime, h.deliverPerson, h.verPatchType, h.question, h.schemeReviewStatu,  f.name as decisionResult,a.decisionOpinion, a.involvedVersion, k.name as vname, i.name as sname, l.patchversion, a.patchType, a.isProductMod, a.trouble, a.judgeMethod, a.probablity, a.impactAnalysis, a.evadeMeasure, a.rootCause, a.modifyPlan, a.condition1, a.siteAttent,a.siteSafety,a.isMaintain,a.isEquipmentAffect,a.isEquipmentAffectTxt,a.isSecurity, a.requirementVersionSrc, h.verid as versionid, a.module as module, a.projectDecision 
+
+from patchrequirement a 
+
+LEFT join dir_version b on a.decisionVersion = b.id 
+LEFT join user c on a.createUser = c.user_id 
+LEFT join dir_department d on a.department = d.id 
+LEFT join dir_patchdecision f on a.decisionResult = f.id 
+LEFT join user g on a.modifier = g.user_id  
+left join patchrequirement_version h on A.id=h.reqid 
+left join patchrequirement_version_status i on h.status=i.id 
+left join dir_version k on h.verid=k.id 
+left join patch l on h.patchid=l.id 
+where 1 = 1 and a.requirementVersionSrc = 0  and k.product = '25' and h.patchid = '820' 
+order by a.product,a.patch, a.id, h.verid
+
+
+<![CDATA[ and task_name like '%' || #{taskName} || '%' ]]>
+ 
+<if test = "startDateTime != null and startDateTime != ''">
+	and test_suit_start_time <![CDATA[>]]> to_date(#{startDateTime},'yyyy-MM-dd HH24:mi:ss')
+</if>
+	
+List<TestDevPo> listDevByBed(@Param("recordGuid") String recordGuid, @Param("bedList") List<String> bedList);
+	
+<if test="bedList != null and bedList.size() != 0">
+	and t_b.bed_name in
+	<foreach collection="bedList" item="bed" index="index" open="(" close=")" separator=",">
+		#{bed}
+	</foreach>
+</if>
+					
+	
+select distinct pdu, version, product, casenum from t_testcase_baseline	
+					
+					
+select
+	sum(case when passrate1 = 0 then 1 else 0 end) as zeroPass,
+	<![CDATA[sum(case when 0 < passrate1 and passrate1 < = 50  then 1 else 0 end) as zeroHalfPass,]]>
+	<![CDATA[sum(case when 50 < passrate1 and passrate1 < 100  then 1 else 0 end) as halfFullPass,]]>
+	sum(case when passrate1 = 100 then 1 else 0 end) as fullPass,
+	sum(case when passrate1 is null then 1 else 0 end) as nuExec
+from
+	t_testcase_baseline
+where
+	pdu = #{qo.pdu}
+	and version = #{qo.version}					
+					
+	
+select t_jira.*,
+<![CDATA[
+	(case
+		when (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) < 7 then 0
+		when (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) >= 7 and (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) < 14 then 1 else 2
+	end) as divideTime,
+]]>
+(case
+	when t_jira.status_name in ('持续改进_问题验收', '持续改进_非问题用户确认', '持续改进_管理员归档') then 1 else 0
+end) as divideStatus
+from
+t_jira_info t_jira
+where
+status_name != 'Closed'
+and product is not null
+and failed_big_type in ('脚本问题同步','支撑库问题','脚本优化','脚本问题','随机问题','用例问题')
+and delete_flag is null
+
+
+mapper不用mybatis配置文件映射————
+package com.huawei.z00448113.dao;
+
+import com.huawei.z00448113.entity.Cmd;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+
+/**
+ * @author : z00448113
+ * @date : Create in 14:27 2018/12/7
+ */
+@Mapper
+public interface CmdBaseMapper {
+
+    @Select("select* from t_ens_cli_base where pdu = #{pdu} and version = #{version} and product= #{product}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "cmdIndex", column = "cmd_index"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersion(@Param("pdu") String pdu, @Param("version") String version, @Param("product") String product);
+
+    @Select("select distinct mid,feature,subsys from t_ens_cli_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "feature", column = "feature"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersioNoProduct(@Param("pdu") String pdu, @Param("version") String version);
+
+    @Update("update t_ens_cli_base " +
+            "set mid = #{cmd.mid}" +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "cmd_index=#{cmd.cmdIndex}")
+    int updateCmd(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "guid=#{cmd.guid}")
+    int updateCmdVrp(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdVrpByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMidNoProduct(@Param("cmd") Cmd cmd);
+
+    @Delete("delete " +
+            "from " +
+            "t_ens_cli_base " +
+            "where " +
+            "pdu = #{cmd.pdu} " +
+            "and version = #{cmd.version} " +
+            "and product = #{cmd.product} " +
+            "and name = #{cmd.name} "
+    )
+    int deleteCmd(@Param("cmd") Cmd cmd);
+}
+
+
+where t.checktime < = to_date(#{selectDate},'yyyy-mm-dd')
+
+<!-- 配置映射 -->
+<resultMap type="com.huawei.z00448113.po.EvaluationChartPo"
+		   id="CHART_ORM">
+	<result property="count" column="count" />
+	<result property="subsys" column="gsubsys" />
+</resultMap>
+
+
+select count(distinct b.guid) count
+
+<if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+	and b.product  like concat(concat('%',#{sitProduct}),'%')
+</if>
+
+
+where d.guid = m.alarm_guid(+)
+
+and instr(ne.checktype,','||(select
+view_mode from T_CUBE_ENS_CMD where
+guid=#{guid})||',')=0
+
+to_char(insp.time, 'yyyy-mm-dd') time
+
+分页————
+<select id="xx" resultType="xx">
+	select * from
+	(select rownum r,e.* from
+	(xxx) e
+	<![CDATA[
+		where rownum<=#{end})
+	where r > #{start}
+	]]>
+</select>
+
+
+
+
+
+
+
+
+
+	
+sql写法格式套路————
+思路：所有筛选条件作用在同一个结果集。
+left join on
+select  from  where 
+select  from  a,b where a.xx=b.xx and 
+
+
