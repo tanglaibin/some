@@ -1488,3 +1488,498 @@
     <!-- 获取二级列表 -->
     <select id="getCmdRootList" resultType="com.huawei.z00448113.po.CmdRiskPo">
         select b.guid,
+	     <!-- b.cmd_index, -->
+        b.product product,
+        b.name cmdName,
+        b.view_mode viewMode,
+        b.feature feature,
+        b.subsys subsys,
+        b.version
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        where b.guid = #{selectGuid}
+        and b.feature = #{selectFeature}
+        and b.subsys = #{selectSubsys}
+    </select>
+
+    <!-- 2级列表客户使用次数 -->
+    <select id="getCustomUseNum" resultType="Integer">
+        select nvl(sum(cmd.mtime),0) usum
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+        t_cube_ens_ne_cmd cmd
+        where cmd.fk_cmd=b.guid
+        and b.guid = #{selectGuid}
+    </select>
+
+    <!-- 2级列表客测试使用次数 -->
+    <select id="getSitUseNum" resultType="Integer">
+        select nvl(sum(m.match_time),0) tsum
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+        t_cc_ens_match m
+        where m.cmd_index=b.cmd_index
+        and m.version=b.version
+        and m.product=b.product
+        and b.guid = #{selectGuid}
+    </select>
+
+    <select id='getSite4Po' resultType='java.lang.String'>
+        select distinct nb.alias as site from T_CUBE_ENS_INSP nb,<choose>
+        <when test = "isNewVersion">
+            t_ens_cli_base
+        </when>
+        <otherwise>
+            t_cube_ens_cmd
+        </otherwise>
+    </choose>
+        e,T_CUBE_ENS_NE_CMD u,t_cube_ENS_ne ne
+        where e.guid = u.fk_cmd
+        and
+        nb.guid = u.FK_INSP
+        and e.guid = #{guid}
+        and nb.fk_ne = ne.guid(+)
+        <if test='null != guid  and !"".equals(guid)'>
+            and u.fk_cmd=#{guid}
+            and instr(ne.checktype,','||(select
+            view_mode from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> where
+            guid=#{guid})||',')=0
+        </if>
+    </select>
+
+    <!-- 获取指定命令行下网元数量 -->
+    <select id="getNeSize" resultType="Integer">
+        select count(*) from
+        (select distinct ne.name name,
+        insp.guid GUID,
+        insp.area area,
+        insp.city city,
+        insp.alias site,
+        insp.PT_RVERSION version,
+        insp.product product,
+        insp.rowkey rowKey,
+        to_char(insp.time,
+        'yyyy-mm-dd') time
+        from t_cube_ENS_ne_cmd nc,
+        T_CUBE_ENS_INSP insp ,
+        t_cube_ENS_ne ne
+        <if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene)">
+            ,ebg_custorem_scene cs
+        </if>
+        where
+        1=1
+        <if  test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene)">
+            and insp.subscene = cs.subscene
+        </if>
+        and nc.FK_INSP = insp.guid
+        and insp.fk_ne = ne.guid(+)
+        <if test="null != inspGuidList and inspGuidList.size() != 0">
+            and insp.guid in
+            <foreach collection="inspGuidList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test='null != guid  and !"".equals(guid)'>
+            and nc.fk_cmd=#{guid}
+            and instr(ne.checktype,','||(select
+            view_mode from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> where
+            guid=#{guid})||',')=0
+        </if>
+        <if test="version != null and '' != version and 'ALL' != version">
+            and insp.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and insp.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and insp.area=#{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias=#{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and insp.condition = #{condition}
+        </if>
+        <if test="null != scene and '' != scene and 'ALL' != scene">
+            and cs.scene = #{scene}
+        </if>
+        <if test="null != subScene and '' != subScene and 'ALL' != subScene">
+            and insp.subscene = #{subScene}
+        </if>
+        )
+    </select>
+
+
+    <!--3级,获得命令行网元数据列表 -->
+    <select id="getCmdNeList" resultType="com.huawei.z00448113.po.EvaluationPo">
+        select * from
+        (select rownum r,e.* from
+        (select distinct ne.name name,
+        insp.guid GUID,
+        insp.area area,
+        insp.city city,
+        insp.alias site,
+        insp.PT_RVERSION version,
+        insp.product product,
+        insp.rowkey rowKey,
+        to_char(insp.time, 'yyyy-mm-dd') time
+        from t_cube_ENS_ne_cmd nc,
+        T_CUBE_ENS_INSP insp ,
+        t_cube_ENS_ne ne
+        <if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene)">
+            ,ebg_custorem_scene cs
+        </if>
+
+        where 1=1
+        <if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene)">
+            and insp.subscene = cs.subscene
+        </if>
+        and nc.FK_INSP = insp.guid
+        and insp.fk_ne = ne.guid(+)
+        <if test="null != inspGuidList and inspGuidList.size() != 0">
+            and insp.guid in
+            <foreach collection="inspGuidList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test='null != guid  and !"".equals(guid)'>
+            and nc.fk_cmd=#{guid}
+            and instr(ne.checktype,','||(select
+            view_mode from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> where
+            guid=#{guid})||',')=0
+        </if>
+        <if test="version != null and '' != version and 'ALL' != version">
+            and insp.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and insp.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and insp.area=#{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias=#{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and insp.condition = #{condition}
+        </if>
+        <if test="null != scene and '' != scene and 'ALL' != scene">
+            and cs.scene = #{scene}
+        </if>
+        <if test="null != subScene and '' != subScene and 'ALL' != subScene">
+            and insp.subscene = #{subScene}
+        </if>
+        ) e
+        <![CDATA[
+			where rownum<=#{end})
+		where r > #{start}
+        ]]>
+    </select>
+
+    <!--Command详情-->
+    <select id="getCmdCommandList" resultType="java.lang.String">
+        select nc.match
+        from t_cube_ENS_ne_cmd nc,T_CUBE_ENS_INSP
+        insp,t_cube_ENS_ne ne
+        where 1=1
+        and nc.FK_INSP=insp.guid
+        and insp.fk_ne =
+        ne.guid(+)
+        <if test='null != guid  and !"".equals(guid)'>
+            and nc.fk_cmd=#{guid}
+            and instr(ne.checktype,','||(select
+            view_mode from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> where guid=#{guid})||',')=0
+        </if>
+        <if test="version != null and '' != version and 'ALL' != version">
+            and insp.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and insp.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and insp.area=#{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias=#{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and insp.condition = #{condition}
+        </if>
+    </select>
+
+    <!--param详情-->
+    <select id="getParamList" resultType="java.lang.String">
+        select param_value from
+        (select rownum r,e.param_value param_value
+        from
+        (select nc.param_value
+        from t_cube_ENS_ne_cmd nc,T_CUBE_ENS_INSP
+        insp,t_cube_ENS_ne ne
+        where 1=1
+        and nc.FK_INSP=insp.guid
+        and insp.fk_ne =
+        ne.guid(+)
+        <if test='null != guid  and !"".equals(guid)'>
+            and nc.fk_cmd=#{guid}
+            and instr(ne.checktype,','||(select
+            view_mode from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> where
+            guid=#{guid})||',')=0
+        </if>
+        <if test="version != null and '' != version and 'ALL' != version">
+            and insp.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and insp.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and insp.area=#{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias=#{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and insp.condition = #{condition}
+        </if>
+        ) e
+        <![CDATA[
+		where rownum<=100)
+		where r > 0
+        ]]>
+    </select>
+
+    <!-- export,风险分析数据查询 无分页 -->
+    <select id="getCmdRiskListAll" resultType="com.huawei.z00448113.po.CmdRiskPo">
+        select tt.guid,
+        tt.usum userCount,
+        tt.tsum testCount,
+        ee.product product,
+        ee.name cmdName,
+        ee.view_mode viewMode,
+        ee.feature feature,
+        ee.subsys subsys,
+        ee.version
+        from <choose>
+        <when test = "isNewVersion">
+            t_ens_cli_base
+        </when>
+        <otherwise>
+            t_cube_ens_cmd
+        </otherwise>
+    </choose> ee,
+        (select ue.guid, ue.usum, te.tsum
+        from (
+        select distinct e.guid, sum(u.mtime) usum
+        from T_CUBE_ENS_NE_CMD u
+        ,<choose>
+        <when test = "isNewVersion">
+            t_ens_cli_base
+        </when>
+        <otherwise>
+            t_cube_ens_cmd
+        </otherwise>
+    </choose> e
+        , T_CUBE_ENS_INSP nb
+        ,ebg_custorem_record_info info
+        ,T_CUBE_ENS_NE ne
+        where u.FK_CMD=e.GUID
+        and u.FK_INSP=nb.GUID
+        and nb.site=info.customer_name
+        and nb.fk_ne = ne.guid
+        and ne.checktype=','
+        AND info.delflag = 0
+        and nb.pdu = info.product
+        and e.pdu = #{pdu}
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and e.version = #{sitVersion}
+        </if>
+        <if test="selectSubSys != null and '' != selectSubSys">
+            and e.subsys = #{selectSubSys}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and e.product = #{sitProduct}
+        </if>
+        group by e.guid) ue
+        left join (select distinct e.guid, sum(t.match_time) tsum
+        from <choose>
+        <when test = "isNewVersion">
+            t_ens_cli_base
+        </when>
+        <otherwise>
+            t_cube_ens_cmd
+        </otherwise>
+    </choose> e, T_CC_ENS_MATCH t
+        where e.cmd_index = t.cmd_index
+        and e.product = t.product
+        and e.version = t.version
+        and e.pdu = #{pdu}
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source=#{source}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and e.version = #{sitVersion}
+        </if>
+        <if test="selectSubSys != null and '' != selectSubSys">
+            and e.subsys = #{selectSubSys}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and e.product = #{sitProduct}
+        </if>
+        group by e.guid) te on ue.guid = te.guid) tt
+        where ee.guid = tt.guid
+        order by usum desc, tsum desc
+    </select>
+
+    <!-- 风险分析数据查询 分页查询 -->
+    <select id="getCmdRiskPageList" resultType="com.huawei.z00448113.po.CmdRiskPo">
+        select * from
+        (select rownum r, t.* from (
+        select distinct e.guid guid
+        ,e.name name,e.view_mode viewMode,
+        (select count(t.guid)
+        from
+        T_CC_ENS_MATCH t
+        where e.cmd_index = t.cmd_index
+        and e.version = t.version
+        and e.product= t.product
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source=#{source}
+        </if>
+        <if test="null != scene and '' != scene and 'ALL' != scene">
+            and t.origin_scene = #{scene}
+        </if>
+        <if test="null != subScene and '' != subScene and 'ALL' != subScene">
+            and t.origin_subscene = #{subScene}
+        </if>
+
+        ) testCount,
+        (select count(distinct ne.guid)
+        from t_cube_ENS_ne
+        ne,T_CUBE_ENS_NE_CMD u ,T_CUBE_ENS_INSP insp
+        where e.guid = u.fk_cmd
+        and insp.fk_ne = ne.guid
+        and u.fk_insp = insp.guid
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and ne.pdu = #{pdu}
+        </if>
+        <if test="null != subScene and '' != subScene and 'ALL' != subScene">
+            and insp.subscene = #{subScene}
+        </if>
+        <if test="null != inspGuidList and inspGuidList.size() != 0">
+            and insp.guid in
+            <foreach collection="inspGuidList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        ) userCount
+        from <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> e left join
+        (
+        select ncmd.fk_cmd
+        cmd,nb.fk_ne fk_ne_id from
+        T_CUBE_ENS_INSP nb,T_CUBE_ENS_NE_CMD ncmd
+        <if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subscene and 'ALL' != subscene and null != subscene) ">
+            ,ebg_custorem_scene cs
+        </if>
+        where 1=1 and ncmd.FK_INSP = nb.guid
+        <if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene) ">
+            and nb.subscene = cs.subscene
+        </if>
+        <if test="version != null and '' != version and 'ALL' != version">
+            and nb.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and nb.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
