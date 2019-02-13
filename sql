@@ -993,3 +993,498 @@
             and b.SUBSYS=#{subsys}
         </if>
         <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+		and b.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and nb.condition = #{condition}
+        </if>
+    </select>
+
+    <!-- 配置映射 -->
+    <resultMap type="com.huawei.z00448113.po.EvaluationChartPo"
+               id="CHART_ORM">
+        <result property="count" column="count" />
+        <result property="subsys" column="gsubsys" />
+    </resultMap>
+    <!-- 直方图获取命令行总数 -->
+    <select id="getCmdTotalList" resultMap="CHART_ORM">
+        select count(distinct b.guid) count, b.subsys gsubsys
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            ,T_CUBE_ENS_INSP insp,T_CUBE_ENS_NE_CMD ne
+        </if>
+        where 1=1
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and ne.fk_cmd = b.guid
+            and ne.FK_INSP = insp.guid
+            and
+            insp.condition =#{condition}
+        </if>
+
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version=#{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product=#{sitProduct}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        group by b.subsys
+    </select>
+
+    <!-- 直方图获取测试命令行总数 -->
+    <select id="getTestCmdTotalList" resultMap="CHART_ORM">
+        select count(distinct b.guid) count, b.subsys gsubsys
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b, T_CC_ENS_MATCH t
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            ,T_CUBE_ENS_INSP insp,T_CUBE_ENS_NE_CMD ne
+        </if>
+        where b.cmd_index = t.cmd_index
+        and b.version = t.version
+        and b.product
+        = t.product
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and ne.fk_cmd = b.guid
+            and ne.FK_INSP = insp.guid
+            and
+            insp.condition =#{condition}
+        </if>
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source=#{source}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product=#{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        group by b.subsys
+    </select>
+
+    <!-- 直方图获取用户使用行总数 -->
+    <select id="getCustomCmdTotalList" resultMap="CHART_ORM">
+        select  count(distinct b.guid)
+        count,b.subsys gsubsys
+        from T_CUBE_ENS_NE_CMD cmd,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+        T_CUBE_ENS_INSP nb
+        ,ebg_custorem_record_info info
+        ,T_CUBE_ENS_NE ne
+        where b.guid = cmd.fk_cmd
+        and nb.guid = cmd.FK_INSP
+        and
+        nb.site=info.customer_name
+        and info.delflag = 0
+        and nb.fk_ne = ne.guid
+        and ne.checktype=','
+        <if test="'ESAP' != pdu">
+            and nb.pdu=info.product
+        </if>
+        <if test="version != null and ''!= version and 'ALL' != version">
+            and nb.PT_RVERSION=#{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and nb.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and nb.area=#{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and nb.alias=#{site}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version=#{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product=#{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and nb.condition = #{condition}
+        </if>
+        group by b.subsys
+    </select>
+
+    <!-- 直方图获取三表共有命令行总数 -->
+    <select id="getTestUsedList" resultMap="CHART_ORM">
+        select count(distinct b.guid) count,
+        b.subsys gsubsys
+        from T_CC_ENS_MATCH t,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+        T_CUBE_ENS_NE_CMD cmd,
+        T_CUBE_ENS_INSP nb,
+        T_CUBE_ENS_NE ne,
+        ebg_custorem_record_info info
+        where cmd.fk_cmd = b.guid
+        and cmd.FK_INSP = nb.guid
+        and cmd.pdu = nb.pdu
+        and t.cmd_index = b.cmd_index
+        and t.version = b.version
+        and t.product = b.product
+        and nb.fk_ne = ne.guid
+        and nb.site=info.customer_name
+        and info.delflag = 0
+        and ne.checktype=','
+        <if test="'ESAP' != pdu">
+            and nb.pdu=info.product
+        </if>
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source=#{source}
+        </if>
+        <if test="version != null and ''!= version and 'ALL' != version">
+            and nb.PT_RVERSION = #{version}
+        </if>
+        <if test="null != productList and productList.size() != 0">
+            and nb.PRODUCT in
+            <foreach collection="productList" item="pro" open="("
+                     separator="," close=")">
+                #{pro}
+            </foreach>
+        </if>
+        <if test="null != region and '' != region and 'ALL' != region">
+            and nb.area = #{region}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and nb.alias=#{site}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product=#{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != condition and '' != condition and 'ALL' != condition">
+            and nb.condition = #{condition}
+        </if>
+        group by b.subsys
+    </select>
+
+    <select id="getAllFeature" resultType="com.huawei.z00448113.po.EvaluationPo">
+        select
+        feature,
+        subsys,
+        count(guid) sitTotal
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        where
+        1=1
+        <if test="pdu != null and '' != pdu and 'ALL' != pdu">
+            and pdu = #{pdu}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != featureInput and '' != featureInput ">
+            and b.feature like '%' ||#{featureInput}||'%'
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+        group by
+        b.feature,
+        b.subsys
+    </select>
+
+    <select id="getCustomFeature" resultType="com.huawei.z00448113.po.EvaluationPo">
+        select
+        distinct b.feature,
+        b.subsys,
+        cmd.fk_cmd guid
+        from
+        t_cube_ens_ne_cmd cmd,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+        T_CUBE_ENS_INSP nb,
+        ebg_custorem_record_info info,
+        T_CUBE_ENS_NE ne
+        where
+        cmd.FK_INSP=nb.GUID
+        and nb.site=info.customer_name
+        and nb.fk_ne = ne.guid
+        and ne.checktype=','
+        and info.delflag = 0
+        and cmd.fk_cmd=b.guid
+        <if test="'ESAP' != pdu">
+            and nb.pdu=info.product
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != featureInput and '' != featureInput ">
+            and b.feature like '%' ||#{featureInput}||'%'
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+    </select>
+
+    <select id="getSitFeature" resultType="com.huawei.z00448113.po.EvaluationPo">
+        select
+        distinct b.feature,
+        b.subsys,
+        b.guid
+        from
+        t_cc_ens_match m,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        where
+        m.cmd_index = b.cmd_index
+        and m.product=b.product
+        and m.version = b.version
+        <if test="null != source and '' != source and 'ALL' != source">
+            and m.source=#{source}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != featureInput and '' != featureInput ">
+            and b.feature like '%' ||#{featureInput}||'%'
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+    </select>
+
+    <!--命令行二级列表-->
+    <select id="getAllGuid" resultType="java.lang.String">
+        select
+        distinct guid
+        from
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        where
+        1=1
+        <if test="pdu != null and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != selectSubSys and '' != selectSubSys and 'ALL' != selectSubSys">
+            and b.subsys=#{selectSubSys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != selectFeature and '' != selectFeature ">
+            and b.feature = #{selectFeature}
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+    </select>
+
+    <!--命令行二级列表,客户覆盖的命令行-->
+    <select id="getCustomGuid" resultType="java.lang.String">
+        select
+        distinct cmd.fk_cmd guid
+        from
+        t_cube_ens_ne_cmd cmd,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b,
+        T_CUBE_ENS_INSP nb,
+        ebg_custorem_record_info info,
+        T_CUBE_ENS_NE ne
+        where
+        cmd.FK_INSP=nb.GUID
+        and nb.site=info.customer_name
+        and nb.fk_ne = ne.guid
+        and ne.checktype=','
+        and info.delflag = 0
+        and cmd.fk_cmd=b.guid
+        <if test="'ESAP' != pdu">
+            and nb.pdu=info.product
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != selectFeature and '' != selectFeature ">
+            and b.feature = #{selectFeature}
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+    </select>
+
+    <!--命令行二级列表,测试覆盖的命令行-->
+    <select id="getSitGuid" resultType="java.lang.String">
+        select
+        b.guid
+        from
+        t_cc_ens_match m,
+        <choose>
+            <when test = "isNewVersion">
+                t_ens_cli_base
+            </when>
+            <otherwise>
+                t_cube_ens_cmd
+            </otherwise>
+        </choose> b
+        where
+        m.cmd_index = b.cmd_index
+        and m.product = b.product
+        and m.version = b.version
+        <if test="null != source and '' != source and 'ALL' != source">
+            and m.source=#{source}
+        </if>
+        <if test="sitVersion != null and '' != sitVersion and 'ALL' != sitVersion">
+            and b.version = #{sitVersion}
+        </if>
+        <if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+            and b.product = #{sitProduct}
+        </if>
+        <if test="null != subsys and '' != subsys and 'ALL' != subsys">
+            and b.subsys=#{subsys}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != selectFeature and '' != selectFeature ">
+            and b.feature = #{selectFeature}
+        </if>
+        <if test="null != cmdInput and '' != cmdInput ">
+            and b.name like '%' ||#{cmdInput}||'%'
+        </if>
+    </select>
+
+    <!-- 获取二级列表 -->
+    <select id="getCmdRootList" resultType="com.huawei.z00448113.po.CmdRiskPo">
+        select b.guid,
