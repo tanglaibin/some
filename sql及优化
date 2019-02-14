@@ -412,13 +412,7 @@ to_char(insp.time, 'yyyy-mm-dd') time
 
 
 	
-sql写法格式套路————
-思路：所有筛选条件作用在同一个结果集。
-left join on
-select  from  where 
-select  from  a,b where a.xx=b.xx and 
-
-
+sql整体案例————
 
  <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
@@ -1146,4 +1140,126 @@ select  from  a,b where a.xx=b.xx and
     </select>
 
 </mapper>
+
+
+
+yang覆盖 sql学习历程—— ——
+
+select rownum r, y.subsys, y.feature, y.yangTotal, y.yangCoverage
+  from (select e.subsys,
+               e.feature,
+               count(e.guid) yangTotal,
+               count(e.mguid) yangCoverage
+          from (select c.guid, c.subsys, c.feature, max(d.guid) mguid
+                  from (select b.guid, b.subsys, b.feature
+                          from (select a.*, m.product, m.source testsource
+                                  from t_ens_yang_base a, t_test_yang_match m
+                                 where a.pdu = m.pdu
+                                   and a.version = m.version) b
+                         where 1 = 1
+                           and b.pdu = 'AR'
+                           and b.version = 'V3R19C00'
+                         group by b.guid, b.subsys, b.feature) c
+                  left join t_test_yang_match d on c.guid = d.yang_guid
+                 group by c.guid, c.subsys, c.feature) e
+         group by e.subsys, e.feature) y
+ where y.yangcoverage != 0
+ order by y.subsys
+
+ 
+
+我的：【参数：有的在a表，有的在b表，联查时，先通过where联合两个表，再应用参数。风险：where联合时，a表每个数据都跟b表匹配一遍，数据多时，效率低。】
+select y.subsys,
+			y.feature,
+			y.yangTotal,
+			y.yangCoverage
+			from(select e.subsys,e.feature,count(e.guid) yangTotal,count(e.mguid) yangCoverage from
+    (select c.guid,c.subsys,c.feature,max(d.guid) mguid from 
+    (select b.guid,b.subsys,b.feature from 
+    (select a.*,m.product,m.source testsource from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where 1=1 
+            <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and b.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and b.version=#{yvo.version}
+			</if>
+			<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and b.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and b.testsource=#{yvo.testSource}
+            </if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and b.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and b.xpath like '%${yvo.xpath}%'
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and b.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and b.feature=#{yvo.feature}
+			</if>
+    group by b.guid,b.subsys,b.feature) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys,c.feature)e group by e.subsys,e.feature
+		
+		
+		
+新的：【两个表通过join联合，在a表基准上，匹配b表，效率高，再join后应用b表参数，在where后应用a表参数。】	
+	select y.subsys,
+		y.feature,
+		y.yangTotal,
+		y.yangCoverage
+		from(select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		  group by a.guid,a.subsys,a.feature) c
+		  group by c.subsys,c.feature) y
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
