@@ -605,31 +605,61 @@ yang覆盖案例————
 
 </mapper>
 
+mib覆盖导出sql：
+<select id="getmibExportList"
+            resultType="com.huawei.test.coverage.analysis.pojo.po.CoverageMibpo">
+        select *
+        from (select rownum r,
+        y.pdu,
+        y.version,
+        y.subsys,
+        y.mibTotal,
+        y.mibCoverage
+        from(select b.pdu,
+        b.version,
+        b.module subsys,
+        count(distinct b.guid) mibTotal,
+        count(distinct m.fk_mib) mibCoverage
+        from (select * from t_ens_mib_base a where 1=1
+        <if test="mvo.pdu != null and mvo.pdu != '' and mvo.pdu != 'ALL'">
+            and a.pdu=#{mvo.pdu}
+        </if>
+        <if test="mvo.version != null and mvo.version != '' and mvo.version != 'ALL'">
+            and a.version=#{mvo.version}
+        </if>
+        ) b
+        LEFT JOIN t_ens_mib_match m on m.fk_mib = b.guid
+        group by b.pdu, b.module, b.version
+        order by b.pdu, b.version desc)y
+        <![CDATA[
+				where rownum <= #{mvo.endRow})
+				where r > #{mvo.startRow}
+			]]>
+    </select>
 
 
 
 
+多表联查 内连接  外连接知识点：
+1，内连接：
+select * from table1 join table2 on table1.id=table2.id
+只返回符合条件的table1和table2的列
+等价（与下列执行效果相同）
+A:select a.*,b.* from table1 a,table2 b where a.id=b.id
+B:select * from table1 cross join table2 where table1.id=table2.id  
+(注：cross join后加条件只能用where,不能用on)
 
+2，外连接：
+左连接：left join 或 left outer join
+左向外联接的结果集包括 LEFT OUTER 子句中指定的左表的所有行，而不仅仅是联接列所匹配的行。
+如果左表的某行在右表中没有匹配行，则在相关联的结果集行中右表的所有选择列表列均为空值(null)。
+右连接：right join 或 right outer join
+右向外联接是左向外联接的反向联接。将返回右表的所有行。
+如果右表的某行在左表中没有匹配行，则将为左表返回空值。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+3，笛卡尔积
+第一个表的行数乘以第二个表的行数等于笛卡尔积结果集的大小。
+select * from table1,table2
 
 
 
