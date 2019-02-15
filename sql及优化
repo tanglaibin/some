@@ -34,57 +34,604 @@ begin
 end;
 
 
-产品数据：
-    select * from t_test_yang_match
-    DC：
-    select distinct(a.product) as name from
-    (select m.product from t_test_yang_match m where m.pdu='DC' and m.version='V2R19C00')a group by a.product order by a.product desc
-    AR：
-    select distinct(a.product)as name from
-    (select m.product from t_test_yang_match m where m.pdu='AR' and m.version='V3R19C00')a group by a.product
-    
+多表联查：
+yang覆盖案例————
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huawei.test.coverage.analysis.dao.YangDao">
 
-    产品下
-    1，产品下的基线总数  pdu：ar  version V3R19C00 product AR3260 
-    pdu 版本下很多产品 特定产品下基线数量？
-    中间表，pdu 版本相等的所有情况，再根据pdu 版本 product筛选
-    select count(*)from
-    (select b.guid from 
-    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
-    where b.pdu='AR' and b.version='V3R19C00' group by b.guid)
-    
-    select count(*)from
-          (select b.guid from 
-          (select a.*,m.product,m.source testsource from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
-             where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name' group by b.guid)
-    
-    select * from t_ens_yang_base b where 1=1 and b.pdu='AR' and b.version='V3R19C00' and b.xpath like '%huawei-l3vpn/vpn-instances/vpn-instance/vpn-instance-name'
-    
-    
-    1，产品下的基线  被匹配到的总数
-    select 'x' from 
-    (select b.guid from 
-    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
-    where b.pdu='AR' and b.version='V3R19C00' group by b.guid) c ,
-    t_test_yang_match d where c.guid=d.yang_guid group by c.guid
-    2，产品下 柱形图数据 分领域展示  覆盖数据:要清楚展示的是什么！——展示的是产品等条件下领域内的基线总数、基线被覆盖到的次数，
-    基线被覆盖到的次数不是计算基线被覆盖了多少次，而是基线被覆盖到，就计数一次。
-    
-    统计的是领域下的基线总数  基线覆盖次数  同一个基线被覆盖了多少次 只能算这个基线被覆盖到。
-    select e.subsys,count(e.guid) total,count(e.mguid) cover from
-    (select c.guid,c.subsys,max(d.guid) mguid from 
-    (select b.guid,b.subsys from 
-    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
-    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys) c left join
-    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys)e group by e.subsys
-    
-    3，表格数据 展示的是领域下 每个特性下的覆盖数：特性下的基线总数、被覆盖的总数
-    select e.subsys,e.feature,count(e.guid) total,count(e.mguid) cover from
-    (select c.guid,c.subsys,c.feature,max(d.guid) mguid from 
-    (select b.guid,b.subsys,b.feature from 
-    (select a.*,m.product from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
-    where b.pdu='AR' and b.version='V3R19C00' and b.product='AR3260' group by b.guid,b.subsys,b.feature) c left join
-    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys,c.feature)e group by e.subsys,e.feature
+	<!-- 获取yang覆盖数 -->
+	<select id="getYangCoverage" resultType="Integer">
+
+		<!-- 基线被匹配到的总数 -->
+		<if test="start == 1">
+			SELECT count(*)
+			FROM (select 'x'
+			from t_ens_yang_base a, t_test_yang_match m
+			where a.guid=m.yang_guid
+			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and a.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and a.version=#{yvo.version}
+			</if>
+			<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and m.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+				and m.source=#{yvo.testSource}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and a.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and a.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and a.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and a.xpath like '%${yvo.xpath}%'
+			</if>
+			group by a.guid)
+		</if>
+
+		<!-- 基线总数 -->
+		<if test="start == 0">
+		select count(*) from 
+		(select b.guid from t_ens_yang_base b where 1=1 
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and b.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and b.version=#{yvo.version}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and b.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and b.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and b.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and b.xpath like '%${yvo.xpath}%'
+			</if>
+		group by b.guid)
+		</if>
+		
+	</select>
+
+
+	<!-- yang 柱形图 列表 -->
+	<select id="getYangList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys
+		from(
+		select a.subsys, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys) c
+		group by c.subsys
+	</select>
+	
+	
+	<!-- yang table 表格数据 -->
+	<select id="getyangTableList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		z.subsys,
+		z.feature,
+		z.yangTotal,
+		z.yangCoverage
+		from(select y.subsys,
+		y.feature,
+		y.yangTotal,
+		y.yangCoverage
+		from(select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys,a.feature) c
+		group by c.subsys,c.feature) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCoverage !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCoverage != y.yangTotal
+		</if>
+		    ) z
+		      <![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			  ]]>
+
+	</select>
+
+
+	<!-- yang table 表格总数 -->
+	<select id="getYangTotal" resultType="Integer">
+
+			select count(*)
+			from (select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys,a.feature) c
+		group by c.subsys,c.feature)y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCoverage !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCoverage != y.yangTotal
+		</if>
+	</select>
+
+	
+	<!-- yang xpath 列表 -->
+	<select id="getyangXpathList"
+		resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		y.xpath,
+		y.subsys,
+		y.feature,
+		y.yangCover2
+		from(select max(t.subsys) subsys,max(t.feature)
+		feature,t.xpath,sum(t.mguid) yangCover2 from
+		(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from
+		t_ens_yang_base a LEFT JOIN t_test_yang_match c on(a.guid=c.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and c.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and c.source=#{yvo.testSource}
+            </if>
+		)
+		where 1=1 
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath order
+		by
+		yangCover2 desc)y
+		<![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	</select>
+	
+	
+	<!-- yang table 表格总数 -->
+	<select id="getyangXpathTotal" resultType="Integer">
+			select count(*)from(
+			select max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid)
+			yangcover from
+			(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from
+			t_ens_yang_base a LEFT JOIN t_test_yang_match c
+			on(a.guid=c.yang_guid)
+			where
+			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				a.pdu=#{yvo.pdu}
+			</if>
+			<if
+				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and a.version=#{yvo.version}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and a.source=#{yvo.source}
+			</if>
+			<if
+				test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and a.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and a.subsys=#{yvo.subsys}
+			</if>
+			GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath)y
+	</select>
+
+
+	<!--获得yang下匹配数据详细数据列表 -->
+	<select id="getyangDetail"
+		resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		y.matchXpath,
+		y.value,
+		y.operation,
+		y.type
+		from(select c.xpath matchXpath,c.value,c.operation,c.type from
+		(select * from t_ens_yang_base a where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath=#{yvo.xpath}
+		</if>
+		)b left join t_test_yang_match c on (b.guid=c.yang_guid)
+		GROUP BY c.guid,c.xpath,c.value,c.operation,c.type) y
+			<![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	</select>
+
+
+
+	<!-- yang detail 表格总数 -->
+	<select id="getyangDetailTotal" resultType="Integer">
+
+		select count(*) from (select c.xpath
+		matchXpath,c.value,c.operation,c.type from
+		(select * from t_ens_yang_base a where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath=#{yvo.xpath}
+		</if>
+		)b left join t_test_yang_match c on (b.guid=c.yang_guid)
+		GROUP BY c.guid,c.xpath,c.value,c.operation,c.type) y
+
+	</select>
+
+
+	<select id="getversionList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(version) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="pdu != null and pdu != 'NULL' and pdu != '' and pdu != 'ALL'">
+			and b.pdu = #{pdu}
+		</if>
+		order by
+		version desc
+	</select>
+
+
+	<select id="getsourceList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(source) as name
+		from
+		t_ens_yang_base b
+		where 1=1
+		order by source desc
+	</select>
+	
+	
+	<select id="getTestSourceList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(source) as name
+		from
+		t_test_yang_match b
+		where 1=1
+		order by source desc
+	</select>
+
+
+	<select id="getproductList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+	select distinct(a.product) as name from
+    (select m.product from t_test_yang_match m where 1=1
+        <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and m.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and m.version=#{yvo.version}
+		</if>
+        )a group by a.product order by a.product desc
+	</select>
+
+
+	<select id="getsubsysList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(subsys) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		order by
+		subsys desc
+	</select>
+
+
+	<select id="getfeatureList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(feature) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		order by
+		feature desc
+	</select>
+	
+	
+	
+	<!-- 导出yang覆盖信息 -->
+	<select id="getyangExportList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+		select *
+		from (select rownum r,
+		z.pdu,
+		z.version,
+		z.xpath,
+		z.subsys,
+		z.feature,
+		z.yangCover2
+		from(select
+		y.pdu,
+		y.version,
+		y.xpath,
+		y.subsys,
+		y.feature,
+		y.yangCover2
+		from(select c.pdu,c.version,c.subsys,c.feature,c.xpath,count(d.guid) yangCover2 from
+          (select * from t_ens_yang_base b where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and b.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and b.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+              ) c 
+          left join t_test_yang_match d on c.guid=d.yang_guid
+            <if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and d.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and d.source=#{yvo.testSource}
+            </if>
+          group by c.guid,c.pdu,c.version,c.subsys,c.feature,c.xpath) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCover2 !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCover2 = 0
+		</if> order by y.subsys
+		)z
+	        <![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	
+	</select>
+	
+	
+	<select id="getyangExportListTotal" resultType="Integer">
+		select count(*) from (select c.pdu,c.version,c.subsys,c.feature,c.xpath,count(d.guid) yangCover2 from
+          (select * from t_ens_yang_base b where 1=1
+          <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and b.xpath like '%${yvo.xpath}%'
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and b.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+              ) c 
+          left join t_test_yang_match d on c.guid=d.yang_guid
+            <if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and d.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and d.source=#{yvo.testSource}
+            </if>
+          group by c.guid,c.pdu,c.version,c.subsys,c.feature,c.xpath) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCover2 !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCover2 = 0
+		</if>
+	</select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -189,43 +736,6 @@ order by A.product,A.patch, A.id, B.verid
 
 
 
-
-
-
-sql整理学习————
-
-
-
-
-select A.*,B.priority as version_priority,B.patchQuestiontester as patchQuestiontester,B.verid as versionid, B.schemeReviewStatu as schemeReviewStatu, B.verPatchType as verPatchType, B.deliverPerson as deliverPerson, D.name as vname, C.name as sname, E.patchversion, B.question, B.iterativeStage, B.remark as conclusion, B.isputin as isputinVersion, dep.name as depName ,B.isRisk as isRisk, B.judgeConclusion as judgeConclusion, B.clarifyConclusion as clarifyConclusion, B.seReviewComment as seReviewComment 
-
-from patchrequirement A  
-left join patchrequirement_version B on A.id=B.reqid 
-left join patchrequirement_version_status C on B.status=C.id 
-left join dir_version D on B.verid=D.id 
-left join patch E on B.patchid=E.id 
-left join dir_department dep on dep.id = A.department  
-where 1=1 and A.requirementVersionSrc = 0  and B.patchid = '809' 
-order by A.product,A.patch, A.id, B.verid
-
-
-
-
-select a.createTime,l.patchVersionBrief,a.NPMSNumber,a.CMMNumber,a.description,a.title, a.severity, a.riskLevel, a.maintenance,a.questiontester, a.id,h.isputin,h.priority,h.isRisk,h.remark as conclusion,h.judgeConclusion,h.clarifyConclusion,h.isConclusion,h.seReviewComment,h.iterativeStage,g.fullname as modifier,d.name as departmentName,a.involvedBoard,a.involvedSite,c.fullname as createUser,b.name as decisionVersion,l.patchVersion,h.bdate as bdate,h.remark as remark, h.isPromiseOutside, h.promiseDeliverTime, h.deliverPerson, h.verPatchType, h.question, h.schemeReviewStatu,  f.name as decisionResult,a.decisionOpinion, a.involvedVersion, k.name as vname, i.name as sname, l.patchversion, a.patchType, a.isProductMod, a.trouble, a.judgeMethod, a.probablity, a.impactAnalysis, a.evadeMeasure, a.rootCause, a.modifyPlan, a.condition1, a.siteAttent,a.siteSafety,a.isMaintain,a.isEquipmentAffect,a.isEquipmentAffectTxt,a.isSecurity, a.requirementVersionSrc, h.verid as versionid, a.module as module, a.projectDecision 
-
-from patchrequirement a 
-
-LEFT join dir_version b on a.decisionVersion = b.id 
-LEFT join user c on a.createUser = c.user_id 
-LEFT join dir_department d on a.department = d.id 
-LEFT join dir_patchdecision f on a.decisionResult = f.id 
-LEFT join user g on a.modifier = g.user_id  
-left join patchrequirement_version h on A.id=h.reqid 
-left join patchrequirement_version_status i on h.status=i.id 
-left join dir_version k on h.verid=k.id 
-left join patch l on h.patchid=l.id 
-where 1 = 1 and a.requirementVersionSrc = 0  and k.product = '25' and h.patchid = '820' 
-order by a.product,a.patch, a.id, h.verid
 
 
 <![CDATA[ and task_name like '%' || #{taskName} || '%' ]]>
