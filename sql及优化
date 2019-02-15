@@ -392,6 +392,13 @@ select count(distinct b.guid) count
 
 where d.guid = m.alarm_guid(+)
 
+SELECT ... FROM D, F WHERE D.TABLESPACE_NAME = F.TABLESPACE_NAME(+) ORDER BY D.TABLESPACE_NAME;
+从结果集D和F中选择满足WHERE条件的数据。
+WHERE条件中，使用了外连接符号(+)，由于这个外连接符在等号右侧，所以这是一个左外连接，结果集D中的数据将被全部显示。
+
+
+
+
 and instr(ne.checktype,','||(select
 view_mode from T_CUBE_ENS_CMD where
 guid=#{guid})||',')=0
