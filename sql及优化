@@ -1,0 +1,1812 @@
+sql:
+
+
+数据库插入防止重复值：
+declare
+  jilu_guid number;
+begin
+  select count(*)
+    into jilu_guid
+    from tlb t
+   where pdu = 'DC'
+     and version = 'R19'
+     and subsys = 'huawei'
+     and feature = 'a'
+     and xpath = 'b4'
+     and type is null  //不能写 type = ''
+     and operation is null
+     and delflag = 0
+     and source = 'api';
+  if jilu_guid = 0 then
+    insert into tlb
+      (pdu,
+       version,
+       subsys,
+       feature,
+       xpath,
+       type,
+       operation,
+       delflag,
+       source)
+    values
+      ('DC', 'R19', 'huawei', 'a', 'b4', '', '', 0, 'api');
+  end if;
+end;
+
+
+多表联查：
+yang覆盖案例————
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huawei.test.coverage.analysis.dao.YangDao">
+
+	<!-- 获取yang覆盖数 -->
+	<select id="getYangCoverage" resultType="Integer">
+
+		<!-- 基线被匹配到的总数 -->
+		<if test="start == 1">
+			SELECT count(*)
+			FROM (select 'x'
+			from t_ens_yang_base a, t_test_yang_match m
+			where a.guid=m.yang_guid
+			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and a.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and a.version=#{yvo.version}
+			</if>
+			<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and m.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+				and m.source=#{yvo.testSource}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and a.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and a.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and a.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and a.xpath like '%${yvo.xpath}%'
+			</if>
+			group by a.guid)
+		</if>
+
+		<!-- 基线总数 -->
+		<if test="start == 0">
+		select count(*) from 
+		(select b.guid from t_ens_yang_base b where 1=1 
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and b.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and b.version=#{yvo.version}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and b.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and b.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and b.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and b.xpath like '%${yvo.xpath}%'
+			</if>
+		group by b.guid)
+		</if>
+		
+	</select>
+
+
+	<!-- yang 柱形图 列表 -->
+	<select id="getYangList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys
+		from(
+		select a.subsys, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys) c
+		group by c.subsys
+	</select>
+	
+	
+	<!-- yang table 表格数据 -->
+	<select id="getyangTableList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		z.subsys,
+		z.feature,
+		z.yangTotal,
+		z.yangCoverage
+		from(select y.subsys,
+		y.feature,
+		y.yangTotal,
+		y.yangCoverage
+		from(select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys,a.feature) c
+		group by c.subsys,c.feature) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCoverage !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCoverage != y.yangTotal
+		</if>
+		    ) z
+		      <![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			  ]]>
+
+	</select>
+
+
+	<!-- yang table 表格总数 -->
+	<select id="getYangTotal" resultType="Integer">
+
+			select count(*)
+			from (select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		group by a.guid,a.subsys,a.feature) c
+		group by c.subsys,c.feature)y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCoverage !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCoverage != y.yangTotal
+		</if>
+	</select>
+
+	
+	<!-- yang xpath 列表 -->
+	<select id="getyangXpathList"
+		resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		y.xpath,
+		y.subsys,
+		y.feature,
+		y.yangCover2
+		from(select max(t.subsys) subsys,max(t.feature)
+		feature,t.xpath,sum(t.mguid) yangCover2 from
+		(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from
+		t_ens_yang_base a LEFT JOIN t_test_yang_match c on(a.guid=c.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and c.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and c.source=#{yvo.testSource}
+            </if>
+		)
+		where 1=1 
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath order
+		by
+		yangCover2 desc)y
+		<![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	</select>
+	
+	
+	<!-- yang table 表格总数 -->
+	<select id="getyangXpathTotal" resultType="Integer">
+			select count(*)from(
+			select max(t.subsys) subsys,max(t.feature) feature,t.xpath,sum(t.mguid)
+			yangcover from
+			(select a.guid,a.subsys,a.feature,a.xpath,count(c.guid) mguid from
+			t_ens_yang_base a LEFT JOIN t_test_yang_match c
+			on(a.guid=c.yang_guid)
+			where
+			<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				a.pdu=#{yvo.pdu}
+			</if>
+			<if
+				test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and a.version=#{yvo.version}
+			</if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and a.source=#{yvo.source}
+			</if>
+			<if
+				test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and a.feature=#{yvo.feature}
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and a.subsys=#{yvo.subsys}
+			</if>
+			GROUP BY a.guid,a.subsys,a.feature,a.xpath) t GROUP BY t.xpath)y
+	</select>
+
+
+	<!--获得yang下匹配数据详细数据列表 -->
+	<select id="getyangDetail"
+		resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+
+		select *
+		from (select rownum r,
+		y.matchXpath,
+		y.value,
+		y.operation,
+		y.type
+		from(select c.xpath matchXpath,c.value,c.operation,c.type from
+		(select * from t_ens_yang_base a where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath=#{yvo.xpath}
+		</if>
+		)b left join t_test_yang_match c on (b.guid=c.yang_guid)
+		GROUP BY c.guid,c.xpath,c.value,c.operation,c.type) y
+			<![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	</select>
+
+
+
+	<!-- yang detail 表格总数 -->
+	<select id="getyangDetailTotal" resultType="Integer">
+
+		select count(*) from (select c.xpath
+		matchXpath,c.value,c.operation,c.type from
+		(select * from t_ens_yang_base a where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath=#{yvo.xpath}
+		</if>
+		)b left join t_test_yang_match c on (b.guid=c.yang_guid)
+		GROUP BY c.guid,c.xpath,c.value,c.operation,c.type) y
+
+	</select>
+
+
+	<select id="getversionList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(version) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="pdu != null and pdu != 'NULL' and pdu != '' and pdu != 'ALL'">
+			and b.pdu = #{pdu}
+		</if>
+		order by
+		version desc
+	</select>
+
+
+	<select id="getsourceList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(source) as name
+		from
+		t_ens_yang_base b
+		where 1=1
+		order by source desc
+	</select>
+	
+	
+	<select id="getTestSourceList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(source) as name
+		from
+		t_test_yang_match b
+		where 1=1
+		order by source desc
+	</select>
+
+
+	<select id="getproductList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+	select distinct(a.product) as name from
+    (select m.product from t_test_yang_match m where 1=1
+        <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and m.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and m.version=#{yvo.version}
+		</if>
+        )a group by a.product order by a.product desc
+	</select>
+
+
+	<select id="getsubsysList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(subsys) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		order by
+		subsys desc
+	</select>
+
+
+	<select id="getfeatureList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+		select
+		distinct(feature) as name
+		from
+		t_ens_yang_base b
+		where
+		1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		order by
+		feature desc
+	</select>
+	
+	
+	
+	<!-- 导出yang覆盖信息 -->
+	<select id="getyangExportList" resultType="com.huawei.test.coverage.analysis.pojo.po.YangPo">
+		select *
+		from (select rownum r,
+		z.pdu,
+		z.version,
+		z.xpath,
+		z.subsys,
+		z.feature,
+		z.yangCover2
+		from(select
+		y.pdu,
+		y.version,
+		y.xpath,
+		y.subsys,
+		y.feature,
+		y.yangCover2
+		from(select c.pdu,c.version,c.subsys,c.feature,c.xpath,count(d.guid) yangCover2 from
+          (select * from t_ens_yang_base b where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and b.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and b.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+              ) c 
+          left join t_test_yang_match d on c.guid=d.yang_guid
+            <if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and d.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and d.source=#{yvo.testSource}
+            </if>
+          group by c.guid,c.pdu,c.version,c.subsys,c.feature,c.xpath) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCover2 !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCover2 = 0
+		</if> order by y.subsys
+		)z
+	        <![CDATA[
+				where rownum <= #{yvo.endRow})
+				where r > #{yvo.startRow}
+			]]>
+	
+	</select>
+	
+	
+	<select id="getyangExportListTotal" resultType="Integer">
+		select count(*) from (select c.pdu,c.version,c.subsys,c.feature,c.xpath,count(d.guid) yangCover2 from
+          (select * from t_ens_yang_base b where 1=1
+          <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and b.pdu=#{yvo.pdu}
+		</if>
+		<if
+			test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and b.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and b.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and b.xpath like '%${yvo.xpath}%'
+		</if>
+		<if
+			test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and b.feature=#{yvo.feature}
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and b.subsys=#{yvo.subsys}
+		</if>
+              ) c 
+          left join t_test_yang_match d on c.guid=d.yang_guid
+            <if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and d.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and d.source=#{yvo.testSource}
+            </if>
+          group by c.guid,c.pdu,c.version,c.subsys,c.feature,c.xpath) y
+		<if test="yvo.coverType == '已覆盖'">
+			where y.yangCover2 !=0
+		</if>
+		<if test="yvo.coverType == '未覆盖'">
+			where y.yangCover2 = 0
+		</if>
+	</select>
+
+</mapper>
+
+mib覆盖导出sql：
+<select id="getmibExportList"
+            resultType="com.huawei.test.coverage.analysis.pojo.po.CoverageMibpo">
+        select *
+        from (select rownum r,
+        y.pdu,
+        y.version,
+        y.subsys,
+        y.mibTotal,
+        y.mibCoverage
+        from(select b.pdu,
+        b.version,
+        b.module subsys,
+        count(distinct b.guid) mibTotal,
+        count(distinct m.fk_mib) mibCoverage
+        from (select * from t_ens_mib_base a where 1=1
+        <if test="mvo.pdu != null and mvo.pdu != '' and mvo.pdu != 'ALL'">
+            and a.pdu=#{mvo.pdu}
+        </if>
+        <if test="mvo.version != null and mvo.version != '' and mvo.version != 'ALL'">
+            and a.version=#{mvo.version}
+        </if>
+        ) b
+        LEFT JOIN t_ens_mib_match m on m.fk_mib = b.guid
+        group by b.pdu, b.module, b.version
+        order by b.pdu, b.version desc)y
+        <![CDATA[
+				where rownum <= #{mvo.endRow})
+				where r > #{mvo.startRow}
+			]]>
+    </select>
+
+
+
+
+多表联查 内连接  外连接知识点：
+1，内连接：
+select * from table1 join table2 on table1.id=table2.id
+只返回符合条件的table1和table2的列
+等价（与下列执行效果相同）
+A:select a.*,b.* from table1 a,table2 b where a.id=b.id
+B:select * from table1 cross join table2 where table1.id=table2.id  
+(注：cross join后加条件只能用where,不能用on)
+
+2，外连接：
+左连接：left join 或 left outer join
+左向外联接的结果集包括 LEFT OUTER 子句中指定的左表的所有行，而不仅仅是联接列所匹配的行。
+如果左表的某行在右表中没有匹配行，则在相关联的结果集行中右表的所有选择列表列均为空值(null)。
+右连接：right join 或 right outer join
+右向外联接是左向外联接的反向联接。将返回右表的所有行。
+如果右表的某行在左表中没有匹配行，则将为左表返回空值。
+
+3，笛卡尔积
+第一个表的行数乘以第二个表的行数等于笛卡尔积结果集的大小。
+select * from table1,table2
+
+
+
+
+
+
+
+
+1,更新字段值  批量更新
+update r_problem set workStatus =1 where workStatus = 4
+UPDATE dir_module SET NAME ='L3_IPv4', description ='L3_IPv4' WHERE id = 375;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 376;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 443;UPDATE dir_module SET NAME ='L3_IPv4',description ='L3_IPv4' WHERE id = 947;
+
+2,选择
+select * from r_problem where workStatus !=2 and workStatus !=5
+SELECT * FROM r_problem WHERE developer ='w00215231' and probdes like '%配置assi%'
+
+3,把null值改为0或""
+SELECT IFNULL(filep,'') AS filep FROM r_operate
+
+4,两个表联合查数据，主表某id对应二表id，得到该id对应的具体name。									
+select d.*,l.L_NAME from T_TOOLS_EYC_TYPE_DETAIL_CN d,T_TOOLS_EYC_TYPE_LINECARD_CN l where d.L_ID=l.L_ID  and D_DELETE=1 and S_ID=1 order by D_ID
+
+5,两个表联合查数据，自定义取得哪些字段。
+select s.S_ID,s.S_NAME,t.T_NAME from T_TOOLS_EYC_TYPE_STENCIL_CN s,T_TOOLS_EYC_TYPE_CN t where s.S_DELETE=1 and s.T_ID=t.T_ID order by t.T_ID,s.S_ID
+
+6,多表查询，并将一多表查询结果做为字段。
+select e.*,t.T_NAME from t_TOOLS_eyc_type_cn t,
+	(select d.*,s.T_ID,s.S_NAME,l.L_NAME from 
+	t_TOOLS_eyc_type_detail_cn d,t_TOOLS_eyc_type_stencil_cn s, t_TOOLS_eyc_type_linecard_cn l
+   where s.S_ID=d.S_ID and D_ID=163)e
+  where t.T_ID=e.T_ID
+
+7,mybatis 更新数据库
+update T_TOOLS_EYC_TYPE_DETAIL_CN 
+  		set 
+  		S_ID=#{sId,jdbcType=DECIMAL},
+  		L_ID=#{lId,jdbcType=DECIMAL},
+  		D_PPNAME=#{dPpname,jdbcType=VARCHAR},
+  		D_ONE=#{dOne,jdbcType=DECIMAL},
+  		D_TWO=#{dTwo,jdbcType=DECIMAL},
+  		D_THREE=#{dThree,jdbcType=DECIMAL},
+  		D_FOUR=#{dFour,jdbcType=DECIMAL},
+  		D_FIVE=#{dFive,jdbcType=DECIMAL},
+  		D_SIX=#{dSix,jdbcType=DECIMAL},
+  		D_DELETE=#{dDelete,jdbcType=VARCHAR}
+  		where D_ID=#{dId,jdbcType=DECIMAL}
+
+8，多表联查 left join  *
+select A.*,B.priority as version_priority,B.patchQuestiontester as patchQuestiontester,B.verid as versionid, B.schemeReviewStatu as schemeReviewStatu, B.verPatchType as verPatchType, B.deliverPerson as deliverPerson, D.name as vname, C.name as sname, E.patchversion, B.question, B.iterativeStage, B.remark as conclusion, B.isputin as isputinVersion, dep.name as depName ,B.isRisk as isRisk, B.judgeConclusion as judgeConclusion, B.clarifyConclusion as clarifyConclusion, B.seReviewComment as seReviewComment 
+from patchrequirement A  left join patchrequirement_version B on A.id=B.reqid 
+left join 
+patchrequirement_version_status C on B.status=C.id left join 
+dir_version D on B.verid=D.id left join patch E on B.patchid=E.id left join dir_department dep on dep.id = A.department  
+where 1=1 and A.requirementVersionSrc = 0  and 
+B.patchid = '784' 
+order by A.product,A.patch, A.id, B.verid
+
+
+
+9，group by 多个字段  left join结果集
+数据是以基线表left join匹配表得出的  基线表中 基线匹配到一次，连同匹配表中数据，列出来一次，但是基线数据是一样的，因为是相同的基线；只需要根据需要的数据，group一次即可，得到匹配次数。
+
+按照guid分组后，结果集表中，每条基线，除了匹配表中后面的数据被合并，原来的数据都一样。
+对需要取值的字段，采用聚合函数：SUM(m.mTime
+其他原来的基线数据，直接max封装取出来。因为值只有一个。
+				select nvl(SUM(m.mTime), 0) times,
+                    max(a.enname) enname,
+                    max(a.cnname) cnname,
+					max(a.node_oid) node_oid,
+					max(a.guid) guid,
+					max(a.module) module,
+					max(a.node_name) node_name,
+					max(a.max_access) max_access
+                            from t_ens_mib_base a
+                            LEFT JOIN t_ens_mib_match m
+                            ON (m.fk_mib = a.guid)
+		                    where 1=1 and a.pdu='LSW'
+                            and a.module='ENTITY-MIB'
+                            group by a.guid
+										 
+
+
+下面的方式结果一样，但是过多的group没啥意义，因为字段里值都一样。
+							select nvl(SUM(m.mTime), 0) times,
+							a.enname,
+							NVL(TO_CHAR(a.cnname), '—') cnname,
+							a.node_oid,
+							a.guid,
+							max(a.module) module,
+							a.node_name,
+							a.max_access 
+                              from t_ens_mib_base a
+                                 LEFT JOIN t_ens_mib_match m
+                                  ON (m.fk_mib = a.guid)
+		                          where 1=1 and a.pdu='LSW'
+                              and a.module='ENTITY-MIB'
+                              group by a.guid, 
+											a.module, 
+											a.enname,
+											a.cnname, 
+											a.node_oid, 
+											a.node_name,
+											a.max_access
+
+
+
+
+
+<![CDATA[ and task_name like '%' || #{taskName} || '%' ]]>
+ 
+<if test = "startDateTime != null and startDateTime != ''">
+	and test_suit_start_time <![CDATA[>]]> to_date(#{startDateTime},'yyyy-MM-dd HH24:mi:ss')
+</if>
+	
+List<TestDevPo> listDevByBed(@Param("recordGuid") String recordGuid, @Param("bedList") List<String> bedList);
+	
+<if test="bedList != null and bedList.size() != 0">
+	and t_b.bed_name in
+	<foreach collection="bedList" item="bed" index="index" open="(" close=")" separator=",">
+		#{bed}
+	</foreach>
+</if>
+					
+	
+select distinct pdu, version, product, casenum from t_testcase_baseline	
+					
+					
+select
+	sum(case when passrate1 = 0 then 1 else 0 end) as zeroPass,
+	<![CDATA[sum(case when 0 < passrate1 and passrate1 < = 50  then 1 else 0 end) as zeroHalfPass,]]>
+	<![CDATA[sum(case when 50 < passrate1 and passrate1 < 100  then 1 else 0 end) as halfFullPass,]]>
+	sum(case when passrate1 = 100 then 1 else 0 end) as fullPass,
+	sum(case when passrate1 is null then 1 else 0 end) as nuExec
+from
+	t_testcase_baseline
+where
+	pdu = #{qo.pdu}
+	and version = #{qo.version}					
+					
+	
+select t_jira.*,
+<![CDATA[
+	(case
+		when (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) < 7 then 0
+		when (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) >= 7 and (sysdate - to_date(t_jira.create_time, 'yyyy/mm/dd hh24:mi:ss')) < 14 then 1 else 2
+	end) as divideTime,
+]]>
+(case
+	when t_jira.status_name in ('持续改进_问题验收', '持续改进_非问题用户确认', '持续改进_管理员归档') then 1 else 0
+end) as divideStatus
+from
+t_jira_info t_jira
+where
+status_name != 'Closed'
+and product is not null
+and failed_big_type in ('脚本问题同步','支撑库问题','脚本优化','脚本问题','随机问题','用例问题')
+and delete_flag is null
+
+
+mapper不用mybatis配置文件映射————
+package com.huawei.z00448113.dao;
+
+import com.huawei.z00448113.entity.Cmd;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+
+/**
+ * @author : z00448113
+ * @date : Create in 14:27 2018/12/7
+ */
+@Mapper
+public interface CmdBaseMapper {
+
+    @Select("select* from t_ens_cli_base where pdu = #{pdu} and version = #{version} and product= #{product}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "cmdIndex", column = "cmd_index"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersion(@Param("pdu") String pdu, @Param("version") String version, @Param("product") String product);
+
+    @Select("select distinct mid,feature,subsys from t_ens_cli_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "feature", column = "feature"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersioNoProduct(@Param("pdu") String pdu, @Param("version") String version);
+
+    @Update("update t_ens_cli_base " +
+            "set mid = #{cmd.mid}" +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "cmd_index=#{cmd.cmdIndex}")
+    int updateCmd(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "guid=#{cmd.guid}")
+    int updateCmdVrp(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdVrpByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMidNoProduct(@Param("cmd") Cmd cmd);
+
+    @Delete("delete " +
+            "from " +
+            "t_ens_cli_base " +
+            "where " +
+            "pdu = #{cmd.pdu} " +
+            "and version = #{cmd.version} " +
+            "and product = #{cmd.product} " +
+            "and name = #{cmd.name} "
+    )
+    int deleteCmd(@Param("cmd") Cmd cmd);
+}
+
+
+where t.checktime < = to_date(#{selectDate},'yyyy-mm-dd')
+
+<!-- 配置映射 -->
+<resultMap type="com.huawei.z00448113.po.EvaluationChartPo"
+		   id="CHART_ORM">
+	<result property="count" column="count" />
+	<result property="subsys" column="gsubsys" />
+</resultMap>
+
+
+select count(distinct b.guid) count
+
+<if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+	and b.product  like concat(concat('%',#{sitProduct}),'%')
+</if>
+
+
+where d.guid = m.alarm_guid(+)
+
+SELECT ... FROM D, F WHERE D.TABLESPACE_NAME = F.TABLESPACE_NAME(+) ORDER BY D.TABLESPACE_NAME;
+从结果集D和F中选择满足WHERE条件的数据。
+WHERE条件中，使用了外连接符号(+)，由于这个外连接符在等号右侧，所以这是一个左外连接，结果集D中的数据将被全部显示。
+
+
+
+
+and instr(ne.checktype,','||(select
+view_mode from T_CUBE_ENS_CMD where
+guid=#{guid})||',')=0
+
+to_char(insp.time, 'yyyy-mm-dd') time
+
+分页————
+<select id="xx" resultType="xx">
+	select * from
+	(select rownum r,e.* from
+	(xxx) e
+	<![CDATA[
+		where rownum<=#{end})
+	where r > #{start}
+	]]>
+</select>
+
+
+
+	
+sql整体案例————
+
+ <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huawei.z00448113.dao.AllContrastDao">
+
+    <!-- 风险管理数量-->
+    <select id="riskCount" resultType="com.huawei.z00448113.vo.allcontrastvo.RiskCountPo">
+        select t.risk_type riskType, t.risk_level riskLevel, count(t.risk_level) riskCount
+        from t_ens_risk t
+        where t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        group by t.risk_type,t.risk_level
+    </select>
+
+    <!-- 场景覆盖率-->
+    <select id="getSceneTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from
+        (select   t.rate rate
+        from t_test_scene_datecover t
+        where t.checktime <= to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.pdt_version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc)
+        where rownum = 1
+    </select>
+
+    <!-- 命令行覆盖率-->
+    <select id="getCmdTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from
+        (select t.testcover, t.usertotal
+        from t_test_cmd_datecover t
+        where t.checktime <= to_date(#{selectDate}, 'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.pdt_version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc)
+        where rownum = 1
+    </select>
+
+    <!-- 日志覆盖趋势图-->
+    <select id="getLogTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testcover,t.usertotal
+        from t_test_log_datecover t
+        where t.checktime <= to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 告警覆盖趋势图-->
+    <select id="getAlarmTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testcover,t.usertotal
+        from t_test_alarm_datecover t
+        where t.checktime <= to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 性能覆盖趋势图-->
+    <select id="getBusinessTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testCover,t.userTotal
+        from t_test_business_datecover t
+        where t.checktime <= to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        and t.source = 'ALL'
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 获得版本下拉框 -->
+    <select id="pdtversionList" resultType="com.huawei.common.entity.vo.InfoPo">
+        select distinct info.pdt_version as name
+        from t_scenes_test_datainfo info
+        where info.PDU = #{pdu}
+        order by info.pdt_version desc
+    </select>
+
+    <!-- 所有环形图-->
+    <select id="getChart" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select t.all_cover allContrastCover,
+        t.all_total allContrastTotal,
+        t.scene_cover subSceneCover,
+        t.scene_total subSceneTotal,
+        t.cmd_cover cmdCover,
+        t.cmd_total cmdTotal,
+        t.log_cover logCover,
+        t.log_total logTotal,
+        t.alarm_cover alarmCover,
+        t.alarm_total alarmTotal
+        <!--t.business_cover businessCover,
+        t.business_total businessTotal-->
+        from t_ens_all_ringchart t
+        where t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+    </select>
+
+    <!-- 性能覆盖饼图数据-->
+    <select id="getBusinessCover" resultType="Integer">
+        select count(distinct ub.type) from
+        t_cube_ens_business ub,
+        t_cube_ens_insp sp,
+        t_scenes_test_business tb ,
+        ebg_custorem_record_info info
+        where ub.fk_insp = sp.guid and tb.type =ub.type
+        and sp.pdu =info.product and sp.site =info.customer_name and info.delflag =0
+        and tb.pdu=#{pdu}
+        and tb.version=#{pdtVersion}
+    </select>
+
+    <select id="getBusinessTotal" resultType="Integer">
+        select count(distinct ub.type)
+        from t_cube_ens_business ub,t_cube_ens_insp sp,ebg_custorem_record_info info
+        where ub.fk_insp = sp.guid
+        and sp.pdu =info.product and sp.site =info.customer_name and info.delflag =0
+        and sp.pdu=#{pdu}
+    </select>
+
+    <!-- 场景覆盖高风险top5 -->
+    <select id="sceneTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select distinct s.subscene name,c.cover/100 coverRate
+        from t_ens_scene_cover c,ebg_customer_scene_id s
+        where c.scene_id =s.scene_id
+        and c.pdu = #{pdu}
+        and c.pdt_version = #{pdtVersion}
+        order by coverRate
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+
+    <!-- 命令行高风险top5 -->
+    <select id="cmdTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select t.risk_name name ,t.risk_rate coverRate
+        from t_test_risk_top5 t
+        where t.risk_type = 1
+        and t.pdu = #{pdu}
+        and t.version = #{pdtVersion}
+        order by t.sort
+    </select>
+
+    <!-- 日志高风险top5 -->
+    <select id="logTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select ue.feature name, te.testTotal/ue.userTotal coverRate
+        from (
+        select b.feature, count(distinct b.guid) userTotal
+        from t_cube_ens_log_match um, t_ens_log_base b
+        where um.log_guid =b.guid
+        and b.pdu = #{pdu}
+        and b.version = #{pdtVersion}
+        group by b.feature
+        ) ue
+        left join (select b.feature, count(distinct b.guid) testTotal
+        from t_ac_ens_log_match tm, t_ens_log_base b ,t_cube_ens_log_match um
+        where tm.log_guid = b.guid
+        and b.guid =um.log_guid
+        and b.pdu = #{pdu}
+        and b.Version = #{pdtVersion}
+        group by b.feature) te on ue.feature = te.feature
+        order by coverRate NULLS FIRST
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+
+    <!-- 告警高风险top5 -->
+    <select id="alarmTop5" resultType="com.huawei.z00448113.po.AllContrastPo">
+        select rownum r, tt.*
+        from (
+        select ue.feature name, te.testTotal/ue.userTotal coverRate
+        from (
+        select b.feature, count(distinct b.guid) userTotal
+        from t_cube_ens_alarm um, t_ens_alarm_base b
+        where um.alarm_guid =b.guid
+        and b.pdu = #{pdu}
+        and b.version = #{pdtVersion}
+        group by b.feature
+        ) ue
+        left join (select b.feature, count(distinct b.guid) testTotal
+        from t_ac_ens_alarm_match tm, t_ens_alarm_base b ,t_cube_ens_alarm um
+        where tm.alarm_guid = b.guid
+        and b.guid =um.alarm_guid
+        and b.pdu = #{pdu}
+        and b.Version = #{pdtVersion}
+        group by b.feature) te on ue.feature = te.feature
+        order by coverRate NULLS FIRST
+        )tt
+        <![CDATA[
+		where rownum<=5
+	]]>
+    </select>
+ </mapper>
+ 
+ <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.huawei.z00448113.dao.BusinessContrastDao">
+
+    <!-- 获取来源列表 -->
+    <select id="getSourceList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct source as
+        name from t_scenes_test_business
+    </select>
+
+    <!-- 覆盖趋势图-->
+    <select id="getMaxTrend" resultType="com.huawei.z00448113.vo.allcontrastvo.TrendPo">
+        select * from (
+        select  t.testCover,t.userTotal
+        from t_test_business_datecover t
+        where t.checktime <= to_date(#{selectDate},'yyyy-mm-dd')
+        and t.pdu = #{pdu}
+        and t.version = #{pdtversion}
+        and t.source = #{source}
+        order by t.checktime desc
+        )
+        where rownum = 1
+    </select>
+
+    <!-- 获得pdu下拉框 -->
+    <select id="getPduList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct PDU as name
+        from t_scenes_test_datainfo
+        where PDU is not null
+        order by name
+    </select>
+
+    <!-- 获得下拉框主场景 -->
+    <select id="getSceneList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct SCENE as name from ebg_customer_scene_id
+        where 1=1
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and PDU = #{pdu}
+        </if>
+        order by scene
+    </select>
+
+    <!-- 获得版本下拉框 -->
+    <select id="pdtversionList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct info.pdt_version as name
+        from t_scenes_test_datainfo info
+        where info.PDU = #{pdu}
+        order by info.pdt_version
+    </select>
+
+    <!-- 获得局点下拉框 -->
+    <select id="getSiteList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct insp.alias as name from T_CUBE_ENS_INSP
+        insp,ebg_custorem_record_info info
+        where 1=1
+        and
+        insp.site=info.customer_name
+        and insp.pdu=info.product
+        <if test="null != city and '' != city and 'ALL' != city">
+            and insp.CITY = #{city}
+        </if>
+        <if test="null != conditionType and '' != conditionType and 'ALL' != conditionType">
+            and info.condition_type = #{conditionType}
+        </if>
+        <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+            and info.customertype = #{customerType}
+        </if>
+        <if test="null != area and '' != area and 'ALL' != area">
+            and insp.area = #{area}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.PDU = #{pdu}
+        </if>
+        order by insp.alias
+    </select>
+
+    <!-- 获得区域下拉框的值 -->
+    <select id="getAreaList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct AREA as name from T_CUBE_ENS_INSP
+        where 1=1
+        <if test="null != site and '' != site and 'ALL' != site">
+            and alias = #{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and PDU = #{pdu}
+        </if>
+        order by AREA
+    </select>
+
+    <!-- 获得城市下拉框的值 -->
+    <select id="getCityList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct CITY as name from T_CUBE_ENS_INSP
+        where 1=1
+        <if test="null != site and '' != site and 'ALL' != site">
+            and alias = #{site}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and PDU = #{pdu}
+        </if>
+        <if test="null != area and '' != area and 'ALL' != area">
+            and AREA = #{area}
+        </if>
+        order by CITY
+    </select>
+
+    <!-- 获得场景类别下拉框的值 -->
+    <select id="getConditionTypeList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct t.CONDITION_TYPE as name from
+        EBG_CUSTOREM_RECORD_INFO
+        t left
+        join ebg_area_list area
+        on area.region = t.area where
+        t.CUSTOMERTYPE is
+        not null and t.CONDITION_TYPE is not null
+        <if test="null != area and '' != area and 'ALL' != area">
+            and area.country = #{area}
+        </if>
+        <if test="null != city and '' != city and 'ALL' != city">
+            and t.area = #{city}
+        </if>
+        <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+            and t.customertype = #{customerType}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and t.PRODUCT = #{pdu}
+        </if>
+        order by t.CONDITION_TYPE
+    </select>
+
+    <!-- 获得局点类别下拉框的值 -->
+    <select id="getCustomTypeList" resultType="com.huawei.common.entity.vo.site.InfoPo">
+        select distinct ne.custom_type as name from T_CUBE_ENS_INSP
+        insp
+        inner join
+        t_cube_ens_ne ne on (insp.fk_ne = ne.guid)
+        where
+        ne.custom_type is not null
+        <if test="null !=area  and '' != area and 'ALL' != area">
+            and insp.area=#{area}
+        </if>
+        <if test="null != city and '' != city and 'ALL' != city">
+            and insp.country=#{city}
+        </if>
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu=#{pdu}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias=#{site}
+        </if>
+        order by ne.custom_type
+    </select>
+
+
+    <!-- 获取客户指标的最大值和最小值  -->
+    <select id="getCustomerValueScope" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        select b.type type,min(to_number(b.value)) customerMinValue,max(to_number(b.value)) customerMaxValue
+        from  t_cube_ens_business b,
+        t_cube_ens_insp insp,
+        ebg_custorem_record_info info
+        where b.fk_insp=insp.guid
+        and insp.pdu = info.product
+        and info.customer_name=insp.site
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias = #{site}
+        </if>
+        <if test="null != area and '' != area and 'ALL' != area">
+            and insp.area = #{area}
+        </if>
+        <if test="null != city and '' != city and 'ALL' != city">
+            and insp.city = #{city}
+        </if>
+        <if test="null != conditionType and '' != conditionType and 'ALL' != conditionType">
+            and info.condition_type = #{conditionType}
+        </if>
+        <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+            and info.customertype = #{customerType}
+        </if>
+        group by b.type
+    </select>
+
+    <!-- 获取测试数据指标的最大值和最小值  -->
+    <select id="getTestValueScope" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        select b.type type, min(to_number(b.value)) testMinValue ,max(to_number(b.value)) testMaxValue
+        from  t_scenes_test_business b
+        where 1 = 1
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and b.pdu = #{pdu}
+        </if>
+        <if test="null != pdtversion and '' != pdtversion and 'ALL' != pdtversion">
+            and b.version = #{pdtversion}
+        </if>
+        <if test="null != source and '' != source and 'ALL' != source">
+            and b.source = #{source}
+        </if>
+        group by b.type
+    </select>
+
+    <select id="getBusinessList1" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        <!-- select *
+        from (select rownum r, tt.*
+        from ( -->
+        select c.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_cube_ens_business      c,
+        t_scenes_test_business   t,
+        t_cube_ens_insp          insp,
+        ebg_custorem_record_info info
+        where c.type = t.type
+        and c.fk_insp = insp.guid
+        and insp.pdu = info.product
+        and info.customer_name = insp.site
+        and insp.pdu=t.pdu
+        and regexp_like(c.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and regexp_like(t.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias = #{site}
+        </if>
+        <if test="null != area and '' != area and 'ALL' != area">
+            and insp.area = #{area}
+        </if>
+        <if test="null != city and '' != city and 'ALL' != city">
+            and insp.city = #{city}
+        </if>
+        <if test="null != conditionType and '' != conditionType and 'ALL' != conditionType">
+            and info.condition_type = #{conditionType}
+        </if>
+        <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+            and info.customertype = #{customerType}
+        </if>
+        <if test="null != pdtversion and '' != pdtversion and 'ALL' != pdtversion">
+            and t.version = #{pdtversion}
+        </if>
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source = #{source}
+        </if>
+        <if test="null != typeInput and '' != typeInput ">
+            and c.type like '%' ||#{typeInput}||'%'
+        </if>
+        <if test="null != siteInput and '' != siteInput ">
+            and insp.site like '%' ||#{siteInput}||'%'
+        </if>
+        group by c.type
+        <!-- 	 )tt
+        <![CDATA[
+            where rownum<=#{end})
+            where r > #{start}
+        ]]> -->
+    </select>
+
+    <!-- 客户用到，测试未测到  -->
+    <!-- <select id="getTotal2" resultType="java.lang.Integer">
+        select count(1) from (
+        select count(1)
+          from t_cube_ens_business c
+         inner join t_cube_ens_insp insp on c.fk_insp = insp.guid
+         inner join  ebg_custorem_record_info info on info.customer_name = insp.site
+          left join t_scenes_test_business t on c.type = t.type
+         where t.type is null
+           <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+                and insp.pdu = #{pdu}
+            </if>
+            <if test="null != site and '' != site and 'ALL' != site">
+                and insp.SITE = #{site}
+            </if>
+            <if test="null != area and '' != area and 'ALL' != area">
+                and insp.area = #{area}
+            </if>
+            <if test="null != city and '' != city and 'ALL' != city">
+                and insp.city = #{city}
+            </if>
+            <if test="null != conditionType and '' != conditionType and 'ALL' != conditionType">
+                and info.condition_type = #{conditionType}
+            </if>
+            <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+                and info.customertype = #{customerType}
+            </if>
+         group by c.type
+         )tt
+    </select> -->
+    <!-- 客户用到，测试未测到  -->
+    <select id="getBusinessList2" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        <!-- select *
+        from (select rownum r, tt.*
+        from ( -->
+        select c.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_cube_ens_business c
+        inner join t_cube_ens_insp insp on c.fk_insp = insp.guid
+        inner join  ebg_custorem_record_info info on info.customer_name = insp.site
+        left join t_scenes_test_business t on c.type = t.type
+        where t.type is null
+        and regexp_like(c.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and insp.pdu = #{pdu}
+        </if>
+        <if test="null != site and '' != site and 'ALL' != site">
+            and insp.alias = #{site}
+        </if>
+        <if test="null != area and '' != area and 'ALL' != area">
+            and insp.area = #{area}
+        </if>
+        <if test="null != city and '' != city and 'ALL' != city">
+            and insp.city = #{city}
+        </if>
+        <if test="null != conditionType and '' != conditionType and 'ALL' != conditionType">
+            and info.condition_type = #{conditionType}
+        </if>
+        <if
+                test="null != customerType and '' != customerType and 'ALL' != customerType">
+            and info.customertype = #{customerType}
+        </if>
+        <if test="null != typeInput and '' != typeInput ">
+            and c.type like '%' ||#{typeInput}||'%'
+        </if>
+        <if test="null != siteInput and '' != siteInput ">
+            and insp.site like '%' ||#{siteInput}||'%'
+        </if>
+        group by c.type
+        <!-- 	 )tt
+       <![CDATA[
+           where rownum<=#{end})
+           where r > #{start}
+       ]]> -->
+    </select>
+
+    <select id="getBusinessList3" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        <!-- select *
+        from (select rownum r, tt.*
+        from ( -->
+        select t.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_scenes_test_business t
+        left join t_cube_ens_business c on c.type = t.type
+        where c.type is null
+        and regexp_like(t.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        <if test="null != pdu and '' != pdu and 'ALL' != pdu">
+            and t.pdu = #{pdu}
+        </if>
+        <if test="null != pdtversion and '' != pdtversion and 'ALL' != pdtversion">
+            and t.version = #{pdtversion}
+        </if>
+        <if test="null != source and '' != source and 'ALL' != source">
+            and t.source = #{source}
+        </if>
+        <if test="null != typeInput and '' != typeInput ">
+            and t.type like '%' ||#{typeInput}||'%'
+        </if>
+        group by t.type
+        <!-- )tt
+       <![CDATA[
+           where rownum<=#{end})
+           where r > #{start}
+       ]]> -->
+    </select>
+
+    <!-- 客户用到的指标列表 -->
+    <select id="getCustomerCount" resultType="java.lang.Integer">
+        select count(1) from
+        (
+        select distinct b.type , b.cmd , b.value,
+        insp.alias site,max(insp.rowkey)
+        from  t_cube_ens_business b,
+        t_cube_ens_insp insp
+        <if test="null != scene_id and '' != scene_id ">
+            ,ebg_customer_scene_site s
+        </if>
+        where b.fk_insp=insp.guid
+        <if test="null != scene_id and '' != scene_id ">
+            and s.site =insp.site
+            and s.scene_id = #{scene_id}
+        </if>
+        <if test="null != siteInput and '' != siteInput ">
+            and insp.site like '%' ||#{siteInput}||'%'
+        </if>
+        and insp.pdu = #{pdu}
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and b.type = #{type}
+        group by b.type , b.cmd , b.value,insp.alias
+        ) e
+    </select>
+    <select id="getCustomerValue" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        select *
+        from (select rownum r, tt.*
+        from (
+        select distinct b.type , b.cmd , b.value,
+        insp.alias site,max(insp.rowkey) rowkey
+        from  t_cube_ens_business b,
+        t_cube_ens_insp insp
+        <if test="null != scene_id and '' != scene_id ">
+            ,ebg_customer_scene_site s
+        </if>
+        where b.fk_insp=insp.guid
+        <if test="null != scene_id and '' != scene_id ">
+            and s.site =insp.site
+            and s.scene_id = #{scene_id}
+        </if>
+        <if test="null != siteInput and '' != siteInput ">
+            and insp.site like '%' ||#{siteInput}||'%'
+        </if>
+        and insp.pdu = #{pdu}
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and b.type = #{type}
+        group by b.type , b.cmd , b.value,insp.alias
+        order by b.type,insp.alias, to_number(b.value)
+
+        )tt
+        <![CDATA[
+		where rownum<=#{end})
+		where r > #{start}
+	]]>
+    </select>
+
+    <!-- 测试数据用到的指标列表 -->
+    <select id="getTestCount" resultType="java.lang.Integer">
+        select count(1) from (
+        select distinct b.type , b.cmd , b.value ,to_char(b.time, 'yyyy-mm-dd') time,b.rowkey,b.version pdtversion
+        from  t_scenes_test_business b
+        where b.pdu = #{pdu}
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and b.type = #{type}
+        order by b.type , b.version, to_number(b.value)
+        ) e
+    </select>
+    <select id="getTestValue" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        select *
+        from (select rownum r, tt.*
+        from (
+        select distinct b.type , b.cmd , b.value ,to_char(b.time, 'yyyy-mm-dd') time,b.rowkey,b.version pdtversion
+        from  t_scenes_test_business b
+        where b.pdu = #{pdu}
+        and regexp_like(b.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and b.type = #{type}
+        order by b.type , b.version, to_number(b.value)
+        )tt
+        <![CDATA[
+		where rownum<=#{end})
+		where r > #{start}
+	]]>
+    </select>
+
+    <!-- 获取所有导出excel -->
+    <select id="getAllBusines" resultType="com.huawei.z00448113.vo.businesscontrast.BusinessInforRVO">
+        select c.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_cube_ens_business      c,
+        t_scenes_test_business   t,
+        t_cube_ens_insp          insp,
+        ebg_custorem_record_info info
+        where c.type = t.type
+        and c.fk_insp = insp.guid
+        and insp.pdu = info.product
+        and info.customer_name = insp.site
+        and insp.pdu = t.pdu
+        and  regexp_like(c.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and  regexp_like(t.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and insp.pdu = #{pdu}
+        group by c.type
+
+        union all
+
+        select c.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_cube_ens_business c
+        inner join t_cube_ens_insp insp on c.fk_insp = insp.guid
+        inner join  ebg_custorem_record_info info on info.customer_name = insp.site
+        left join t_scenes_test_business t on c.type = t.type
+        where t.type is null
+        and  regexp_like(c.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and insp.pdu = #{pdu}
+        group by c.type
+
+        union all
+
+        select t.type,
+        min(to_number(c.value)) customerMinValue,
+        max(to_number(c.value)) customerMaxValue,
+        min(to_number(t.value)) testMinValue,
+        max(to_number(t.value)) testMaxValue
+        from t_scenes_test_business t
+        left join t_cube_ens_business c on c.type = t.type
+        where c.type is null
+        and regexp_like(t.value,'^[0-9]+([.]{1}[0-9]+){0,1}$')
+        and t.pdu = #{pdu}
+        group by t.type
+
+    </select>
+
+</mapper>
+
+
+
+yang覆盖 sql学习历程—— ——
+
+select rownum r, y.subsys, y.feature, y.yangTotal, y.yangCoverage
+  from (select e.subsys,
+               e.feature,
+               count(e.guid) yangTotal,
+               count(e.mguid) yangCoverage
+          from (select c.guid, c.subsys, c.feature, max(d.guid) mguid
+                  from (select b.guid, b.subsys, b.feature
+                          from (select a.*, m.product, m.source testsource
+                                  from t_ens_yang_base a, t_test_yang_match m
+                                 where a.pdu = m.pdu
+                                   and a.version = m.version) b
+                         where 1 = 1
+                           and b.pdu = 'AR'
+                           and b.version = 'V3R19C00'
+                         group by b.guid, b.subsys, b.feature) c
+                  left join t_test_yang_match d on c.guid = d.yang_guid
+                 group by c.guid, c.subsys, c.feature) e
+         group by e.subsys, e.feature) y
+ where y.yangcoverage != 0
+ order by y.subsys
+
+ 
+
+我的：【参数：有的在a表，有的在b表，联查时，先通过where联合两个表，再应用参数。风险：where联合时，a表每个数据都跟b表匹配一遍，数据多时，效率低。】
+select y.subsys,
+			y.feature,
+			y.yangTotal,
+			y.yangCoverage
+			from(select e.subsys,e.feature,count(e.guid) yangTotal,count(e.mguid) yangCoverage from
+    (select c.guid,c.subsys,c.feature,max(d.guid) mguid from 
+    (select b.guid,b.subsys,b.feature from 
+    (select a.*,m.product,m.source testsource from t_ens_yang_base a,t_test_yang_match m where a.pdu=m.pdu and a.version=m.version)b 
+    where 1=1 
+            <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+				and b.pdu=#{yvo.pdu}
+			</if>
+			<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+				and b.version=#{yvo.version}
+			</if>
+			<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+				and b.product=#{yvo.product}
+			</if>
+			<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+                and b.testsource=#{yvo.testSource}
+            </if>
+			<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+				and b.source=#{yvo.source}
+			</if>
+			<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+				and b.xpath like '%${yvo.xpath}%'
+			</if>
+			<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+				and b.subsys=#{yvo.subsys}
+			</if>
+			<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+				and b.feature=#{yvo.feature}
+			</if>
+    group by b.guid,b.subsys,b.feature) c left join
+    t_test_yang_match d on c.guid=d.yang_guid group by c.guid,c.subsys,c.feature)e group by e.subsys,e.feature
+		
+		
+		
+新的：【两个表通过join联合，在a表基准上，匹配b表，效率高，再join后应用b表参数，在where后应用a表参数。】	
+	select y.subsys,
+		y.feature,
+		y.yangTotal,
+		y.yangCoverage
+		from(select count(c.aguid) yangTotal,
+		count(c.mguid) yangCoverage,
+		c.subsys,
+		c.feature
+		from(
+		select a.subsys,a.feature, max(a.guid) aguid, max(m.guid) mguid
+		from t_ens_yang_base a left join t_test_yang_match m
+		on a.guid=m.yang_guid
+		<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+			and m.product=#{yvo.product}
+		</if>
+		<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+			and m.source=#{yvo.testSource}
+		</if>
+		where 1=1
+		<if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+			and a.pdu=#{yvo.pdu}
+		</if>
+		<if test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+			and a.version=#{yvo.version}
+		</if>
+		<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+			and a.source=#{yvo.source}
+		</if>
+		<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+			and a.xpath like '%${yvo.xpath}%'
+		</if>
+		<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+			and a.subsys=#{yvo.subsys}
+		</if>
+		<if test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+			and a.feature=#{yvo.feature}
+		</if>
+		  group by a.guid,a.subsys,a.feature) c
+		  group by c.subsys,c.feature) y
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

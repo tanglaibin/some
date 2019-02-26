@@ -909,6 +909,586 @@ devtool: '#cheap-module-eval-source-map'
 
 
 
+SSH，jsp，界面，table rows列表信息，取值展示修改存储—— ——
+
+<tr style="visibility:hidden;display:none">
+	<td>
+		<textarea name="involvedVersion" id="involvedVersion"></textarea>
+	</td>
+</tr>
+
+
+document.getElementById('involvedVersion').value = getModifyVersions();
+
+function getModifyVersions()
+{
+	var result = "<doc>";
+	if(document.getElementById("tblVersion"))
+	{
+		var tempRows = document.getElementById("tblVersion").rows;
+		
+		for(var i=1; i<tempRows.length; i++)
+		{
+			result += "<patch>" +
+				  "<verid>"+ tempRows[i].cells[0].getElementsByTagName("input")[1].value +"</verid>" + 
+				  "<vername><![CDATA["+ tempRows[i].cells[0].getElementsByTagName("input")[2].value +"]]></vername>" + 
+				  "<status>"+ tempRows[i].cells[1].getElementsByTagName("input")[0].value +"</status>" +
+				  "<schemeReviewStatu>" + tempRows[i].cells[2].getElementsByTagName("input")[0].value + "</schemeReviewStatu>" +
+				  "<patchid>"+ tempRows[i].cells[3].getElementsByTagName("input")[0].value +"</patchid>" +
+				  "<verPatchType>" + tempRows[i].cells[4].getElementsByTagName("input")[0].value + "</verPatchType>" +
+				  "<question>"+ tempRows[i].cells[5].getElementsByTagName("input")[0].value +"</question>" +
+				  "<haspromise>" + tempRows[i].cells[6].getElementsByTagName("input")[0].value + "</haspromise>" +
+				  "<delivertime>" + tempRows[i].cells[7].getElementsByTagName("input")[0].value + "</delivertime>" +
+				  "<deliverperson>" + tempRows[i].cells[8].getElementsByTagName("input")[0].value + "</deliverperson>" +
+				  "<priority>" + tempRows[i].cells[9].getElementsByTagName("input")[0].value + "</priority>" +
+				  "<isRisk>" + tempRows[i].cells[10].getElementsByTagName("input")[0].value + "</isRisk>" +
+				  "<isputin>" + tempRows[i].cells[11].getElementsByTagName("input")[0].value + "</isputin>" +
+				  "<desc><![CDATA["+ getEditStr(tempRows[i].cells[12].getElementsByTagName("input")[0].value) +"]]></desc>" +		                      
+				  //0102new
+				  "<seReviewComment><![CDATA["+ getEditStr(tempRows[i].cells[12].getElementsByTagName("input")[1].value) +"]]></seReviewComment>" +
+				  "<isConclusion><![CDATA["+ getEditStr(tempRows[i].cells[12].getElementsByTagName("input")[2].value) +"]]></isConclusion>" +
+				  
+				  "<judgeConclusion><![CDATA["+ getEditStr(tempRows[i].cells[12].getElementsByTagName("input")[3].value) +"]]></judgeConclusion>" +
+				  "<clarifyConclusion><![CDATA["+ getEditStr(tempRows[i].cells[12].getElementsByTagName("input")[4].value) +"]]></clarifyConclusion>" +	
+				  "<versionDtsNumb>" + tempRows[i].cells[13].getElementsByTagName("input")[0].value + "</versionDtsNumb>" +
+				  //0102end
+				  "</patch>";
+		}
+	}
+	result += "</doc>";
+	return result;
+}
+
+
+<table id="tblVersion" class="modify_tab1" style="height:100%;table-layout:fixed;" cellSpacing="0" cellPadding="0" width="100%" border="0">
+	<tr>
+		<TD class="modify_tab1bg5" style="width:140px;"><s:text name="Version"/><!-- 版本 --></TD>
+		<TD class="modify_tab1bg5" style="width:75px;"><s:text name="Statu"/><!-- 状态 --></TD>
+		<TD class="modify_tab1bg5" style="width:85px;"><s:text name="SchemeReviewStatu"/><!--方案评审状态  --></TD>
+		<TD class="modify_tab1bg5" style="width:75px;"><s:text name="PatchVersion"/><!--补丁版本号  --></TD>
+		<TD class="modify_tab1bg5" style="width:30px;"><s:text name="PatchType"/><!--补丁类型  --></TD>
+		<TD class="modify_tab1bg5" style="width:60px;">补丁序号<!--s:text name="IssueNum"/>< 合入问题单号 --></TD>
+		<TD class="modify_tab1bg5" style="width:30px;"><s:text name="IsPromiseOut"/><!--是否对外承诺  --></TD>															                
+		<TD class="modify_tab1bg5" style="width:90px;"><s:text name="PromiseDeliverDate"/><!--承诺交付时间  --></TD>
+		<TD class="modify_tab1bg5" style="width:75px;"><s:text name="PatchMaker"/><!--制作人  --></TD>
+		<TD class='modify_tab1bg5' style="width:55px;"><s:text name="优先级"/><!--优先级  --></TD>
+		<TD class='modify_tab1bg5' style="width:55px;"><s:text name="风险评估"/><!--风险评估  --></TD>
+		<!--1210xiugai <TD class='modify_tab1bg5' style="width:110px;"><s:text name="IsPutIn"/> --><!--是否合入  --><!-- </TD> -->
+		<TD class='modify_tab1bg5' style="width:80px;"><s:text name="IsPutIn"/> <!--是否合入  -->
+			<input type="button" id="notputin" style="width:14px;height:12px;" title="注：一键将所有版本设置为评审不合入 ;评审不合入将不关联补丁版本号" onclick="judgeNotPutin('<s:property value="id"/>',this)"/>
+		 </TD>
+		<!-- 1210end -->
+		<!-- 1210xiugai <TD class="modify_tab1bg5" style="width:100px;"><s:text name="评审/澄清结论"/>--><!--备注  --><!-- </TD> -->
+		<TD class="modify_tab1bg5" style="width:120px;"><s:text name="组内评审结论 "/><!--组内评审结论  --> </TD> 
+		<TD class="modify_tab1bg5" style="width:90px;">版本对应DTS单</TD>
+		<TD class="modify_tab1bg5" style="width:70px;"><s:text name="Operator"/><!--操作  --></TD>
+		<TD class="modify_tab1bg5" style="text-align:center;width:70px;"><!--批量编辑 -->
+																													批量编辑<IMG style="cursor:hand" id="batchEditImg" onclick="batchEdit()" alt="" src="<%=request.getContextPath()%>/images/Auditing_img2.gif" />
+		</TD>
+	</tr>
+	<s:iterator value="#request.reqVerList" var="req">
+		<tr style="word-break:break-all"  bgColor="#eeeccc">
+			<td class="auditing_tab1" style='text-align:left'><s:property value="pname"/>：<s:property value="vname"/>
+				<input type="hidden" value='<s:property value="reqid"/>'>
+				<input type="hidden" value='<s:property value="verid"/>'>
+				<input type="hidden" value='<s:property value="vname"/>'>
+			</td>
+			<td class="auditing_tab1" ><s:property value="sname"/><input type="hidden" value='<s:property value="status"/>'></td>
+			<td class="auditing_tab1" ><s:property value="schemeReviewStatuName"/><input type="hidden" value='<s:property value="schemeReviewStatu"/>'></td>
+			<td class="auditing_tab1 patchnametd" ><s:property value="patchname"/><input class="patchidhidden" type="hidden" value='<s:property value="patchid"/>'></td>
+			<td class="auditing_tab1" ><s:property value="verPatchType"/><input type="hidden" value='<s:property value="verPatchType"/>'></td>
+			<td class="auditing_tab1" ><s:property value="question"/><input type="hidden" value='<s:property value="question"/>'></td>
+			<td class="auditing_tab1" ><s:property value="isPromiseOutside"/><input type="hidden" value='<s:property value="isPromiseOutside"/>'></td>
+			<td class="auditing_tab1" ><s:property value="promiseDeliverTime"/><input type="hidden" value='<s:property value="promiseDeliverTime"/>'></td>
+			
+			<td class="auditing_tab1" ><s:property value="deliverPerson"/><input type="hidden" value='<s:property value="deliverPerson"/>'></td>
+			<td class="auditing_tab1" ondblclick="editValuePriority('<s:property value="reqid"/>','<s:property value="verid"/>',this)"><s:property value="priorityName"/><input type="hidden" value='<s:property value="priority"/>'></td>
+			<td class="auditing_tab1" ><s:property value="isRiskName"/><input type="hidden" value='<s:property value="isRisk"/>'></td>
+			<td class="auditing_tab1 judgeNotPutinTd" ondblclick="editValueIsPutIn('<s:property value='reqid'/>',this)"><s:property value="isputinName"/><input class="judgeNotPutinhidden" type="hidden" value='<s:property value="isputin"/>'></td>
+			<!-- 1210xiugai -->
+			<!-- <td class="auditing_tab2" style="text-align: center;" ondblclick="editValue('<s:property value="reqid"/>','<s:property value="verid"/>',this)" title="<s:property value="desc"/>"> -->
+			<td class="auditing_tab2" style="text-align: center;width:120px;" ondblclick="editValue('<s:property value="reqid"/>','<s:property value="verid"/>',this)" title="<s:property value="desc"/>">
+				<!-- 1210end -->
+				<s:property value="desc"/>
+				<input type="hidden" value='<s:property value="desc"/>'>
+				<input type="hidden" value='<s:property value="seReviewComment"/>'>
+				<input type="hidden" value='<s:property value="isConclusion"/>'>
+				<!-- 1210new -->
+				<input type="hidden" value='<s:property value="judgeConclusion"/>'>
+				<input type="hidden" value='<s:property value="clarifyConclusion"/>'>
+				<!-- 1210end -->
+			</td>
+			<td class="auditing_tab1" ><s:property value="versionDtsNumb"/><input style="width: 130px" type="text" value='<s:property value="versionDtsNumb"/>'></td>
+			<TD class="auditing_tab1">
+				<IMG style="cursor:hand" onclick="editVersion(this.parentNode.parentNode)" alt="编辑" src="<%=request.getContextPath()%>/images/Auditing_img2.gif" id="editImg<s:property value="verid"/>">															             	  
+				<IMG style="cursor:hand" onclick="delVersion(this)" alt="删除" src="<%=request.getContextPath()%>/images/del.gif">
+			</TD>
+			<td class="auditing_tab1"><input type=checkbox id="checkbox<s:property value="verid"/>" name="batchCheckbox" value="checkbox<s:property value="verid"/>" /></td>
+		</tr>
+	</s:iterator>
+</table>
+
+
+action:
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+
+Document doc = DocumentHelper.parseText(involvedVersion);
+List<Element> lst = doc.selectNodes("//doc/patch");
+for (Element e : lst)
+{
+	String verId = getEleValue(e, "verid");
+	String iterStr = this.patchrequirementDAO.getIterativeStage(reqId, verId);
+	list.add(iterStr);
+}
+
+
+
+struts2 action执行成功，重定向至页面带参数属性————
+
+String redirectPara = "?id=" + id;
+
+return "success";
+
+<action name="editRequirementSave" class="patchAction" method="editRequirementSave">
+	<result name="success" type="redirect">/patch/viewRequirement.action${redirectPara}</result>
+	<result name="login">/login.jsp</result>
+	<result name="exception">/page/common/exception.jsp</result>
+	<result name="noAuthority">/page/common/noAuthority.jsp</result>
+	<result name="restLogin">/restLogin.jsp</result>
+</action>
+
+
+
+action  导出excel————
+/**
+ * 导出Excel
+ * 
+ * @return
+ * @throws Exception
+ */
+@SuppressWarnings("unchecked")
+public String excelExport() throws Exception {
+	if (!checkLogin()) {
+		redirectPara = super.getRedirectURL();
+		return "restLogin";
+	}
+
+	// 取得当前登陆用户ID
+	Integer loginUser = (Integer) getRequest().getSession().getAttribute("userId");
+
+	String fileName = "";
+
+	String baseDir = super.getRealyPath("");
+
+	fileName = patchService.getExcelExportList(title, product, patch, NPMSNumber, CMMNumber, modifier,
+			decisionVersion, department, involvedBoard, involvedVersion, involvedSite, decisionMaker,
+			decisionResult, loginUser, qstatus, qproduct, qversion, siteAttent, siteSafety, isEquipmentAffect,
+			isEquipmentAffectTxt, isMaintain, questionStartDate, questionEndDate, requirementStartDate,
+			requirementEndDate, baseDir, qschemeReviewStatu, this.module);
+
+	this.getSession().setAttribute("currentState", "补丁管理 > Excel下载 ");
+
+	// 文件下载
+	Utility.downloadFile(getResponse(), fileName, ExcelService.getPatchExcelName(loginUser));
+	// 删除文件
+	FileControl.delete(fileName);
+
+	return null;
+}
+
+
+/**
+     * 导出Excel
+     * 
+     * @return
+     * @throws Exception
+     */
+    @SuppressWarnings({"unchecked"})
+    public String getExcelExportList(String title, String product, String patch, String NPMSNumber, String CMMNumber, String modifier, String decisionVersion, String department, String involvedBoard,
+        String involvedVersion, String involvedSite, String decisionMaker, String decisionResult, int loginUser, Integer qstatus, Integer qproduct, String qversion, String siteAttent,
+        String siteSafety, String isEquipmentAffect, String isEquipmentAffectTxt, String isMaintain, String questionStartDate, String questionEndDate, String requirementStartDate,
+        String requirementEndDate, String baseDir, Integer schemeReviewStatu, String module)
+        throws Exception
+    {
+
+        // String fileName
+        String fileName = ExcelService.getPatchExcelFullName(loginUser, baseDir);
+
+        // 问题修改人转换
+        if (!"".equals(modifier))
+        {
+            modifier = modifier.split("/")[1];
+            User user = (User)userDAO.findByEmployeeId(modifier).get(0);
+            modifier = String.valueOf(user.getUserId());
+        }
+        // 需求决策人转换
+        if (!"".equals(decisionMaker))
+        {
+            decisionMaker = decisionMaker.split("/")[1];
+            User user = (User)userDAO.findByEmployeeId(decisionMaker).get(0);
+            decisionMaker = String.valueOf(user.getUserId());
+        }
+
+        // 先按照 老库中的数据进行搜索
+        List list =
+            patchDAO.getExcelExportList(title, product, patch, NPMSNumber, CMMNumber, modifier, decisionVersion, department, involvedBoard, involvedVersion, involvedSite, decisionMaker,
+                decisionResult, qstatus, qproduct, siteAttent, siteSafety, isEquipmentAffect, isEquipmentAffectTxt, isMaintain, questionStartDate, questionEndDate, requirementStartDate,
+                requirementEndDate, qversion, schemeReviewStatu, module);
+
+        // 再按照不包含版本数据的方式进行搜索
+        List<PatchExVO> resultWithOutVersion =
+            patchDAO.getExcelExportListWithoutVersion(title, product, patch, NPMSNumber, CMMNumber, modifier, decisionVersion, department, involvedBoard, involvedVersion, involvedSite, decisionMaker,
+                decisionResult, qstatus, qproduct, siteAttent, siteSafety, isEquipmentAffect, isEquipmentAffectTxt, isMaintain, questionStartDate, questionEndDate, requirementStartDate,
+                requirementEndDate, qversion, schemeReviewStatu, module);
+
+        // 对不包含版本数据的数据进行过滤，过滤后加入到list中
+        addNewRequirement(list, resultWithOutVersion, qversion, qproduct);
+
+        // 将导出列表中的问题来源从序号转换成实际字符串
+        for (int i = 0; i < list.size(); i++)
+        {
+            PatchExVO o = (PatchExVO)list.get(i);
+            if (o.getInvolvedSite() != null)
+            {
+                PatchRequirementDefectSource defectSource = getPatchRequirementDefectSourceDAO().findById(Integer.valueOf(o.getInvolvedSite()).intValue());
+                o.setInvolvedSite((defectSource != null) ? defectSource.getName() : "");
+            }
+        }
+
+    patchInfo.getVerId() + "",
+
+        File f = new File(fileName);
+        f.createNewFile();
+
+        writeExcelNew(new FileOutputStream(f), list);
+
+        
+        return fileName;
+    }
+
+
+
+	@SuppressWarnings("unchecked")
+    public void writeExcelNew(OutputStream os, List dateList)
+        throws Exception
+    {
+        WritableWorkbook wwb = Workbook.createWorkbook(os);
+        WritableSheet ws = wwb.createSheet("需求补丁数据", 0);
+
+        // 字体样式的设定
+        WritableFont wfc = new WritableFont(WritableFont.ARIAL, 12, WritableFont.BOLD, false, UnderlineStyle.NO_UNDERLINE, jxl.format.Colour.BLACK);
+        WritableCellFormat wcfFC = new WritableCellFormat(wfc);
+        // 单元格背景色的设定
+        wcfFC.setBackground(jxl.format.Colour.AQUA);
+        // 列头的设定
+        Label label = new Label(0, 0, "项目组", wcfFC);
+        ws.addCell(label);
+        label = new Label(1, 0, "补丁版本", wcfFC);
+        ws.addCell(label);        
+        label = new Label(2, 0, "补丁编号", wcfFC);
+        ws.addCell(label);  
+        label = new Label(3, 0, "迭代", wcfFC);
+        ws.addCell(label);  
+        label = new Label(4, 0, "问题单号", wcfFC);
+        ws.addCell(label);  
+        label = new Label(5, 0, "问题描述", wcfFC);
+        ws.addCell(label);  
+        label = new Label(6, 0, "特性", wcfFC);
+        ws.addCell(label);  
+        label = new Label(7, 0, "补丁类型", wcfFC);
+        ws.addCell(label);  
+        label = new Label(8, 0, "修改版本", wcfFC);
+        ws.addCell(label);  
+        label = new Label(9, 0, "设备形态", wcfFC);
+        ws.addCell(label);  
+        label = new Label(10, 0, "开发责任人", wcfFC);
+        ws.addCell(label);  
+        label = new Label(11, 0, "维优责任人", wcfFC);
+        ws.addCell(label);  
+        label = new Label(12, 0, "测试责任人", wcfFC);
+        ws.addCell(label);  
+        label = new Label(13, 0, "问题来源", wcfFC);
+        ws.addCell(label);  
+        label = new Label(14, 0, "是否对外承诺", wcfFC);
+        ws.addCell(label);  
+        label = new Label(15, 0, "承诺交付时间", wcfFC);
+        ws.addCell(label);  
+        label = new Label(16, 0, "问题触发条件", wcfFC);
+        ws.addCell(label);  
+        label = new Label(17, 0, "问题根因", wcfFC);
+        ws.addCell(label);  
+        label = new Label(18, 0, "问题影响", wcfFC);
+        ws.addCell(label);  
+        label = new Label(19, 0, "修改方案", wcfFC);
+        ws.addCell(label); 
+        label = new Label(20, 0, "规避方案", wcfFC);
+        ws.addCell(label); 
+        label = new Label(21, 0, "应急措施", wcfFC);
+        ws.addCell(label); 
+        label = new Label(22, 0, "是否对外体现", wcfFC);
+        ws.addCell(label); 
+        label = new Label(23, 0, "项目组预审意见", wcfFC);
+        ws.addCell(label); 
+        label = new Label(24, 0, "是否安全问题", wcfFC);
+        ws.addCell(label); 
+        label = new Label(25, 0, "是否可维可靠", wcfFC);
+        ws.addCell(label);
+        label = new Label(26, 0, "装备影响", wcfFC);
+        ws.addCell(label);
+        label = new Label(27, 0, "是否合入", wcfFC);
+        ws.addCell(label);
+        label = new Label(28, 0, "优先级", wcfFC);
+        ws.addCell(label);
+        label = new Label(29, 0, "风险评估", wcfFC);
+        ws.addCell(label);
+        label = new Label(30, 0, "组内评审结论", wcfFC);
+        ws.addCell(label);
+        label = new Label(31, 0, "铁三角评审结论", wcfFC);
+        ws.addCell(label);
+        label = new Label(32, 0, "方案澄清结论", wcfFC);
+        ws.addCell(label);
+        label = new Label(33, 0, "预验收结论", wcfFC);
+        ws.addCell(label);
+        label = new Label(34, 0, "超链接", wcfFC);
+        ws.addCell(label);
+        label = new Label(35, 0, "现网版本", wcfFC);
+        ws.addCell(label);
+        label = new Label(36, 0, "版本对应DTS单", wcfFC);
+        ws.addCell(label);
+        
+        // 数据的设定
+        for (int i = 0; i < dateList.size(); i++)
+        {
+            PatchExVO patchVO = (PatchExVO)dateList.get(i);
+            // 项目组1
+            label = new Label(0, i + 1, patchVO.getDepartmentName());
+            ws.addCell(label);
+            // 补丁版本
+            label = new Label(1, i + 1, patchVO.getPatchversion());
+            ws.addCell(label);            
+            // 补丁编号
+            label = new Label(2, i + 1, patchVO.getQuestion());
+            ws.addCell(label);
+            // 迭代
+            label = new Label(3, i + 1, patchVO.getIterativeStage());
+            ws.addCell(label);
+            //问题单号
+            label = new Label(4, i + 1, patchVO.getCMMNumber());
+            ws.addCell(label);
+            //问题描述
+            label = new Label(5, i + 1, patchVO.getDescription());
+            ws.addCell(label);
+            //特性
+            label = new Label(6, i + 1, patchVO.getModule());
+            ws.addCell(label);
+            //补丁类型
+            label = new Label(7, i + 1, patchVO.getVerPatchType());
+            ws.addCell(label);
+            //修改版本
+            label = new Label(8, i + 1, patchVO.getPatchVersionBrief());
+            ws.addCell(label);
+            //设备形态
+            label = new Label(9, i + 1, patchVO.getInvolvedBoard());
+            ws.addCell(label);
+            //开发责任人
+            label = new Label(10, i + 1, patchVO.getDeliverPerson());
+            ws.addCell(label);
+            //维优责任人
+            label = new Label(11, i + 1, patchVO.getMaintenance());
+            ws.addCell(label);
+            //测试责任人
+            label = new Label(12, i + 1, patchVO.getQuestiontester());
+            ws.addCell(label);
+            //问题来源
+            label = new Label(13, i + 1, patchVO.getInvolvedSite());
+            ws.addCell(label);
+            //是否对外承诺
+            label = new Label(14, i + 1, patchVO.getIsPromiseOutside());
+            ws.addCell(label);
+            //承诺交付时间
+            label = new Label(15, i + 1, patchVO.getPromiseDeliverTime());
+            ws.addCell(label);
+            //问题触发条件
+            label = new Label(16, i + 1, patchVO.getCondition());
+            ws.addCell(label);
+            // 问题根因
+            label = new Label(17, i + 1, patchVO.getRootCause());
+            ws.addCell(label);
+            // 问题影响
+            label = new Label(18, i + 1, patchVO.getImpactAnalysis());
+            ws.addCell(label);
+            // 修改方案
+            label = new Label(19, i + 1, patchVO.getModifyPlan());
+            ws.addCell(label);
+            // 规避方案
+            label = new Label(20, i + 1, patchVO.getEvadeMeasure());
+            ws.addCell(label);
+            // 应急措施
+            label = new Label(21, i + 1, patchVO.getEvadeMeasure());
+            ws.addCell(label);
+            // 是否对外体现
+            String siteAtten = patchVO.getSiteAttent();
+            label = new Label(22, i + 1, "是");
+            if (siteAtten.equals("1"))
+            {
+                label = new Label(22, i + 1, "否");
+            }
+            ws.addCell(label);
+            // 项目组预审意见
+            label = new Label(23, i + 1, patchVO.getProjectDecision());
+            ws.addCell(label);
+            
+            // 是否安全问题
+            String siteSafety = patchVO.getSiteSafety();
+            //label = new Label(24, i + 1, "否");
+            if (StringUtils.isNotEmpty(siteSafety))
+            {
+                if (siteSafety.equals("0"))
+                {
+                    label = new Label(24, i + 1, "是");
+                }else {
+                    label = new Label(24, i + 1, "否");
+                }
+            }else {
+                label = new Label(24, i + 1, "");
+            }
+            ws.addCell(label);
+            
+            // 是否可维可靠
+            String isMaintain = patchVO.getIsMaintain();
+            //label = new Label(25, i + 1, "否");
+            if (StringUtils.isNotEmpty(isMaintain))
+            {
+                if (isMaintain.equals("0"))
+                {
+                    label = new Label(25, i + 1, "是");
+                }else {
+                    label = new Label(25, i + 1, "否");
+                }
+            }else {
+                label = new Label(25, i + 1, "");
+            }
+            ws.addCell(label);
+            
+            // 装备影响
+            String isEquipmentAffect = patchVO.getIsEquipmentAffect();
+            //label = new Label(26, i + 1, "否");
+            if (StringUtils.isNotEmpty(isEquipmentAffect))
+            {
+                if (isEquipmentAffect.equals("0"))
+                {
+                    String isEquipmentAffectTxt = patchVO.getIsEquipmentAffectTxt();
+                    if(null != isEquipmentAffectTxt && !"".equals(isEquipmentAffectTxt.trim())) {
+                        label = new Label(26, i + 1, "是；" + isEquipmentAffectTxt.trim());
+                    }else {
+                        label = new Label(26, i + 1, "是");
+                    }
+                }else {
+                    label = new Label(26, i + 1, "否");
+                }
+            }else {
+                label = new Label(26, i + 1, "");
+            }
+            ws.addCell(label);
+            
+            // 是否合入
+            String isPutin = patchVO.getIsputin();
+            String isPutinTxt = "";
+            if(isPutin != null && !"".equals(isPutin.trim())){
+                if (isPutin.equals("1"))
+                {
+                	isPutinTxt = "评审合入";
+                }else if(isPutin.equals("2")){
+                	isPutinTxt = "新增合入";
+                }else if(isPutin.equals("3")){
+                	isPutinTxt = "评审不合入";
+                }
+            }
+            label = new Label(27, i + 1, isPutinTxt);
+            ws.addCell(label);
+            
+            // 优先级
+            String priority = patchVO.getPriority();
+            if(priority != null && !"".equals(priority)){
+	            if (priority.equals("0"))
+	            {
+	            	priority = "";
+	            }
+            }
+            label = new Label(28, i + 1, priority);
+            ws.addCell(label);
+            
+            // 风险评估
+            String isRisk = patchVO.getIsRisk();
+            if(isRisk!=null&&!"".equals(isRisk)){
+	            if (isRisk .equals("0"))
+	            {
+	            	isRisk = "";
+	            }
+            }
+            label = new Label(29, i + 1, isRisk);
+            ws.addCell(label);
+            
+            // 组内评审结论
+            String conclusion = patchVO.getDesc();
+            label = new Label(30, i + 1, conclusion);
+            ws.addCell(label);
+            
+            // 铁三角评审结论
+            String judgeConclusion = patchVO.getJudgeConclusion();
+            label = new Label(31, i + 1, judgeConclusion);
+            ws.addCell(label);
+            
+            // 方案澄清结论
+            String clarifyConclusion = patchVO.getClarifyConclusion();
+            label = new Label(32, i + 1, clarifyConclusion);
+            ws.addCell(label);
+            
+            // 预验收结论
+            String seReviewComment = patchVO.getSeReviewComment();
+            label = new Label(33, i + 1, seReviewComment);
+            ws.addCell(label);
+            
+            String requirementId = String.valueOf(patchVO.getId());
+            WritableHyperlink link = new WritableHyperlink(34, i+1, new URL("http://10.171.147.93/project/patch/editRequirement.action?id="+requirementId));
+            link.setDescription("链接到此需求");
+            ws.addHyperlink(link);
+
+            // 现网版本
+            String decisionVersion = patchVO.getDecisionVersion();
+            label = new Label(35, i + 1, decisionVersion);
+            ws.addCell(label);
+            
+            //版本对应DTS单
+            String versionDtsNumb = patchVO.getVersionDtsNumb();
+            label = new Label(36, i + 1, versionDtsNumb);
+            ws.addCell(label);
+            
+            //ws.addCell(label);
+
+        }
+
+        // 写入Exel工作表
+        wwb.write();
+        // 关闭Excel工作薄对象
+        wwb.close();
+    }
+
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
+import jxl.write.Border;
+import jxl.write.BorderLineStyle;
+import jxl.write.Label;
+import jxl.write.Number;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableHyperlink;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
 
 
 

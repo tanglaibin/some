@@ -305,6 +305,958 @@ If you are trying to display a particular file type (for example, a WAV or PDF),
 
 
 
+			目标：重在学习新的！————————————————其他可以放一放。——————————————————
+			
+			做再多，也没用。没有价值。
+			
+			springboot  feign  zuul  微服务
+			spring  ioc  aop动态代理
+			
+			idea快捷键：
+导入包 类：alt+enter
+删除行：delete line
+复制当前行：duplicate entire lines
+格式化代码：ctrl+alt+L
+			
+			vue
+			jquery
+			hbase
+			oracle
+			
+			mybatis
+			hibernate
+			struts2
+			js
+			html
+			css
+			mysql
+			tomcat 调优
+			数据库sql多表联查  sql调优  数据库调优
+			io文件操作
+			多线程
+			正则表达式
+			list  map 等集合
+			jvm内存管理机制  jvm性能调优
+			反射原理
+			linux  常规命令  部署相关应用
+			dom4j
+			
+			maven添加本地jar包：
+			
+
+			
+			
+			前后端面
+			前台：
+			
+			
+
+
+
+			js去除字符串空格？
+
+			方法一：使用replace正则匹配的方法
+			去除所有空格: str = str.replace(/\s*/g,"");      
+			去除两头空格: str = str.replace(/^\s*|\s*$/g,"");
+			去除左空格： str = str.replace( /^\s*/, “”);
+			去除右空格： str = str.replace(/(\s*$)/g, "");
+
+			str为要去除空格的字符串，实例如下：
+			var str = " 23 23 ";
+			var str2 = str.replace(/\s*/g,"");
+			console.log(str2); // 2323
+			方法二：使用str.trim()方法
+			str.trim()局限性：无法去除中间的空格，实例如下：
+			var str = "   xiao  ming   ";
+			var str2 = str.trim();
+			console.log(str2);   //xiao  ming 
+			方法三：使用jquery,$.trim(str)方法
+			$.trim(str)局限性：无法去除中间的空格，实例如下：
+
+
+			get  post请求区别
+
+			js 字符串操作函数
+			我这里只是列举了常用的字符串函数，具体使用方法，请参考网址。
+
+			concat() – 将两个或多个字符的文本组合起来，返回一个新的字符串。
+			indexOf() – 返回字符串中一个子串第一处出现的索引。如果没有匹配项，返回 -1 。
+			charAt() – 返回指定位置的字符。
+			lastIndexOf() – 返回字符串中一个子串最后一处出现的索引，如果没有匹配项，返回 -1 。
+			match() – 检查一个字符串是否匹配一个正则表达式。
+			substr() 函数 -- 返回从string的startPos位置，长度为length的字符串
+			substring() – 返回字符串的一个子串。传入参数是起始位置和结束位置。
+			slice() – 提取字符串的一部分，并返回一个新字符串。
+			replace() – 用来查找匹配一个正则表达式的字符串，然后使用新字符串代替匹配的字符串。
+			search() – 执行一个正则表达式匹配查找。如果查找成功，返回字符串中匹配的索引值。否则返回 -1 。
+			split() – 通过将字符串划分成子串，将一个字符串做成一个字符串数组。
+			length – 返回字符串的长度，所谓字符串的长度是指其包含的字符的个数。
+			toLowerCase() – 将整个字符串转成小写字母。
+			toUpperCase() – 将整个字符串转成大写字母。
+
+
+			怎样添加、移除、移动、复制、创建和查找节点？
+
+			 1）创建新节点
+			　　createDocumentFragment() //创建一个DOM片段
+			　　createElement() //创建一个具体的元素
+			　　createTextNode() //创建一个文本节点
+
+			2）添加、移除、替换、插入
+			　　appendChild() //添加
+			　　removeChild() //移除
+			　　replaceChild() //替换
+			　　insertBefore() //插入
+
+			3）查找
+			　　getElementsByTagName() //通过标签名称
+			　　getElementsByName() //通过元素的Name属性的值
+			　　getElementById() //通过元素Id，唯一性
+
+
+
+
+
+
+					编辑页面，弹出新页面，同时传递过去参数：
+					function editVersion(ftr)
+							{
+								var iWidth = 600;
+								var iHeight = 670;
+								var iTop = (window.screen.availHeight - 30 - iHeight) / 2;
+								var iLeft = (window.screen.availWidth - 10 - iWidth) / 2;
+								
+								var reqname = encodeURI(encodeURI(ftr.cells[0].innerText.replace(/(^\s*)/g,"")));
+								var patchname = encodeURI(encodeURI(ftr.cells[3].innerText));
+								var desc = encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[0].value));
+								var isRisk= encodeURI(encodeURI(ftr.cells[10].getElementsByTagName("input")[0].value));
+								var isConclusion= encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[2].value));
+								
+								
+								var judgeConclusion = ftr.cells[12].getElementsByTagName("input")[3].value;
+								
+								var c = "";
+								var hanTxt = "%";
+								for(i = 0; i < judgeConclusion.length; i++){
+									c = judgeConclusion.charAt(i);
+									if(hanTxt.indexOf(c) != -1 ){
+										/* 说明包含这个%符号 */
+										judgeConclusion= encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[3].value));
+										break;
+									   }
+									}
+								
+								//var clarifyConclusion= encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[4].value));
+								var clarifyConclusion= ftr.cells[12].getElementsByTagName("input")[4].value;
+								
+								
+								
+								var seReviewComment= ftr.cells[12].getElementsByTagName("input")[1].value;
+								var seReviewComment2= encodeURI(encodeURI(ftr.cells[12].getElementsByTagName("input")[1].value));
+								var priority= encodeURI(encodeURI(ftr.cells[9].getElementsByTagName("input")[0].value));
+								var deliverperson= encodeURI(encodeURI(ftr.cells[8].getElementsByTagName("input")[0].value)); 
+								var verid = ftr.cells[0].getElementsByTagName("input")[1].value.replace(/(^\s*)/g,"");
+								var status = ftr.cells[1].getElementsByTagName("input")[0].value;
+								var schemeReviewStatu = ftr.cells[2].getElementsByTagName("input")[0].value;
+								var patchid = ftr.cells[3].getElementsByTagName("input")[0].value;
+								var verPatchType = ftr.cells[4].getElementsByTagName("input")[0].value;
+								var question = ftr.cells[5].getElementsByTagName("input")[0].value;
+								var haspromise = ftr.cells[6].getElementsByTagName("input")[0].value;
+								var delivertime = ftr.cells[7].getElementsByTagName("input")[0].value;
+								var modifier= encodeURI(encodeURI($("#hmodifier").val()));
+								var reqId= ftr.cells[0].getElementsByTagName("input")[0].value;
+								var isputin= ftr.cells[11].getElementsByTagName("input")[0].value;
+								
+								var chuanzhi="verid='"+verid+"'"+"&reqname='"+reqname+"'"+"&status='"+status+"'"+"&schemeReviewStatu='"+schemeReviewStatu+"'"+"&patchid='"+patchid+"'"+"&patchname='"+patchname+"'"+"&verPatchType='"+verPatchType+"'"+"&question='"+question+"'"+"&haspromise='"+haspromise+"'"+"&delivertime='"+delivertime+"'"+"&desc='"+desc+"'"+"&isRisk='"+isRisk+"'"+"&isConclusion='"+isConclusion+"'"+"&modifier='"+modifier+"'"+"&judgeConclusion='"+judgeConclusion+"'"+"&clarifyConclusion='"+clarifyConclusion+"'"+"&reqId='"+reqId+"'"+"&seReviewComment='"+seReviewComment+"'"+"&priority='"+priority+"'"+"&isputin='"+isputin+"'"+"&deliverperson='"+deliverperson+"'"; 
+								var win = window.open("<%=request.getContextPath()%>/page/patch/editVersionTest.jsp?"+chuanzhi+"&rid="+<s:property value='id'/>, "选择修改问题存在版本", "width=" + iWidth + ", height=" + iHeight + ",top=" + iTop + ",left=" + iLeft + ",toolbar=no, menubar=no, scrollbars=no, resizable=no,location=no, status=no,alwaysRaised=yes,depended=yes");
+								
+							}
+							
+							window.onload = function() 
+							{
+								<%
+								String ymdesc=java.net.URLDecoder.decode(request.getParameter("desc"),"UTF-8").trim();
+								
+								String ymclarifyConclusion = new String(request.getParameter("clarifyConclusion").getBytes("ISO8859_1"), "GBK");
+								
+								String ymmodifier = java.net.URLDecoder.decode(request.getParameter("modifier"),"UTF-8").trim();
+
+								if(ymdesc!=null&&!"".equals(ymdesc)){
+									ymdesc=ymdesc.trim();
+									ymdesc=ymdesc.replace("\n","");
+									ymdesc=ymdesc.replace("\r","");
+								}
+
+								String ymreqname=java.net.URLDecoder.decode(request.getParameter("reqname"),"UTF-8").trim();
+								String ympatchname=java.net.URLDecoder.decode(request.getParameter("patchname"),"UTF-8").trim();
+								String ympriority=java.net.URLDecoder.decode(request.getParameter("priority"),"UTF-8").trim();
+								String ymisRisk=java.net.URLDecoder.decode(request.getParameter("isRisk"),"UTF-8").trim();
+								
+								String ymdeliverperson=java.net.URLDecoder.decode(request.getParameter("deliverperson"),"UTF-8").trim();
+								
+								String ymseReviewComment=new String(request.getParameter("seReviewComment").getBytes("ISO8859_1"), "GBK");
+								String ymseReviewComment2=java.net.URLDecoder.decode(request.getParameter("seReviewComment"),"UTF-8").trim();
+								
+								String ymisConclusion=java.net.URLDecoder.decode(request.getParameter("isConclusion"),"UTF-8").trim();
+							   
+								String ymjudgeConclusion;
+								String jd = request.getParameter("judgeConclusion");
+								if(jd.contains("%")){
+									ymjudgeConclusion = java.net.URLDecoder.decode(jd,"UTF-8").trim();
+								}else{
+									ymjudgeConclusion=new String(request.getParameter("judgeConclusion").getBytes("ISO8859_1"), "GBK");
+								}
+								%>
+								
+								oldData={'verid':<%=request.getParameter("verid")%>
+										,'reqname':<%=ymreqname%>
+										,'status':<%=request.getParameter("status")%>
+										,'schemeReviewStatu':<%=request.getParameter("schemeReviewStatu")%>
+										,'patchid':<%=request.getParameter("patchid")%>
+										,'patchname':<%=ympatchname%>
+										,'verPatchType':<%=request.getParameter("verPatchType")%>
+										,'question':<%=request.getParameter("question")%>
+										,'haspromise':<%=request.getParameter("haspromise")%>
+										,'delivertime':<%=request.getParameter("delivertime")%>
+										,'deliverperson':<%=ymdeliverperson%>
+										,'desc':<%=ymdesc%>
+										,'reqId':<%=request.getParameter("reqId")%>
+										,'isRisk':<%=ymisRisk%>
+										,'isConclusion':<%=ymisConclusion%>
+										,'seReviewComment':<%=ymseReviewComment%>
+										,'priority':<%=ympriority%>
+										,'isConclusion':<%=ymisConclusion%>
+										,'isputin':<%=request.getParameter("isputin")%>
+										,'modifier':<%=ymmodifier%>
+										,'judgeConclusion':<%=ymjudgeConclusion%>
+										,'clarifyConclusion':<%=ymclarifyConclusion%>};
+								initData();    
+							}
+							
+							
+							function initData()
+							{
+					//         	debugger;
+								$("#trVerid").hide();    
+								$("#verid").val(oldData.verid);
+								$("#reqname").val(oldData.reqname);
+								$("#status").val(oldData.status);      
+								if (oldData.schemeReviewStatu == '' || oldData.schemeReviewStatu == 0)
+								{
+									$("#schemeReviewStatu").val(1);
+								}      
+								else
+								{
+									$("#schemeReviewStatu").val(oldData.schemeReviewStatu);               
+								}
+								
+								if(oldData.priority == '' || oldData.priority == 0){
+								 $("#priority").val("0");
+								 $("#priorityvalue").val("0");
+							   }else{
+								 $("#priority").val(oldData.priority);  
+								 $("#priorityvalue").val(oldData.priority);
+							   }
+								if(oldData.isRisk == '' || oldData.isRisk == 0){
+									 $("#isRisk").val("0");
+									 $("#isRiskvalue").val("0");
+								  }else{
+									 $("#isRisk").val(oldData.isRisk);  
+									 $("#isRiskvalue").val(oldData.isRisk);
+								  }
+								
+								if(oldData.isputin == '' || oldData.isputin == 0){
+									 $("#isputin").val("0");
+								}else{
+									 $("#isputin").val(oldData.isputin);  
+								}
+								$("#patchid").val(oldData.patchid);
+								$("#patchname").val(oldData.patchname);
+								$("#question").val(oldData.question);
+
+								$("#haspromise").val(oldData.haspromise);
+								$("#delivertime").val(oldData.delivertime);
+								//$("#deliverperson").val(oldData.deliverperson);
+								//1210new
+								if(oldData.deliverperson==null||oldData.deliverperson==""){
+									$("#deliverperson").val(oldData.modifier);
+									onEnter2('deliverperson');
+								}else{
+									$("#deliverperson").val(oldData.deliverperson);
+									onEnter2('deliverperson');
+								}
+								//1210end
+					  
+								$("#desc").val(getEditStr(oldData.desc));   
+								$("#isConclusion").val(getEditStr(oldData.isConclusion));
+								$("#reqId").val(oldData.reqId);
+								$("#seReviewComment").val(oldData.seReviewComment);
+								$("#verPatchType").val(oldData.verPatchType);
+								//1210new
+								 $("#judgeConclusion").val(oldData.judgeConclusion);
+								 $("#clarifyConclusion").val(oldData.clarifyConclusion);
+								//1210end
+								
+								if($("#isputin").val() == "3" && $("#isputin").val() != "")
+								{
+									$("#judgeConclusionSpan").show();
+									$("#judgeConclusionFont").show();
+								}
+								
+								dispPatch();
+							}
+							
+							
+							
+					vue 项目使用echarts js
+					feign zuul springcloud  构建微服务  api暴露
+					ctrl+E
+					springboot
+					idea
+					swagger框架  生成api web页面
+					springboot 新建项目 
+							
+							
+	
+					高并发
+					分布式集群   flumn  lucence		cdh 			
+					
+					hdfs：数据存储
+					mapreuce：数据分析
+					hbase：数据库表 
+							
+							
+					Flume的数据流由事件(Event)贯穿始终。
+					事件是Flume的基本数据单位，它携带日志数据(字节数组形式)并且携带有头信息。
+					Event由Agent外部的Source，比如上图中的WebServer生成。
+					当Source捕获事件后会进行特定的格式化，然后Source会把事件推入(单个或多个)Channel中。
+					可以把Channel看作是一个缓冲区，它将保存事件直到Sink处理完该事件。
+					sink删除channel中的事件，把它放到外部的仓库中，比如HDFS，或者把它向前推送到下一个flume agent的flume source流。
+					一个给定的agent中的Source和sink异步运行，同时events阶段性地存在channel里。		
+							
+							
+					flume   spark					
+							
+							
+							
+							
+					vo作为参数，加json解析：	
+					/**
+					 * 
+					 * JSON解析
+					 *
+					 * @param json 客户端json串
+					 * @return 参数bean
+					 */
+					public static YangVo fromString(final String json)
+					{
+						return JSON.parseObject(json, YangVo.class);
+					}		
+							
+					public Response getOverviewData(@QueryParam("queryParams") YangVo yvo, @Context HttpServletRequest request)
+						{}		
+							
+							
+					vue导出领域  特性下xpath覆盖excel表格：
+					vue安装导出组件——
+					在src目录下创建一个文件(vendor)进入Blob.js和Export2Excel.js(此步骤已做过，直接安装下面三个命令即可)
+					npm install -S file-saver 用来生成文件的web应用程序
+					npm install -S xlsx 电子表格格式的解析器
+					npm install -D script-loader 将js挂在在全局下
+					
+					
+					import {export_json_to_excel} from '@/vendors/Export2Excel';
+					
+					exportYangData () {
+						debugger
+						if (this.pdu==''||this.pdu=='ALL'||this.version=='' || this.version==undefined ||this.version=='ALL') {
+							this.$Message.error('请选择PDU和版本');
+							return;
+						}
+
+						this.$refs.showDownload.show();
+						axios.get('/rest/yangAnalysis/export',{
+							params: {
+								 queryParams:{
+								pdu: this.pdu,
+								productLine:'ENS',
+								subsys:this.subsys,
+								feature:this.feature,
+								version:this.version, 
+								product:this.product,
+								source:this.source,
+								testSource:this.testsource,
+								 }
+							},
+						}).then((res) => {
+							this.$refs.showDownload.hide();
+							var tableHead = res.data.data.titleMap;
+							var tableData = res.data.data.data;
+							var formatData = tableData.map(v => tableHead.map(j => v[j]));
+							export_json_to_excel(tableHead, formatData, "YangDataCovage" + Date.parse( new Date()));
+						}).catch((error) =>{
+							this.$refs.showDownload.hide();
+							this.$Modal.error({
+								title: "错误",
+								content: "由于未知原因，导出数据失败"
+							});
+						});
+					}
+
+					@Path("export")
+						@GET
+						@Produces(MediaType.APPLICATION_JSON)
+						public Response exportYangData(
+								@QueryParam("queryParams") YangVo yvo,@Context HttpServletRequest request) {
+							
+							
+							UseStat.stat(request, StatFunction.yangOverview);
+							StoreResponseEntity entity = new StoreResponseEntity();
+							
+							if (yvo == null || !"ENS".equals(yvo.getProductLine()) 
+									|| yvo.getPdu() == null || yvo.getVersion() == null) {
+								entity.setSuccess(false);
+								entity.setMessage("对不起，您当前查询条件的内容为空");
+								return Response.ok(entity).build();
+							}
+							
+							
+							int total = yangService.getYangExportListTotal(yvo);
+							yvo.setStartRow(0);
+							yvo.setEndRow(total);
+							
+							List<YangPo> exportLog = yangService.getYangExportList(yvo);
+							
+							
+							String[] titleList = { "PDU","版本","领域","特性", "xpath", "覆盖次数" };
+							String[] titles = { "pdu","version","subsys","feature", "xpath", "yangCover2" };
+							
+							BasicTableVo basicTableVo = new BasicTableVo()
+									.setTitleMap(titles)
+									.setTitle(titleList)
+									.setData(exportLog);
+							
+							entity.setSuccess(true);
+							entity.setData(basicTableVo);
+							return Response.ok(entity).build();
+						}
+
+
+					
+						<select id="getyangExportList" resultType="com.huawei.kdd.omCoverageEvaluation.yang.povo.YangPo">
+							select *
+								from (select rownum r,
+								y.pdu,
+								y.version,
+								y.xpath,
+								y.subsys,
+								y.feature,
+								y.yangCover2
+								from(select c.pdu,c.version,c.subsys,c.feature,c.xpath,count(d.guid) yangCover2 from
+								  (select * from t_ens_yang_base b where 1=1
+								  <if test="yvo.pdu != null and yvo.pdu != '' and yvo.pdu != 'ALL'">
+									and b.pdu=#{yvo.pdu}
+								</if>
+								<if
+									test="yvo.version != null and yvo.version != '' and yvo.version != 'ALL'">
+									and b.version=#{yvo.version}
+								</if>
+								<if test="yvo.source != null and yvo.source != '' and yvo.source != 'ALL'">
+									and b.source=#{yvo.source}
+								</if>
+								<if test="yvo.xpath != null and yvo.xpath != '' and yvo.xpath != 'ALL'">
+									and b.xpath like '%${yvo.xpath}%'
+								</if>
+								<if
+									test="yvo.feature != null and yvo.feature != '' and yvo.feature != 'ALL'">
+									and b.feature=#{yvo.feature}
+								</if>
+								<if test="yvo.subsys != null and yvo.subsys != '' and yvo.subsys != 'ALL'">
+									and b.subsys=#{yvo.subsys}
+								</if>
+									  ) c 
+								  left join t_test_yang_match d on c.guid=d.yang_guid
+									<if test="yvo.product != null and yvo.product != '' and yvo.product != 'ALL'">
+										and d.product=#{yvo.product}
+									</if>
+									<if test="yvo.testSource != null and yvo.testSource != '' and yvo.testSource != 'ALL'">
+										and d.source=#{yvo.testSource}
+									</if>
+								  group by c.guid,c.pdu,c.version,c.subsys,c.feature,c.xpath) y
+									<![CDATA[
+										where rownum <= #{yvo.endRow})
+										where r > #{yvo.startRow}
+									]]>
+							
+							</select>	
+							
+							
+							
+							
+							java 一次性读取大文本内容  转成string
+								String encoding = "UTF-8";
+								Long filelength = file.length();
+								byte[] filecontent = new byte[filelength.intValue()];
+								try {
+									FileInputStream in = new FileInputStream(file);
+									in.read(filecontent);
+									in.close();
+								} catch (FileNotFoundException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+								try {
+									String yangContent =new String(filecontent, encoding);
+								} catch (UnsupportedEncodingException e) {
+									System.err.println("The OS does not support " + encoding);
+									e.printStackTrace();
+								}	
+							
+							
+							
+							
+							python 安装第三方python库内容
+							https://blog.csdn.net/u011878310/article/details/80420709
+							
+							
+							
+							
+							
+							
+		some:
+
+
+新的32为jdk1.8地址：C:\Program Files (x86)\Java\jdk1.8.0_191\bin
+旧的64位jdk1.8：C:\jdk1.8\Java\jdk1.8.0_131
+
+Program/BigData/FCollector/FCollector
+
+GetCalculatorResult
+GetLeftResult
+
+CE-L16CQ-FG，CE-L08CQ-FG，CE-L48XS-FG1，CEL24LQED-E，CE-L48XS-FD，CE-L04CF-EF\MD\EC，CE-L36CQ-FG，CE-L36CQ-FD1，CE-L36CQ-SD
+
+
+
+一边做把一些随时记录下来
+
+some：
+
+mib页面：vue  echarts  springmvc  mybatis-sql
+微服务：springboot 模块:
+
+Jackson 使用注解映射前端接收参数与JavaBean属性——
+1.@JsonIgnoreProperties(ignoreUnknown = true): 忽略未知的属性，如果前端传一些不存在的属性，自动过滤掉
+2.@JsonInclude(JsonInclude.Include.NON_NULL): 假如后端偷懒，直接向前端传PO或则把多个接口的VO用单个JavaBean实现，该注解的作用是只解析字段为不为null（也可为：NON_EMPTY，NON_DEFAULT等等）的属性，这样一些为空的属性就不会被解析传到前端
+3.@JsonProperty("case_name")：映射前后端参数，前端传case_name，后端解析成caseName,后端传数据前会把caseName解析为case_name再传给前端
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CoverageMibpo implements Serializable {
+
+@JsonProperty("max_access")
+private String maxAccess;
+
+为保证双向传递，需要自定义处理嵌入SpringMVC
+
+swagger2 ：扫描定义的controller包，页面展示测试微服务接口；  
+controller类接口自动化测试：
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class AlarmOverviewControllerTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlarmOverviewControllerTest.class);
+    private MockMvc mockMvc;
+
+    /**
+     * web项目上下文
+     */
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    /**
+     * 所有测试方法执行之前执行该方法
+     */
+    @Before
+    public void before() {
+        //获取mockmvc对象实例
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
+
+    /**
+     * 根据返回的Json串转成Map
+     *
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    private static Map jsonBodyToMap(MockHttpServletResponse response) throws Exception {
+        byte[] bodyContent = null;
+        Map map = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+        bodyContent = response.getContentAsByteArray();
+        map = objectMapper.readValue(bodyContent, Map.class);
+        return map;
+    }
+
+
+    @Test
+    public void getPDUList() throws Exception {
+        String urlAll = "/alarmAnalysis/pdu?pdu=FW&productLine=ENS";
+        testMvcResult(urlAll);
+    }
+
+
+    private void testMvcResult(String urlAll) throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get(urlAll)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andReturn();
+        LOGGER.info(result.getResponse().toString());
+    }
+}
+
+yang文件（excel+chm解析）：
+springboot  纯java项目  执行task——  
+
+pom parent继承——
+<parent>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.0.6.RELEASE</version>
+	<relativePath/>
+</parent>
+
+task——
+@Component
+@Order(1)
+public class TaskRunner implements ApplicationRunner {
+
+    @Autowired
+    YangService yangService;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        String resultFilename = "result.txt";
+
+        String apiName="CloudEngine 6810LI V200R005C00 NETCONF YANG API参考.chm";
+        yangService.getApiData(apiName);
+    }
+}
+
+
+获取项目根目录——
+private String filePath = new File(".").getAbsolutePath();
+ChmFile chmFile = new ChmFile(filePath + File.separator + "file" + File.separator + apiName);
+
+带.号分隔——
+String[] yangs = linkText.split("\\.yang");
+
+反转字符  截取英文 截取到中文停止  -编码值——
+String s1 = yangs[m];
+s1 = new StringBuilder(s1).reverse().toString();
+StringBuffer sbf = new StringBuffer();
+char[] charArray = s1.toCharArray();
+for (int n = 0; n < charArray.length; n++) {
+	if ((charArray[n] >= 65) && (charArray[n] <= 122)) {
+		sbf.append(charArray[n]);
+	}else if(charArray[n] == 45){
+		sbf.append(charArray[n]);
+	}else if((charArray[n] >= 0x4e00) && (charArray[n] <= 0x9fbb)){
+		break;
+	}
+}
+
+
+dao——
+@Mapper
+public interface AlarmBaseMapper {
+
+    @Select("select* from t_ens_alarm_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "alarmId", column = "alarm_id"),
+            @Result(property = "alarmType", column = "alarm_type")
+    })
+    List<Alarm> selectByPduVersion(@Param("pdu") String pdu, @Param("version")String version);
+
+    @Select("select * from t_ens_alarm_base where alarm_id = #{alarm.alarmId} and pdu = #{alarm.pdu} and version = #{alarm.version}")
+    int isAlarmExisted(@Param("alarm") Alarm alarm);
+
+    @Insert("insert into " +
+            "t_ens_alarm_base(" +
+                "alarm_id," +
+                "enname," +
+                "cnname," +
+                "module," +
+                "alarm_type," +
+                "createtime," +
+                "pdu," +
+                "version," +
+                "feature" +
+            ") " +
+            "values(" +
+                "#{alarm.alarmId}," +
+                "#{alarm.enName}," +
+                "#{alarm.cnName}," +
+                "#{alarm.module}," +
+                "#{alarm.alarmType}," +
+                "#{alarm.createTime}," +
+                "#{alarm.pdu}," +
+                "#{alarm.version}," +
+                "#{alarm.feature}" +
+            ")")
+    int insertAlarm(@Param("alarm") Alarm alarm);
+
+    @Delete("delete from t_ens_alarm_base where pdu=#{alarm.pdu} and version = #{alarm.version} and alarm_id = #{alarm.alarmId}")
+    int deleteAlarm(@Param("alarm") Alarm alarm);
+
+}
+
+
+@Mapper
+public interface CmdBaseMapper {
+
+    @Select("select* from t_ens_cli_base where pdu = #{pdu} and version = #{version} and product= #{product}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "cmdIndex", column = "cmd_index"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersion(@Param("pdu") String pdu, @Param("version") String version, @Param("product") String product);
+
+    @Select("select distinct mid,feature,subsys from t_ens_cli_base where pdu = #{pdu} and version = #{version}")
+    @Results({
+            @Result(property = "pdu", column = "pdu"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "product", column = "product"),
+            @Result(property = "guid", column = "guid"),
+            @Result(property = "feature", column = "feature"),
+            @Result(property = "mid", column = "mid")
+    })
+    List<Cmd> selectByPduVersioNoProduct(@Param("pdu") String pdu, @Param("version") String version);
+
+    @Update("update t_ens_cli_base " +
+            "set mid = #{cmd.mid}" +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "cmd_index=#{cmd.cmdIndex}")
+    int updateCmd(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "guid=#{cmd.guid}")
+    int updateCmdVrp(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set vrp_flag = to_number(#{cmd.vrpFlag}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdVrpByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "product=#{cmd.product} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMid(@Param("cmd") Cmd cmd);
+
+    @Update("update t_ens_cli_base " +
+            "set prod_care = to_number(#{cmd.prodCare}) " +
+            "where " +
+            "pdu=#{cmd.pdu} and " +
+            "version=#{cmd.version} and " +
+            "mid=#{cmd.mid}")
+    int updateCmdProdCareByMidNoProduct(@Param("cmd") Cmd cmd);
+}
+
+
+maven添加本地jar包   
+mvn install:install-file -Dfile=C:\Users\twx580078\Desktop\jchmlib-0.5.4\jchmlib-master-0.5.4.jar -DgroupId=org.apache.jchmlib -DartifactId=jchmlib -Dversion=0.5.4 -Dpackaging=jar
+
+
+gradle编译jar包   jchmlib
+
+
+递归  
+private void getYangG(ChmTopicsTree tree5, ChmFile chmFile, String yangfilename) {
+	String title = tree5.title;
+	String path = tree5.path;
+	ChmUnitInfo chmUnitInfo = chmFile.resolveObject(path);
+	String s = chmFile.retrieveObjectAsString(chmUnitInfo);
+	Document doc = Jsoup.parse(s);
+	Element body = doc.body();
+	Elements links = body.getElementsByTag("td");
+	if (links.size()>0){
+		Element tbodyFirst = links.get(0);
+		String operate = tbodyFirst.text();
+		if ("get".equals(operate)){
+			Element tbodySecond = links.get(1);
+			//得到XPATH
+			String xPathText = tbodySecond.text();
+			//获得get方法请求示例内容
+			Elements pres = body.getElementsByTag("pre");
+			Element firstPre = pres.first();
+			String firstPreText = firstPre.text();
+			//存库 .yang  堆叠全局信息 get方法 XPATH 请求示例内容
+			YangData yangData = new YangData();
+			yangData.setYangFileName(yangfilename);
+			yangData.setxPath(xPathText);
+			yangData.setOperate(operate);
+			yangData.setYangMethodName(title);
+			yangData.setRequestContent(firstPreText);
+			yangMapper.insertYangData(yangData);
+		}
+	}
+
+	if (tree5.children.size()>0){
+		LinkedList<ChmTopicsTree> children = tree5.children;
+		for (int i=0;i<children.size();i++){
+			ChmTopicsTree tree = children.get(i);
+			getYangG(tree,chmFile,yangfilename);
+		}
+	}
+}
+
+
+log文件分析：大数据hardoop  linux  flume  spark等
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+							
+							
+							
+							
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

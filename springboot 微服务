@@ -1,13 +1,3 @@
-XDU主程序SSH框架，通过action访问springboot微服务。
-1，主程序action：
-public static final String TOOL_NAME = "http://localhost:8085/web/xpi/";
-public static final String TOOL_NAME_ADDRESS = TOOL_NAME + "tool/toolname";
-public static final String QUERY_CODE_ADDRESS = TOOL_NAME + "tool/querycode";
-访问微服务
-Map<String, String> parameterMap = RequestUtil.getParameterMap(request);
-String toolStr = HttpClientREST.callSoapUtf8PostMethodXPISpecial(TOOL_NAME_ADDRESS, "", 
-CommonUtil.getHeader(), parameterMap);
-
 
 http://baijiahao.baidu.com/s?id=1587880488165747162&wfr=spider&for=pc
 创建springboot微服务：
@@ -20,6 +10,132 @@ maven构建项目
 
 
 
+1,前后端联调：
+为避免各个微服务前后端联调测试对生产环境产生影响，目前iData微服务前后端联调需要在本地进行，具体步骤可参考如下：
 
+1. 本地启动注册中心server-eureka
+（1）将server-eureka中的配置文件application.yml中默认激活的配置由peer1改为localtest
+（2）启动ServerEurekaApplication
+访问本地注册中心Url：  http://localhost:8761/
+
+2.本地启动网关gateway-zuul
+（1）将gateway-zuul中的配置文件application.yml中默认激活的配置由dev改为localtest
+（2）启动GatewayZuulApplication
+
+3.本地启动负载均衡和服务间调用consumer-fegin
+（1）将consumer-fegin中的配置文件application.yml中默认激活的配置由dev改为localtest
+（2）启动ConsumerFeginApplication
+
+4.本地启动需要联调的微服务，如测试覆盖分析
+（1）将provider-test_coverage_analysis中的配置文件application.yml中默认激活的配置由dev改为localtest
+（2）启动TestCoverageAnaApplication
+
+2.服务消费consumer-fegin调用微服务提供者：
+（1）调用关系如下：
+（2）在服务调用之间的参数实体，统一放在common-util公共模块下，并且为支持传输，需要加@FeginModelAttribute注解：
+
+3. 改造完后，重启修改的模块组件，从网关（端口：8769）调用微服务接口:
+
+4.前后端联调：
+
+修改配置文件启动，然后把旧的接口中的rest改为gateway，进行联调：
+
+5. 联调通过之后，提交代码时，把微服务application.yml修改的配置改回之前没修改的配置，避免对线上产生影响：
+
+
+vo类 日期属性加格式：
+@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+private Date endDate;
+
+springboot显示mybatis sql内容：
+
+logging:
+  level:
+    com:
+      huawei:
+        test:
+          coverage:
+            analysis: DEBUG
+
+
+
+
+		  
+vue表格table分页记录上次清除：
+ <Page style="margin-top:20px;" :current.sync='currentPage' :total="total" :page-size='limit' show-elevator show-total @on-change="changePage"></Page>		  
+
+ 
+idea 接口进入实现类方法快捷键：crtl+alt+B
+
+
+springboot  mapper  方法直接写sql  不用mybatis  增删改查————
+
+@Mapper
+public interface CmdBaseMapper {
+
+@Select("select* from t_ens_cli_base where pdu = #{pdu} and version = #{version} and product= #{product}")
+@Results({
+		@Result(property = "pdu", column = "pdu"),
+		@Result(property = "version", column = "version"),
+		@Result(property = "product", column = "product"),
+		@Result(property = "guid", column = "guid"),
+		@Result(property = "cmdIndex", column = "cmd_index"),
+		@Result(property = "mid", column = "mid")
+})
+List<Cmd> selectByPduVersion(@Param("pdu") String pdu, @Param("version") String version, @Param("product") String product);
+
+@Update("update t_ens_cli_base " +
+		"set mid = #{cmd.mid}" +
+		"where " +
+		"pdu=#{cmd.pdu} and " +
+		"version=#{cmd.version} and " +
+		"product=#{cmd.product} and " +
+		"cmd_index=#{cmd.cmdIndex}")
+int updateCmd(@Param("cmd") Cmd cmd);
+
+@Insert("insert into " +
+	"t_ens_alarm_base(" +
+		"alarm_id," +
+		"enname," +
+		"cnname," +
+		"module," +
+		"alarm_type," +
+		"createtime," +
+		"pdu," +
+		"version," +
+		"feature" +
+	") " +
+	"values(" +
+		"#{alarm.alarmId}," +
+		"#{alarm.enName}," +
+		"#{alarm.cnName}," +
+		"#{alarm.module}," +
+		"#{alarm.alarmType}," +
+		"#{alarm.createTime}," +
+		"#{alarm.pdu}," +
+		"#{alarm.version}," +
+		"#{alarm.feature}" +
+	")")
+int insertAlarm(@Param("alarm") Alarm alarm);
+	
+@Delete("delete from t_ens_alarm_base where pdu=#{alarm.pdu} and version = #{alarm.version} and alarm_id = #{alarm.alarmId}")
+    int deleteAlarm(@Param("alarm") Alarm alarm);
+
+	
+更新数据库值：
+yangMapper.updateWlanR19YangData(yangdata);
+
+@Mapper
+public interface YangMapper {
+ void updateWlanR19YangData(YangData yangdata);
+	
+<update id="updateWlanR19YangData" parameterType="com.huawei.yanganalysis.entity.YangData">
+		update t_ens_yang_base
+		set subsys = #{subsys},
+		feature = #{feature}
+		where pdu='WLAN'
+		and version='V2R19C00'
+		and xpath=#{xpath}
+</update>	
 
 
