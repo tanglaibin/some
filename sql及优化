@@ -3,35 +3,48 @@ sql:
 
 数据库插入防止重复值：
 declare
-  jilu_guid number;
-begin
-  select count(*)
-    into jilu_guid
-    from tlb t
-   where pdu = 'DC'
-     and version = 'R19'
-     and subsys = 'huawei'
-     and feature = 'a'
-     and xpath = 'b4'
-     and type is null  //不能写 type = ''
-     and operation is null
-     and delflag = 0
-     and source = 'api';
-  if jilu_guid = 0 then
-    insert into tlb
-      (pdu,
-       version,
-       subsys,
-       feature,
-       xpath,
-       type,
-       operation,
-       delflag,
-       source)
-    values
-      ('DC', 'R19', 'huawei', 'a', 'b4', '', '', 0, 'api');
-  end if;
-end;
+                jilu_guid number;
+                begin
+                select count(*)
+                into jilu_guid
+                from t_ens_yang_base t
+                where
+                pdu=#{pdu}
+                and version=#{version}
+                and subsys=#{subsys}
+                and feature=#{feature}
+                and xpath=#{xpath}
+                and delflag=#{delflag}
+                and source=#{source};
+                if jilu_guid = 0 then
+                insert into t_ens_yang_base
+                (pdu,
+                version,
+                subsys,
+                feature,
+                xpath,
+                type,
+                operation,
+                delflag,
+                source)
+                values
+                (#{pdu}, #{version}, #{subsys}, #{feature}, #{xpath}, #{type}, #{operation},2, #{source});
+                end if;
+                if jilu_guid > 0 then
+                insert into t_ens_yang_base
+                (pdu,
+                version,
+                subsys,
+                feature,
+                xpath,
+                type,
+                operation,
+                delflag,
+                source)
+                values
+                (#{pdu}, #{version}, #{subsys}, #{feature}, #{xpath}, #{type}, #{operation},3, #{source});
+                end if;
+                end;
 
 
 多表联查：
