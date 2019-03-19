@@ -113,12 +113,519 @@ id        :  5566
 
 
 
+JSTL c  fn标签：
+
+<table style="table-layout: fixed;" width="1200" border="0" cellspacing="0" cellpadding="0" class="modify_tab1">
+<tr>
+<td class="modify_tab1bg2" width="30px"><s:text name="Seq"/><!-- 序号 --></td>
+<td class="modify_tab1bg2" width="100px"><s:text name="Product_PatchVersion"/><!-- 产品补丁号 --></a></td>
+<td class="modify_tab1bg2" width="1070px"></td>
+</tr>
+<s:iterator value="dirDirList" id="dir" status="stu" var="dir">
+<s:set var="count" value="#dir.count" />
+<s:set var="archivingTime" value="#dir.archivingTime" />
+<s:set var="SafetyTestTime" value="#dir.SafetyTestTime" />
+<s:set var="DetectTime3" value="#dir.DetectTime3" />
+<s:set var="archivingTime3" value="#dir.archivingTime3" />
+<s:set var="archivingTime3" value="#dir.archivingTime3" />
+<s:set var="DetectTime1" value="#dir.DetectTime1" />
+<s:set var="DetectTime2" value="#dir.DetectTime2" />
+<s:set var="archivingTime2" value="#dir.archivingTime2" />
+<tr style="word-break:break-all" bgcolor="#fdfde8">
+<td class="auditing_tab1" >&nbsp;<s:property value="#stu.index + 1"/></td>
+<td class="tdContent auditing_tab2" style="word-break:break-all" >
+<a href="###" onclick="viewPatchPlan('<s:property value="num"/>')" class="linkblue">
+<s:property value="patchVersion1" />
+</a>
+</td>
+<td class="" >
+<s:if test="#count == 11">
+<% int m = 11;
+%>
+<div class="out_div">
+<div class="planTable" style="width:1400px;">
+<div class="timeRight" style="left:1400px ">
+<h2><s:date name="releaseTime1" format="yyyy-MM-dd"/></h2>
+<div>
+<p>产品发布截止日期</p>
+</div>
+</div>
+
+<%
+m--;
+%>
+<s:if test="#archivingTime != null  ">
+	<div class="timeRight" style="left:<%=140*(m-1) %>px">
+		<h2><s:date name="archivingTime" format="yyyy-MM-dd"/></h2>
+		<div>
+		<p>所有交付件（测试、资料、开发）归档</p>
+		</div>
+	</div>
+	<% m--;
+	%>
+</s:if>
+<s:else>
+	<div class="timeRight">
+	<h2><s:date name="archivingTime" format="yyyy-MM-dd"/></h2>
+	<div>
+	<p>所有交付件（测试、资料、开发）归档</p>
+	</div>
+	</div>
+</s:else>
+<s:if test="#SafetyTestTime != null  ">
+	<div class="timeRight" style="left:<%=140*(m-1) %>px">
+		<h2><s:date name="SafetyTestTime" format="yyyy-MM-dd"/></h2>
+		<div>
+		<p>输出安全测试报告&通过安全测试会签</p>
+		</div>
+	</div>
+	<% m--;%>
+</s:if>
+<s:else>
+	<div class="timeRight">
+	<h2><s:date name="SafetyTestTime" format="yyyy-MM-dd"/></h2>
+	<div>
+	<p>输出安全测试报告&通过安全测试会签</p>
+	</div>
+	</div>
+</s:else>
+<s:if test="#DetectTime3 != null  ">
+	<div class="timeRight" style="left:<%=140*(m-1) %>px">
+		<h2><s:date name="DetectTime3" format="yyyy-MM-dd"/></h2>
+		<div>
+		<p>迭代三转测</p>
+		</div>
+	</div>
+	<% m--;%>
+</s:if>
+<s:else>
+	<div class="timeRight">
+	<h2><s:date name="DetectTime3" format="yyyy-MM-dd"/></h2>
+	<div>
+	<p>迭代三转测</p>
+	</div>
+	</div>
+</s:else>
+<s:if test="#archivingTime3 != null  ">
+	<div class="timeRight" style="left:<%=140*(m-1) %>px">
+		<h2><s:date name="archivingTime3" format="yyyy-MM-dd"/></h2>
+		<div>
+		<p>迭代三归档&录入IDP&评审</p>
+		</div>
+	</div>
+	<% m--;%>
+				
+	
+
+
+	
+<table style="table-layout: fixed;" width="2110" border="0" cellspacing="0" cellpadding="0" class="modify_tab1">
+<!-- 遍历结果集  一个大版本号  一行：序号， 版本号名， 各个月数据（遍历月size大于0的list 得到一个个td） -->
+<c:forEach items="${dirDirList }"  var="BigPatchPlan"  varStatus="stu">
+<tr style="word-break:break-all" bgcolor="#fdfde8">
+<td class="auditing_tab1" width="30px">&nbsp;${stu.count}</td>
+<td class="tdContent auditing_tab2" style="word-break:break-all" width="80px"> ${BigPatchPlan.bigPatchVersion } </td>
+
+<c:set value="${BigPatchPlan.january}" var="january"></c:set>
+<c:if test="${fn:length(january) > 0}">
+<c:forEach items="${january}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>一月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.february}" var="february"></c:set>
+<c:if test="${fn:length(february) > 0}">
+<c:forEach items="${february}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>二月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.march}" var="march"></c:set>
+<c:if test="${fn:length(march) > 0}">
+<c:forEach items="${march}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>三月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.april}" var="april"></c:set>
+<c:if test="${fn:length(april) > 0}">
+<c:forEach items="${april}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>四月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.may}" var="may"></c:set>
+<c:if test="${fn:length(may) > 0}">
+<c:forEach items="${may}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>五月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.june}" var="june"></c:set>
+<c:if test="${fn:length(june) > 0}">
+<c:forEach items="${june}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>六月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.july}" var="july"></c:set>
+<c:if test="${fn:length(july) > 0}">
+<c:forEach items="${july}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>七月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.august}" var="august"></c:set>
+<c:if test="${fn:length(august) > 0}">
+<c:forEach items="${august}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>八月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.september}" var="september"></c:set>
+<c:if test="${fn:length(september) > 0}">
+<c:forEach items="${september}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>九月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.october}" var="october"></c:set>
+<c:if test="${fn:length(october) > 0}">
+<c:forEach items="${january}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>十月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.november}" var="november"></c:set>
+<c:if test="${fn:length(november) > 0}">
+<c:forEach items="${november}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>十一月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
+<c:set value="${BigPatchPlan.december}" var="december"></c:set>
+<c:if test="${fn:length(december) > 0}">
+<c:forEach items="${december}" var="patchplan" >
+<td class="tdContent auditing_tab22" width="200px"><h4>十二月：</h4>${patchplan.content}</td>
+</c:forEach>
+</c:if>
 
 
 
 
+for (String bigPatchName : bigPatchNamelist) {
+	BigPatchPlan bigPatchPlan = new BigPatchPlan();
+	bigPatchPlan.setBigPatchVersion(bigPatchName);
+	
+	List<PatchPlan> January = new ArrayList<PatchPlan>();
+	List<PatchPlan> February = new ArrayList<PatchPlan>();
+	List<PatchPlan> March = new ArrayList<PatchPlan>();
+	List<PatchPlan> April = new ArrayList<PatchPlan>();
+	List<PatchPlan> May = new ArrayList<PatchPlan>();
+	List<PatchPlan> June = new ArrayList<PatchPlan>();
+	List<PatchPlan> July = new ArrayList<PatchPlan>();
+	List<PatchPlan> August = new ArrayList<PatchPlan>();
+	List<PatchPlan> September = new ArrayList<PatchPlan>();
+	List<PatchPlan> October = new ArrayList<PatchPlan>();
+	List<PatchPlan> November = new ArrayList<PatchPlan>();
+	List<PatchPlan> December = new ArrayList<PatchPlan>();
+	
+	for (PatchPlan patchPlan : dirDirList4) {
+		if(patchPlan.getBigPatchVersion().equals(bigPatchName)){
+			//说明这个patchPlan属于这个bigPatchPlan下的数据   再判断是几月的数据
+			int month = patchPlan.getMonth();
+			if(month==01){
+				January.add(patchPlan);
+			}else if(month==02){
+				February.add(patchPlan);
+			}else if(month==03){
+				March.add(patchPlan);
+			}else if(month==04){
+				April.add(patchPlan);
+			}else if(month==05){
+				May.add(patchPlan);
+			}else if(month==06){
+				June.add(patchPlan);
+			}else if(month==07){
+				July.add(patchPlan);
+			}else if(month==8){
+				August.add(patchPlan);
+			}else if(month==9){
+				September.add(patchPlan);
+			}else if(month==10){
+				October.add(patchPlan);
+			}else if(month==11){
+				November.add(patchPlan);
+			}else if(month==12){
+				December.add(patchPlan);
+			}
+		}
+	}
+	bigPatchPlan.setJanuary(January);
+	bigPatchPlan.setFebruary(February);
+	bigPatchPlan.setMarch(March);
+	bigPatchPlan.setApril(April);
+	bigPatchPlan.setMay(May);
+	bigPatchPlan.setJune(June);
+	bigPatchPlan.setJuly(July);
+	bigPatchPlan.setAugust(August);
+	bigPatchPlan.setSeptember(September);
+	bigPatchPlan.setOctober(October);
+	bigPatchPlan.setNovember(November);
+	bigPatchPlan.setDecember(December);
+	
+	if(January.size()==0 && February.size()==0 && March.size()==0 && April.size()==0 && May.size()==0 
+			&& June.size()==0 && July.size()==0 && August.size()==0 && September.size()==0 
+			&& October.size()==0 && November.size()==0 && December.size()==0){
+		
+	}else{
+		bigPatchList.add(bigPatchPlan);
 
 
 
+
+//大版本号实体类  版本号名  各个月份list
+public class BigPatchPlan implements java.io.Serializable
+{
+    private String bigPatchVersion;
+    private List<PatchPlan> january;
+    private List<PatchPlan> february;
+    private List<PatchPlan> march;
+    private List<PatchPlan> april;
+    private List<PatchPlan> may;
+    private List<PatchPlan> june;
+    private List<PatchPlan> july;
+    private List<PatchPlan> august;
+    private List<PatchPlan> september;
+    private List<PatchPlan> october;
+    private List<PatchPlan> november;
+    private List<PatchPlan> december;
+}
+
+
+
+
+mybatis 返回值类型  参数类型
+<select id="getCmdTotal" resultType="java.lang.Integer"  parameterType="com.huawei.kdd.evaluation.povo.EvaluationVo">
+	select count(distinct(b.guid))
+	from t_ens_alarm_base b
+	where 1=1
+	<if test="null != pdu and '' != pdu and 'ALL' != pdu">
+		and b.pdu = #{pdu}
+	</if>
+	<if test="null != sitVersion and '' != sitVersion and 'ALL' != sitVersion">
+		and b.version = #{sitVersion}
+	</if>
+	<if test="null != sitProduct and '' != sitProduct and 'ALL' != sitProduct">
+		and b.product like concat(concat('%',#{sitProduct}),'%')
+	</if>
+	<if test="null != subsys and '' != subsys and 'ALL' != subsys">
+		and b.module = #{subsys}
+	</if>
+</select>
+
+
+
+
+<%
+String V100R005 = request.getAttribute("V100R005").toString(); 
+String V1R6 = request.getAttribute("V1R6").toString(); 
+String V200R001SPC700 = request.getAttribute("V200R001SPC700").toString(); 
+String V200R002C50 = request.getAttribute("V200R002C50").toString(); 
+String V200R003C00 = request.getAttribute("V200R003C00").toString(); 
+String V200R005C00 = request.getAttribute("V200R005C00").toString(); 
+String V100R0052 = request.getAttribute("V100R0052").toString(); 
+String V1R62 = request.getAttribute("V1R62").toString(); 
+String V200R001SPC7002 = request.getAttribute("V200R001SPC7002").toString(); 
+String V200R002C502 = request.getAttribute("V200R002C502").toString(); 
+String V200R003C002 = request.getAttribute("V200R003C002").toString(); 
+String V200R005C002 = request.getAttribute("V200R005C002").toString(); 
+%>
+
+<%=V100R005%>个
+
+
+
+select
+feature,
+subsys,
+count(guid) sitTotal
+from
+<choose>
+	<when test = "isNewVersion">
+		t_ens_cli_base
+	</when>
+	<otherwise>
+		t_cube_ens_cmd
+	</otherwise>
+</choose> b
+		
+		
+		
+<if test="null != featureInput and '' != featureInput ">
+	and b.feature like '%' ||#{featureInput}||'%'
+</if>
+<if test="null != cmdInput and '' != cmdInput ">
+	and b.name like '%' ||#{cmdInput}||'%'
+</if>
+
+
+
+<c:if test="${empty str}">  str为空</c:if>
+<c:if test="${not empty str}">  str不为空</c:if>
+
+<c:if test="${patchVersion == 'V100R005'}">
+<option></option>
+<option selected="selected">V100R005</option>
+<option>V100R006</option>
+<option>V200R001</option>
+<option>V200R002</option>
+<option>V200R003</option>
+<option>V200R005</option>
+</c:if>
+
+
+
+<if test="('' != scene and 'ALL' != scene and null != scene) or ('' != subScene and 'ALL' != subScene and null != subScene) ">
+	,ebg_custorem_scene cs
+</if>
+
+
+<if test="null != inspGuidList and inspGuidList.size() != 0">
+	and insp.guid in
+	<foreach collection="inspGuidList" item="pro" open="("
+			 separator="," close=")">
+		#{pro}
+	</foreach>
+</if>
+
+
+on: {
+click: () => {
+	let param = this.createParam(rowData,"Custom-alarm");
+	this.CommandModalDocDetail = true;
+	this.showLoad = true;
+	let doc = "";
+	axios({
+		url:'/gateway/subscene/alarmMatch',
+		method:'get',
+		params:param
+	}).then((res) => {
+		if(res.data == null || res.data.data.length == 0){
+			this.$refs.CommondDocDetail.innerHTML = '无数据';
+		}else{
+			debugger
+			let result = res.data.data;
+			result.forEach((e)=>{
+					doc += e.name + '<br>';
+			});
+			this.$refs.CommondDocDetail.innerHTML = doc;
+		}
+		this.showLoad=false;
+	});
+}
+}
+
+
+
+
+获取properties文件键值对：
+Properties properties = FileUtil.loadProperties("conf/run.properties");
+collector.test.watchDir=D:\\test\\opt3\\ens\\test
+
+
+
+IDEA中的lombok插件安装以及各注解的详细介绍
+其实对于我们来说， 写好实体类后，直接用快捷方式生成get,set方法，还有 构造方法就行了，但是对于字段比较多的， 如果修改一个属性的话，就要再修改他的get ,set方法，这样容易出错，但是用了lombok以后，就不必担心了，下面给大家说下idea中安装lombok的方法:
+
+lombok到底是个什么呢，lombok是一个可以通过简单的注解的形式来帮助我们简化消除一些必须有但显得很臃肿的 Java 代码的工具，简单来说，比如我们新建了一个类，然后在其中写了几个字段，然后通常情况下我们需要手动去建立getter和setter方法啊，构造函数啊之类的，lombok的作用就是为了省去我们手动创建这些代码的麻烦，它能够在我们编译源码的时候自动帮我们生成这些方法。
+
+
+常用的 lombok 注解：
+@Data：注解在类上，将类提供的所有属性都添加get、set方法，并添加、equals、canEquals、hashCode、toString方法
+@Setter：注解在类上，为所有属性添加set方法、注解在属性上为该属性提供set方法
+@Getter：注解在类上，为所有的属性添加get方法、注解在属性上为该属性提供get方法
+@NotNull：在参数中使用时，如果调用时传了null值，就会抛出空指针异常
+@Synchronized 用于方法，可以锁定指定的对象，如果不指定，则默认创建一个对象锁定
+@Log作用于类，创建一个log属性
+@Builder：使用builder模式创建对象
+@NoArgsConstructor：创建一个无参构造函数
+@AllArgsConstructor：创建一个全参构造函数
+@ToStirng：创建一个toString方法
+@Accessors(chain = true)使用链式设置属性，set方法返回的是this对象。
+@RequiredArgsConstructor：创建对象
+@UtilityClass:工具类
+@ExtensionMethod:设置父类
+@FieldDefaults：设置属性的使用范围，如private、public等，也可以设置属性是否被final修饰。
+@Cleanup: 关闭流、连接点。
+@EqualsAndHashCode：重写equals和hashcode方法。
+@toString：创建toString方法。
+
+
+
+
+-- 一个列可能会包含多个重复值，列出不同（distinct）的值。
+select distinct feature from tlb
+
+-- where 运算符
+=  等于
+<>	不等于。注释：在 SQL 的一些版本中，该操作符可被写成 !=
+>	大于
+<	小于
+>=	大于等于
+<=	小于等于
+BETWEEN	在某个范围内  where sal between 1500 and 3000;
+LIKE	搜索某种模式  where ename like 'M%';
+% 表示多个字值，_ 下划线表示一个字符；
+M% : 为能配符，正则表达式，表示的意思为模糊查询信息为 M 开头的。
+%M% : 表示查询包含M的所有内容。
+%M_ : 表示查询以M在倒数第二位的所有内容
+
+IN	指定针对某个列的多个可能值  where sal in (5000,3000,1500);
+空值判断： is null
+
+
+redis对象保存方式？  
+
+Json字符串:
+需要把对象转换为 json字符串，当做字符串处理。直接使用 set get来设置或者或。
+优点：设置和获取比较简单
+缺点：没有提供专门的方法，需要把把对象转换为 json。(jsonlib)
+字节:
+   需要做序列号，就是把对象序列化为字节保存。
+ 
+如果是担心 JSON转对象会消耗资源的情况，这个问题需要考量几个地方，
+第一点：就是使用的 JSON转换lib是否就会存在性能问题。
+第二点：就是数据的数据量级别，如果是存储百万级的大数据对象，建议采用存储序列化对象方式。如果是少量的数据级对象，或者是数据对象字段不多，还是建议采用 JSON转换成 String方式。
+毕竟redis对存储字符类型这部分优化的非常好。具体采用的方式与方法，还要看你所使用的场景。
+
+Java访问Redis  
+1、使用jedis java客户端来访问redis服务器，有点类似通过 jdbc访问mysql一样。
+2、当然如果是 spring进行集成时，可以使用spring data来访问 redis,spring data只是对 jedis的二次封装。jdbcTemplate jdbc关系一样
+
+
+Redis集群  
+当一台数据无法满足要求，可以使用 reids集群来处理，类似于 mysql的读写分离。
+
+
+项目参与者  
+产品经理？ PM？架构师（ SE）？(开发PL? MDE？可能会有多个) (测试PL ？ TSE可能会有多个)   UI 资料
+开发团队 :开始代码能完成需求
+测试团队：测试功能
+UI:负责界面设计、静态代码的编写
+资料：负责界面的文字描述。
+QA    :通过项目质量监控,和PM,SE同级
+ 
+开发和 UI和资料，协同设计和开发，开发完成后转测试 (测试策略 )交给测试团队进行测试，测试完成后会出一个测试报告。
+
+项目流程  
+
+   可行性分析和立项和开工会
+   需求分析
+   需求设计
+   项目开发 (多个迭代 )
+         迭代开工会
+         迭代设计
+                迭代开发
+                迭代测试
+                集成测试
+                迭代发布
+         迭代总结
+        ....不断迭代
+   项目验收
+   项目总结
+   
+   
+   
+   
 
 
