@@ -1,0 +1,168 @@
+<template>
+  <div class="fluid container">
+    <div class="form-group form-group-lg panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Sortable control</h3>
+      </div>
+      <div class="panel-body">
+        <div class="checkbox">
+          <label><input type="checkbox" v-model="editable">Enable drag and drop</label>
+        </div>
+        <button type="button" class="btn btn-default" @click="orderList">Sort by original order</button>
+      </div>
+    </div>
+
+      <table class="table table-condensed">
+          <thead>
+          <tr>
+            <th>名称1</th>
+            <th>名称2</th>
+            <th>名称3</th>
+            <th>名称4</th>
+          </tr>
+          </thead>
+          <draggable  v-model="tableData" element="tbody" class="list-group"  v-bind="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
+              <tr  v-for="(element,index) in tableData" :key="index">
+                <td> {{element.employee_no}} </td>
+                <td> {{element.first_name}} </td>
+                <td> {{element.sex}} </td>
+                <td> {{element.employment_state}} </td>
+              </tr>
+          </draggable> 
+      </table>
+
+      <table class="table table-condensed">
+          <thead>
+          <tr>
+            <th>名称1</th>
+            <th>名称2</th>
+            <th>名称3</th>
+            <th>名称4</th>
+          </tr>
+          </thead>
+          <draggable  v-model="tableData2" element="tbody" class="list-group"  v-bind="dragOptions" :move="onMove" @start="isDragging=true" @end="isDragging=false">
+              <tr  v-for="(element,index) in tableData2" :key="index">
+                <td> {{element.employee_no}} </td>
+                <td> {{element.first_name}} </td>
+                <td> {{element.sex}} </td>
+                <td> {{element.employment_state}} </td>
+              </tr>
+          </draggable> 
+      </table>
+
+    <div class="list-group col-md-3">
+      <pre>{{listString}}</pre>
+    </div>
+    <div class="list-group col-md-3">
+      <pre>{{list2String}}</pre>
+    </div>
+  </div>
+</template>
+
+<script>
+import draggable from "vuedraggable";
+const message = [
+  "vue.draggable",
+  "draggable",
+  "component",
+  "for",
+  "vue.js 2.0",
+  "based",
+  "on",
+  "Sortablejs"
+];
+
+export default {
+  name: "hello",
+  components: {
+    draggable
+  },
+  data() {
+    return {
+      tableData: [{"id":21,"employee_no":"123","first_name":"yttt","middle_name":"kj","last_name":"f","sex":"male","hire_date":"2019-06-12","resign_date":null,"birthday":null,"phone_no":"36542","address":null,"nearest_station":null,"employment_state":"retirement","email":"admin@tci-cn.co.jp","created_by":null,"updated_by":null,"created_at":"2019-06-06T14:37:19.081+09:00","updated_at":"2019-06-18T15:07:43.630+09:00","disable":"enable"},
+        {"id":26,"employee_no":"55569","first_name":"695","middle_name":"lai","last_name":"bin","sex":"male","hire_date":"2019-06-14","resign_date":"2019-06-08","birthday":"2019-06-14","phone_no":"21212","address":"21212","nearest_station":"2121","employment_state":"retirement","email":"tang.laibin@tci-cn.co.jp","created_by":null,"updated_by":null,"created_at":"2019-06-06T14:54:04.983+09:00","updated_at":"2019-06-21T10:37:17.279+09:00","disable":"enable"},
+        {"id":27,"employee_no":"eqw","first_name":"ada","middle_name":"dawd","last_name":"dawdaw","sex":"female","hire_date":"2019-06-06","resign_date":null,"birthday":null,"phone_no":"12121","address":"121","nearest_station":"21212","employment_state":"vacation","email":"tang2.laibin@tci-cn.co.jp","created_by":null,"updated_by":null,"created_at":"2019-06-06T14:57:05.490+09:00","updated_at":"2019-06-18T18:28:19.810+09:00","disable":"enable"}],
+      tableData2: [{"id":27,"employee_no":"eqw","first_name":"ada","middle_name":"dawd","last_name":"dawdaw","sex":"female","hire_date":"2019-06-06","resign_date":null,"birthday":null,"phone_no":"12121","address":"121","nearest_station":"21212","employment_state":"vacation","email":"tang2.laibin@tci-cn.co.jp","encrypted_password":"$2a$11$aW.nZdLXKbJ75CiAZQGTHuCB0Fia6dTq5KJdjxtDxbgrPsquAq002","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-06T14:57:05.490+09:00","updated_at":"2019-06-18T18:28:19.810+09:00","user_roles":[{"id":228,"user_id":27,"role_id":9,"created_at":"2019-06-18T18:29:45.642+09:00","updated_at":"2019-06-18T18:29:45.642+09:00"},{"id":229,"user_id":27,"role_id":2,"created_at":"2019-06-18T18:29:45.650+09:00","updated_at":"2019-06-18T18:29:45.650+09:00"}],"url":"http://localhost:3000/users/27.json"},
+        {"id":28,"employee_no":"4242432","first_name":"rwer","middle_name":"rwer","last_name":"rwerw","sex":"male","hire_date":null,"resign_date":null,"birthday":null,"phone_no":"324234","address":"rwrwe","nearest_station":null,"employment_state":"incumbent","email":"tang3.laibin@tci-cn.co.jp","encrypted_password":"$2a$11$0hqRJDgNcNJGCkNFgB2aB.k.2dHsE60D/MlyRodovoBU3fFOZzztW","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-06T14:58:59.046+09:00","updated_at":"2019-06-18T17:44:48.243+09:00","user_roles":[{"id":66,"user_id":28,"role_id":9,"created_at":"2019-06-06T14:58:59.058+09:00","updated_at":"2019-06-06T14:58:59.058+09:00"},{"id":67,"user_id":28,"role_id":2,"created_at":"2019-06-06T14:58:59.065+09:00","updated_at":"2019-06-06T14:58:59.065+09:00"}],"url":"http://localhost:3000/users/28.json"},
+        {"id":30,"employee_no":"1212","first_name":"gdgd","middle_name":"cfbfcb","last_name":"bfbfd","sex":"female","hire_date":"2019-06-22","resign_date":null,"birthday":null,"phone_no":null,"address":null,"nearest_station":null,"employment_state":"incumbent","email":"sss@sss.com","encrypted_password":"$2a$11$l1Sxv/fhKQ.sIxGwRuMwNuSWViNj/9eeqRyfpEU3FR7wNHnHJgPyC","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-06T15:19:01.733+09:00","updated_at":"2019-06-21T18:46:44.756+09:00","user_roles":[{"id":258,"user_id":30,"role_id":9,"created_at":"2019-06-21T18:47:23.094+09:00","updated_at":"2019-06-21T18:47:23.094+09:00"}],"url":"http://localhost:3000/users/30.json"},
+        {"id":32,"employee_no":"34435","first_name":"dada","middle_name":"dawd","last_name":"dwad","sex":"female","hire_date":null,"resign_date":null,"birthday":null,"phone_no":"312321","address":null,"nearest_station":null,"employment_state":"vacation","email":"222@dd.com","encrypted_password":"$2a$11$fhZmnzf97sblY0YlOLy.M.fy61u9QaCLggCU6/UyNNuLkDjXdCgTe","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-06T18:43:47.468+09:00","updated_at":"2019-06-18T17:48:21.031+09:00","user_roles":[{"id":72,"user_id":32,"role_id":9,"created_at":"2019-06-06T18:43:47.476+09:00","updated_at":"2019-06-06T18:43:47.476+09:00"},{"id":73,"user_id":32,"role_id":1,"created_at":"2019-06-06T18:43:47.482+09:00","updated_at":"2019-06-06T18:43:47.482+09:00"}],"url":"http://localhost:3000/users/32.json"},
+        {"id":35,"employee_no":"24243589","first_name":"gjgj","middle_name":"jgjg","last_name":"jhkmjh","sex":"female","hire_date":"2019-06-06","resign_date":"2019-06-09","birthday":"2019-06-17","phone_no":"89089089","address":"800908","nearest_station":"08089","employment_state":"incumbent","email":"980809@qq.com","encrypted_password":"$2a$11$UFY9ZdQ5z6dmv5V8nk0rvOi/wzwZEkp9BXknRA2rg807vz1l4/whi","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-07T10:11:40.787+09:00","updated_at":"2019-06-07T10:11:40.787+09:00","user_roles":[{"id":76,"user_id":35,"role_id":9,"created_at":"2019-06-07T10:11:40.803+09:00","updated_at":"2019-06-07T10:11:40.803+09:00"},{"id":77,"user_id":35,"role_id":2,"created_at":"2019-06-07T10:11:40.834+09:00","updated_at":"2019-06-07T10:11:40.834+09:00"}],"url":"http://localhost:3000/users/35.json"},
+        {"id":38,"employee_no":"J190333","first_name":null,"middle_name":null,"last_name":null,"sex":null,"hire_date":null,"resign_date":null,"birthday":null,"phone_no":null,"address":null,"nearest_station":null,"employment_state":"outing","email":"csc@eqe2.com","encrypted_password":"$2a$11$fxFFp20y8wdT3RoM8.wI8.3hFPv9MJRDewOP1rB7XZUAwbIqlqRF6","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-17T14:10:27.450+09:00","updated_at":"2019-06-17T14:10:27.450+09:00","user_roles":[{"id":80,"user_id":38,"role_id":9,"created_at":"2019-06-17T14:10:27.457+09:00","updated_at":"2019-06-17T14:10:27.457+09:00"}],"url":"http://localhost:3000/users/38.json"},
+        {"id":39,"employee_no":"123457","first_name":null,"middle_name":null,"last_name":null,"sex":null,"hire_date":null,"resign_date":null,"birthday":null,"phone_no":null,"address":null,"nearest_station":null,"employment_state":"outing","email":"fsdf@vvv.com","encrypted_password":"$2a$11$L31os7aphBWS3S3rCvhv9.hMq1fNdZe2cJpKTJIZjoBhMr/.hlyji","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-17T17:55:54.925+09:00","updated_at":"2019-06-17T17:55:54.925+09:00","user_roles":[{"id":81,"user_id":39,"role_id":9,"created_at":"2019-06-17T17:55:54.938+09:00","updated_at":"2019-06-17T17:55:54.938+09:00"}],"url":"http://localhost:3000/users/39.json"},
+        {"id":40,"employee_no":"3652","first_name":"2323","middle_name":"312321","last_name":"31231","sex":"male","hire_date":"2019-06-12","resign_date":"2019-06-14","birthday":"2019-06-19","phone_no":null,"address":null,"nearest_station":null,"employment_state":"incumbent","email":"dadwa@dawd.com","encrypted_password":"$2a$11$dJBsRG2.1a1Fqor7GaM/Wu3f/CiTcuEO55QuFQtcnYbdtRXv.9CUe","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-18T10:39:56.138+09:00","updated_at":"2019-06-18T10:40:42.260+09:00","user_roles":[{"id":280,"user_id":40,"role_id":9,"created_at":"2019-06-21T19:07:41.025+09:00","updated_at":"2019-06-21T19:07:41.025+09:00"}],"url":"http://localhost:3000/users/40.json"},
+        {"id":41,"employee_no":"eqweq","first_name":"eqeq","middle_name":"eq2","last_name":"e23w12","sex":"male","hire_date":"2019-06-12","resign_date":null,"birthday":null,"phone_no":"e2e112","address":null,"nearest_station":null,"employment_state":"incumbent","email":"eq2eq@qe2q.com","encrypted_password":"$2a$11$WGqTxtbKo6BoXqCg3r2aIuO46GwueK90yxoR4nGAsf2X42E3hVtoW","reset_password_token":null,"reset_password_sent_at":null,"remember_created_at":null,"confirmation_token":null,"confirmed_at":"2020-10-10T00:00:00.000+09:00","confirmation_sent_at":null,"unconfirmed_email":null,"created_by":null,"updated_by":null,"created_at":"2019-06-18T10:49:55.034+09:00","updated_at":"2019-06-18T10:49:55.034+09:00","user_roles":[{"id":84,"user_id":41,"role_id":9,"created_at":"2019-06-18T10:49:55.040+09:00","updated_at":"2019-06-18T10:49:55.040+09:00"}],"url":"http://localhost:3000/users/41.json"}],
+      editable: true,
+      isDragging: false,
+      delayedDragging: false
+    };
+  },
+  methods: {
+    orderList() {
+      this.list = this.list.sort((one, two) => {
+        return one.order - two.order;
+      });
+    },
+    onMove({ relatedContext, draggedContext }) {
+      const relatedElement = relatedContext.element;
+      const draggedElement = draggedContext.element;
+      return (
+        (!relatedElement || !relatedElement.fixed) && !draggedElement.fixed
+      );
+    }
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 0,
+        group: "description",
+        disabled: !this.editable,
+        ghostClass: "ghost"
+      };
+    },
+    listString() {
+      return JSON.stringify(this.list, null, 2);
+    },
+    list2String() {
+      return JSON.stringify(this.list2, null, 2);
+    }
+  },
+  watch: {
+    isDragging(newValue) {
+      if (newValue) {
+        this.delayedDragging = true;
+        return;
+      }
+      this.$nextTick(() => {
+        this.delayedDragging = false;
+      });
+    }
+  }
+};
+</script>
+
+<style>
+.flip-list-move {
+  transition: transform 0.5s;
+}
+
+.no-move {
+  transition: transform 0s;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.list-group {
+  min-height: 20px;
+}
+
+.list-group-item {
+  cursor: move;
+}
+
+.list-group-item i {
+  cursor: pointer;
+}
+</style>
