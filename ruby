@@ -1,6 +1,63 @@
 了解です    
 
 
+# class Word
+#   def palindrome?(string)
+#          string == string.reverse
+#   end
+# end
+#
+# w = Word.new
+# puts w.palindrome?("foobar")
+# puts w.palindrome?("level")
+
+
+class User
+  # 提供变量 get set方法入口
+  attr_accessor :name, :email
+  #类 class 初始化设置值方法
+  def initialize(attributes = {})
+    @name  = attributes[:name]
+    @email = attributes[:email]
+  end
+
+  def formatted_email
+    "#{@name}#{@email}"
+  end
+end
+
+# example = User.new
+# example.name = "tlb"
+# example.email = "@qq.com"
+# puts example.formatted_email
+
+user = User.new(name: "Michael Hartl", email: "@example.com")
+puts user.formatted_email
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 tang.laibin@tci-cn.co.jp
 
 copy env_sample.txt .env
