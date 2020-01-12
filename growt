@@ -1,0 +1,1254 @@
+技术：
+
+blockchain  地址 余额  查询--
+curl -s "https://blockdozer.com/api/addrs/12CVH8RqidbJr7zmHvc36W988yyGBHTFYe,12cvq5WxA49mzfqNVMtv5isQbtzPPgNRFU,12cWZhNPJJkViLpDuxWkKe2hQAsyXxo7Gd,12cYUoJwLSrCXbtqFxWCCZP9P3e8fsU1cR,12DG6yXNiNSTAnDmGHwF75oAZi9sZtTq2A,12DiBVQPAubZoP6CXiKLspKkb7XHP2rXgh,12DLWEMVjzKAA84CLrgGG6XnVATBZg5wHb,12DNnu2ngVqaDhNSDTb8yWsxoKnvSi9p6u,12dpm7oFqVFoKj9AGpkD9wKLsTg3aSAee2,12duoS5ontsBLEHqHnT71mohsqgcT86gwZ,12dZWPLpEowHtMqdT3UnCBAJmNiHw8Z7cR,12E1FV2kVZy7gXbbeVeDGfvJ1jgCwamT6N,12EdtySdxPuCZMyG1fkfkK7weAhQq7hATG,12EkLcNsHNSXVdN2CEL6smP5fwDvxyqc2D,12eSBLYgi7NGCbNqM3VFUD6FNgDDmGiggx,12ESXD9bYUaJy1bRyQ8LMdojbroyvNLAwn,12etP3UVFwtu6wAXygtV3eNdtZ3rU3rhBx,12EWu4NqfJxto3rkyq4TRwrQ1yALY3YW1L,12EwzobNJTduRfDUuqpofW9NUJENp6CWwG,12eYLWiRngsw5AFndqvN6qQsQ8VQ4HUUqB,12eYn3fGkx5Q3aDDyAKfhAZsyESYLdJZf7,12eYUJFxpxZLxgKZCmeCn7DcXr9ZznvSkC,12f2E7CrHdHhZuRK3wEkoF6RERxeqL9oQw,12f6qnP6KiFLncSpy2ftPF1C3EqYTn3mYq,12fD2McAMwXtPcDauWTbyR1kF4hW2atE6o,12fL6GCBki3BMCJXmvkvYx1Zwj7FqhYcrL,12fo3Wv5vV7NwypdJQ21jGJup772TpMi36,12fRXgfwkDzYPXiv97pfc25caPvR83NJKN,12g4dcuhHaycnPxpjXNLwvGdc5X9sZHFrJ,12gBR8rN5w11caphkceqGaLyJXbUBQ2JfK,12GFYvZJzVGusuXMHT4ukHGyzsQh8TRowZ,12ghV4H8436XYA9MDZiHsVgwHcMnRKkduE,12gmsZj7oAAuYbcLMxfTuvSLPhn3gbrnBk,12GveJ6WgnpcC5qqQ63oYMcTYwy7tJ1RBp,12gWRFDxfYxh5pEfVj881VDmwF6MMyu8C2,12h3EqqTkkrU2LiWtCvXerAkA69TzweBts,12H7XxnRRRnsyQK7haFvSwmnAFFRpNMtSZ,12HDyqVUAAL4bQyXEx8T6zkrgvNkSo6s3U,12HhTLmaQZfqLP7fQYxfRkKc17g1uyeKry,12HiZ21KaD6XfNWqEYNZ6X372djiTXeh1A,12hj3iVxx52dTRqgsHYa79zCtV2SyURq4A,12hKM72Ns7GRLTeMaRSZQvgxKhAXE7adHR,12HTTwAdNTuGEPuMKfiJ9ef83r3muaBuzL,12hZKGnYq7E8HPiKNBXrrZrFCEJcqND3a8,12HzZmreexKqJ3Pgu8RPn4XcuytVfLZEaE,12iA9EogXchRoL7kRPkqjUuFWu3axsZurS,12ihTaWtq6XhfbAMJZcnGjS8HQ9gTVpzeU,12ioBPmpUxiZSW5ZVhqAEEJbJrFjQjAsSW,12j24UGNNzgCs6eWgKd1eiVsk8Sfi5b4yA,12jaXBend6PSTuR3MEMggNGmj3qG6dou1U,12JQmisKyA9uooWtGniCcf6f71u9tPGrUG,12jRF54yPx18DmSCZrJVY8dDhEiV6airqk,12jsrzDYFQY45CAPtrZ7B8neQczHHkrTFh,12jVHAHkZHrXEcZV16yJJ3v175xA6RehQp,12jxXSTUTNDFerw4AqA7qCummQUq6pULv8,12k298t8S1Z47Xip2cxK1oeYRtA8pQ6YQ2,12k8aQzfdC9EUYnu3CrRkGHK94jUoaJdmu,12k9RsjbdbgzoibFeqQqZhzViZaWDbNP75,12keP3C3Syp5MNgGU41Th9mSTqYNmDY2vD,12kHgFnZurosYgigzm9xPHjQ7VqsgSjyx8,12Ktt5srkTUyrwaYa7mKwT9KrAdwExZY9f,12KuxAajavxheCZ6cGUExLhQ26YVweeHC8,12L2PDsYmgzHQHpp8F7rf7G9yWEHuEAwfz,12LCt7RHeUnNkNynfmDZrPBK6Td8FRw7nT,12Lj4fZGhmd3RkqdfTMgopq2pXtAKFp6NQ,12LkhzNnzdndTRCAo1x5XsEhS6H5cqkh71,12LRUBh5KsKLd4YrCuR7xWYtQ1xDN7f7Qu,12LX9HhEHEpB6UhC66fhe4MzvdXLpmStSj,12m2UWessPXrYkpNuiNfB5NRszXCMcPCEe,12M3uFqitoRvsz2zPga5Br8pHb6tGV1Kvw,12M4Tf4PPc1X5BoDo41pm5xrYu9cW18Re3,12M6LB7ohTiyJTSodmdb4zqHVHzpwonVEo,12m8xFjqqgPPGsWLQ4mX5vJpbFCeVcJXeR,12MPnvYGEbQQFYjnNPBxRasQygk6MMpFKE,12mYLR1NRNajzPynSfSe336h1h2nupVnEZ,12n3roXH52kVzGP9dDs52ccxzsxdT6vDsM,12N4Vfn88gbAguoHG8tXh1FH14DKt8j66U,12N8ps54FHevMFFu8JGYYTVF8tA38Rb4jg,12njhD8RMBSpZnM3YHYyR9yfmq7DrUrBML,12nQnkx8kQiDNYXHuP6YXAZ1d1WWMaNcaE,12NzdAASZfV4ioEf3HxfffdKTTv7rxkNnk,12nZhcY9Vd5UMtVZPVNkpDJ4PcGSsoHjhf,12o6tzVaCuNGLFpQRnLiNPC4oDxbogMANG,12o9E7nKN4bXjts6L7pJejmso6gb6x7CGo,12oceG97cq9D5tYibUhgUgKHxHeZe4dg1G,12oCxDwHft1fAjUsPAJ7YMKe7jxcTERMFn,12oHcsN7gUpJmsJeoAbhr1Ujvp42URPH5t,12oNwXQNkCt16JurMmYSVUwPXFkM9BBdXP,12opjg4idSz4BeZSYffc6nTAXhTB5T7Lst,12oQkLkxQEnUcnZM5GyfQJEcBWjCNDhaeE,12ovJSrGHtR1Vtg1FHruwaZQVzfoczta6d,12p2mVu35kYwqeWMcpoEWzYo5KJpVD3YEx,12p8Jx8SwDbxZnq8weuWhoERe3RkpLPEYL,12PEB8RFXMUtrYck2jKXBUqhx3uKZqwGCd,12pJaKtHcFCy5RhnjdpKMc29XHJhpc7cXL,12pMoxvSH5oyfFmUA9b99mPHNroRgq8yZQ,12PnStJLmSnrqGmher78XnW5mS3ApLn3NH,12pQkuPG7T2AE642VzoKyzrJneYaAZPYEA,12Q1tpfabJj8nvirwgEiwnbWHyuudQurYi,12Q2qHiA2oSfzgpBSW4VaTc7v1y87siDok/utxo?returnLegacyAddresses=true" | jq -r ".[] | [.address,.height,.txid,.vout,.satoshis,.amount,.scriptPubKey] | @tsv">>  UTXO_MULTI_1.txt 2>&1
+
+
+
+curl -s "https://blockdozer.com/api/addrs/12CVH8RqidbJr7zmHvc36W988yyGBHTFYe,12cvq5WxA49mzfqNVMtv5isQbtzPPgNRFU,12cWZhNPJJkViLpDuxWkKe2hQAsyXxo7Gd,12cYUoJwLSrCXbtqFxWCCZP9P3e8fsU1cR,12DG6yXNiNSTAnDmGHwF75oAZi9sZtTq2A,12DiBVQPAubZoP6CXiKLspKkb7XHP2rXgh,12DLWEMVjzKAA84CLrgGG6XnVATBZg5wHb,12DNnu2ngVqaDhNSDTb8yWsxoKnvSi9p6u,12dpm7oFqVFoKj9AGpkD9wKLsTg3aSAee2,12duoS5ontsBLEHqHnT71mohsqgcT86gwZ,12dZWPLpEowHtMqdT3UnCBAJmNiHw8Z7cR,12E1FV2kVZy7gXbbeVeDGfvJ1jgCwamT6N,12EdtySdxPuCZMyG1fkfkK7weAhQq7hATG,12EkLcNsHNSXVdN2CEL6smP5fwDvxyqc2D,12eSBLYgi7NGCbNqM3VFUD6FNgDDmGiggx,12ESXD9bYUaJy1bRyQ8LMdojbroyvNLAwn,12etP3UVFwtu6wAXygtV3eNdtZ3rU3rhBx,12EWu4NqfJxto3rkyq4TRwrQ1yALY3YW1L,12EwzobNJTduRfDUuqpofW9NUJENp6CWwG,12eYLWiRngsw5AFndqvN6qQsQ8VQ4HUUqB,12eYn3fGkx5Q3aDDyAKfhAZsyESYLdJZf7,12eYUJFxpxZLxgKZCmeCn7DcXr9ZznvSkC,12f2E7CrHdHhZuRK3wEkoF6RERxeqL9oQw,12f6qnP6KiFLncSpy2ftPF1C3EqYTn3mYq,12fD2McAMwXtPcDauWTbyR1kF4hW2atE6o,12fL6GCBki3BMCJXmvkvYx1Zwj7FqhYcrL,12fo3Wv5vV7NwypdJQ21jGJup772TpMi36,12fRXgfwkDzYPXiv97pfc25caPvR83NJKN,12g4dcuhHaycnPxpjXNLwvGdc5X9sZHFrJ,12gBR8rN5w11caphkceqGaLyJXbUBQ2JfK,12GFYvZJzVGusuXMHT4ukHGyzsQh8TRowZ,12ghV4H8436XYA9MDZiHsVgwHcMnRKkduE,12gmsZj7oAAuYbcLMxfTuvSLPhn3gbrnBk,12GveJ6WgnpcC5qqQ63oYMcTYwy7tJ1RBp,12gWRFDxfYxh5pEfVj881VDmwF6MMyu8C2,12h3EqqTkkrU2LiWtCvXerAkA69TzweBts,12H7XxnRRRnsyQK7haFvSwmnAFFRpNMtSZ,12HDyqVUAAL4bQyXEx8T6zkrgvNkSo6s3U,12HhTLmaQZfqLP7fQYxfRkKc17g1uyeKry,12HiZ21KaD6XfNWqEYNZ6X372djiTXeh1A,12hj3iVxx52dTRqgsHYa79zCtV2SyURq4A,12hKM72Ns7GRLTeMaRSZQvgxKhAXE7adHR,12HTTwAdNTuGEPuMKfiJ9ef83r3muaBuzL,12hZKGnYq7E8HPiKNBXrrZrFCEJcqND3a8,12HzZmreexKqJ3Pgu8RPn4XcuytVfLZEaE,12iA9EogXchRoL7kRPkqjUuFWu3axsZurS,12ihTaWtq6XhfbAMJZcnGjS8HQ9gTVpzeU,12ioBPmpUxiZSW5ZVhqAEEJbJrFjQjAsSW,12j24UGNNzgCs6eWgKd1eiVsk8Sfi5b4yA,12jaXBend6PSTuR3MEMggNGmj3qG6dou1U,12JQmisKyA9uooWtGniCcf6f71u9tPGrUG,12jRF54yPx18DmSCZrJVY8dDhEiV6airqk,12jsrzDYFQY45CAPtrZ7B8neQczHHkrTFh,12jVHAHkZHrXEcZV16yJJ3v175xA6RehQp,12jxXSTUTNDFerw4AqA7qCummQUq6pULv8,12k298t8S1Z47Xip2cxK1oeYRtA8pQ6YQ2,12k8aQzfdC9EUYnu3CrRkGHK94jUoaJdmu,12k9RsjbdbgzoibFeqQqZhzViZaWDbNP75,12keP3C3Syp5MNgGU41Th9mSTqYNmDY2vD,12kHgFnZurosYgigzm9xPHjQ7VqsgSjyx8,12Ktt5srkTUyrwaYa7mKwT9KrAdwExZY9f,12KuxAajavxheCZ6cGUExLhQ26YVweeHC8,12L2PDsYmgzHQHpp8F7rf7G9yWEHuEAwfz,12LCt7RHeUnNkNynfmDZrPBK6Td8FRw7nT,12Lj4fZGhmd3RkqdfTMgopq2pXtAKFp6NQ,12LkhzNnzdndTRCAo1x5XsEhS6H5cqkh71,12LRUBh5KsKLd4YrCuR7xWYtQ1xDN7f7Qu,12LX9HhEHEpB6UhC66fhe4MzvdXLpmStSj,12m2UWessPXrYkpNuiNfB5NRszXCMcPCEe,12M3uFqitoRvsz2zPga5Br8pHb6tGV1Kvw,12M4Tf4PPc1X5BoDo41pm5xrYu9cW18Re3,12M6LB7ohTiyJTSodmdb4zqHVHzpwonVEo,12m8xFjqqgPPGsWLQ4mX5vJpbFCeVcJXeR,12MPnvYGEbQQFYjnNPBxRasQygk6MMpFKE,12mYLR1NRNajzPynSfSe336h1h2nupVnEZ,12n3roXH52kVzGP9dDs52ccxzsxdT6vDsM,12N4Vfn88gbAguoHG8tXh1FH14DKt8j66U,12N8ps54FHevMFFu8JGYYTVF8tA38Rb4jg,12njhD8RMBSpZnM3YHYyR9yfmq7DrUrBML,12nQnkx8kQiDNYXHuP6YXAZ1d1WWMaNcaE,12NzdAASZfV4ioEf3HxfffdKTTv7rxkNnk,12nZhcY9Vd5UMtVZPVNkpDJ4PcGSsoHjhf,12o6tzVaCuNGLFpQRnLiNPC4oDxbogMANG,12o9E7nKN4bXjts6L7pJejmso6gb6x7CGo,12oceG97cq9D5tYibUhgUgKHxHeZe4dg1G,12oCxDwHft1fAjUsPAJ7YMKe7jxcTERMFn,12oHcsN7gUpJmsJeoAbhr1Ujvp42URPH5t,12oNwXQNkCt16JurMmYSVUwPXFkM9BBdXP,12opjg4idSz4BeZSYffc6nTAXhTB5T7Lst,12oQkLkxQEnUcnZM5GyfQJEcBWjCNDhaeE,12ovJSrGHtR1Vtg1FHruwaZQVzfoczta6d,12p2mVu35kYwqeWMcpoEWzYo5KJpVD3YEx,12p8Jx8SwDbxZnq8weuWhoERe3RkpLPEYL,12PEB8RFXMUtrYck2jKXBUqhx3uKZqwGCd,12pJaKtHcFCy5RhnjdpKMc29XHJhpc7cXL,12pMoxvSH5oyfFmUA9b99mPHNroRgq8yZQ,12PnStJLmSnrqGmher78XnW5mS3ApLn3NH,12pQkuPG7T2AE642VzoKyzrJneYaAZPYEA,12Q1tpfabJj8nvirwgEiwnbWHyuudQurYi,12Q2qHiA2oSfzgpBSW4VaTc7v1y87siDok"| jq -r ".[] | select( .balance > 0) | [.addrStr,.balance] | @tsv" >> BALANCE_MULTI_1.txt 2>&1
+
+
+
+
+
+
+
+DECLARE @Companycd char(3)		
+DECLARE @Currencycd char(3)	
+DECLARE @Brancd char(3)													
+DECLARE @Customercd char(6)	
+DECLARE @begin datetime
+DECLARE @end datetime
+													
+SET @Companycd = '101'													
+SET @Brancd = '105'													
+--SET @Customercd = '103026'	
+set @begin='2019-01-01'
+set @end='2019-12-31'
+set @Currencycd='ETH'
+
+
+
+-- 声明游标
+DECLARE customercds CURSOR FAST_FORWARD FOR
+    select CUSTOMER_CD from M_CUSTOMER where COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and DELETE_FLG != 'Y'; 
+OPEN customercds;
+
+-- 取第一条记录
+FETCH NEXT FROM customercds INTO @Customercd;
+
+WHILE @@FETCH_STATUS=0
+BEGIN
+
+	-- 操作
+	PRINT 'CUSTOMERCD' + ' = ' + @Customercd
+
+	declare @info varchar(2000)
+	declare @curs cursor
+	set @curs=cursor scroll dynamic
+	for
+
+	select 
+	'VALUE_D='+isnull(CONVERT(VARCHAR(19),c.VALUE_D,121),'')+'; customerCd='+isnull(c.customerCd,'')+'; DEPOSITWITHDRAWAl='+isnull(c.DEPOSITWITHDRAWAl,'')+
+	'; agreementD='+isnull(CONVERT(VARCHAR(19),c.agreementD,121),'')+'; buysellCustomerCd='+isnull(c.buysellCustomerCd,'')+'; buyAndSell='+isnull(c.buyAndSell,'')+
+	'; balanceD='+isnull(CONVERT(VARCHAR(19),d.BASE_D,121),'')+'; baCustomerCd='+isnull(d.CUSTOMER_CD,'')+'; NOMINAL='+isnull(convert(varchar(20),d.NOMINAL),0)
+	from
+	(select a.*,  b.VALUE_D as agreementD, b.customerCd as buysellCustomerCd, b.buyAndSell from 
+	(select VALUE_D,customerCd,DEPOSITWITHDRAWAl from
+	(select inout.VALUE_D, max(inout.customerCd) customerCd,
+	(SELECT RTRIM( inout2.[TRANSFER_CLS]) +'='+QUOTENAME(inout2.transferAmout) +';' FROM 
+	(select VALUE_D, max(CUSTOMER_CD) customerCd, 
+	TRANSFER_CLS, SUM(TRANSFER_AMOUNT) transferAmout from T_VC_TRANSFER_REQUEST where 
+	CUSTOMER_CD = @Customercd and COMPANY_CD = @Companycd and BRANCH_CD = @Brancd 
+	and CURRENCY_CD = @Currencycd
+	and VALUE_D in (select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y')
+	and TRANSFER_STATUS_CD in (13,23)
+	--and DELETE_FLG != 'Y'
+	group by TRANSFER_CLS, VALUE_D)
+	inout2
+	WHERE inout.VALUE_D = inout2.VALUE_D  FOR XML PATH ('')) AS DEPOSITWITHDRAWAl
+	from
+	(select VALUE_D, max(CUSTOMER_CD) customerCd, 
+	TRANSFER_CLS, SUM(TRANSFER_AMOUNT) transferAmout from T_VC_TRANSFER_REQUEST where 
+	CUSTOMER_CD = @Customercd and COMPANY_CD = @Companycd and BRANCH_CD = @Brancd 
+	and CURRENCY_CD = @Currencycd
+	and VALUE_D in (select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y')
+	and TRANSFER_STATUS_CD in (13,23)
+	--and DELETE_FLG != 'Y'
+	group by TRANSFER_CLS, VALUE_D)
+	inout
+	group by TRANSFER_CLS, VALUE_D) inout3 group by VALUE_D,customerCd,DEPOSITWITHDRAWAl) a FULL JOIN
+
+	(select VALUE_D,customerCd,buyAndSell from
+	(select buysell.VALUE_D, max(buysell.customerCd) customerCd,
+	(SELECT RTRIM( buysell2.BUY_SELL_CLS) +'='+QUOTENAME(buysell2.execNominal) +';' FROM 
+	(select VALUE_D, max(CUSTOMER_CD) customerCd, BUY_SELL_CLS, SUM(EXEC_NOMINAL) execNominal from T_VC_S_EXECUTION where COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and CUSTOMER_CD = @Customercd and CURRENCY_CD_1 = @Currencycd and CURRENCY_CD_2 = 'JPY'
+	-- and DELETE_FLG != 'Y'
+	and VALUE_D in (select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y')
+	group by BUY_SELL_CLS, VALUE_D)
+	buysell2
+	WHERE buysell.VALUE_D = buysell2.VALUE_D  FOR XML PATH ('')) AS buyAndSell
+	from
+	(select VALUE_D, max(CUSTOMER_CD) customerCd, BUY_SELL_CLS, SUM(EXEC_NOMINAL) execNominal from T_VC_S_EXECUTION where COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and CUSTOMER_CD = @Customercd and CURRENCY_CD_1 = @Currencycd and CURRENCY_CD_2 = 'JPY'
+	-- and DELETE_FLG != 'Y'
+	and VALUE_D in (select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y')
+	group by BUY_SELL_CLS, VALUE_D) buysell
+	group by BUY_SELL_CLS, VALUE_D)
+	buysel3 group by VALUE_D,customerCd,buyAndSell) b on a.VALUE_D = b.VALUE_D) c FULL JOIN
+
+	(select BASE_D, CUSTOMER_CD, NOMINAL from T_VC_S_BALANCE where COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and CUSTOMER_CD = @Customercd and CURRENCY_CD = @Currencycd and DELETE_FLG != 'Y'
+	and BASE_D in (select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y')) d on c.VALUE_D = d.BASE_D
+
+	open @curs
+	fetch next from @curs into @info
+	while(@@fetch_status=0)
+	begin
+	print @info
+	fetch next from @curs into @info
+	end
+
+    -- 取下一条记录
+    FETCH NEXT FROM customercds INTO @Customercd;
+END
+
+-- 关闭游标
+CLOSE customercds;
+
+-- 释放游标
+DEALLOCATE customercds;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+DECLARE @Companycd char(3)		
+DECLARE @Currencycd char(3)	
+DECLARE @Brancd char(3)													
+DECLARE @Customercd char(6)	
+DECLARE @begin datetime
+DECLARE @end datetime
+DECLARE @day date
+DECLARE @in char(20)	
+													
+SET @Companycd = '101'													
+SET @Brancd = '105'													
+--SET @Customercd = '103026'	
+set @begin='2019-01-01'
+set @end='2019-2-01'
+set @Currencycd='ETH'
+
+
+DECLARE customercds CURSOR FAST_FORWARD FOR
+    select CUSTOMER_CD from M_CUSTOMER where COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and DELETE_FLG != 'Y' and CUSTOMER_CD='103008'; 
+OPEN customercds;
+FETCH NEXT FROM customercds INTO @Customercd;
+WHILE @@FETCH_STATUS=0
+BEGIN
+	-- each user
+	print @Customercd
+		-- each day:
+		DECLARE basedays CURSOR FAST_FORWARD FOR
+			select BASE_D from M_EXCHANGE_CALENDAR where BASE_D BETWEEN @begin and @end and EXCHANGE_CD = 1 and DELETE_FLG != 'Y' and HOLIDAY_FLG != 'Y' order by BASE_D asc;
+		OPEN basedays;
+
+		FETCH NEXT FROM basedays INTO @day;
+		WHILE @@FETCH_STATUS=0
+		BEGIN
+			-- get every day data then print
+			--in and out gold
+			--in:
+			SELECT @in = a.TRANSFER_AMOUNT FROM
+			(select isnull(SUM(TRANSFER_AMOUNT),0) TRANSFER_AMOUNT from T_VC_TRANSFER_REQUEST where CUSTOMER_CD = @Customercd and COMPANY_CD = @Companycd and BRANCH_CD = @Brancd and CURRENCY_CD = @Currencycd and VALUE_D = @day and TRANSFER_STATUS_CD in (13,23) and TRANSFER_CLS = 1 
+			--and DELETE_FLG != 'Y' 
+			group by VALUE_D) a
+
+			print @in
+
+
+			--print CONVERT(VARCHAR(19),@day,121) +';'+@Customercd
+
+			FETCH NEXT FROM basedays INTO @day;
+		END
+		CLOSE basedays;
+		DEALLOCATE basedays;
+    FETCH NEXT FROM customercds INTO @Customercd;
+END
+
+CLOSE customercds;
+DEALLOCATE customercds;
+
+
+
+
+
+
+
+DECLARE @Companycd  varchar(3)
+DECLARE @Brancd     varchar(3)
+DECLARE @Customercd varchar(6)
+
+DECLARE @begin datetime
+DECLARE @end datetime
+
+DECLARE @Companycd_d  varchar(3)
+DECLARE @Brancd_d     varchar(3)
+DECLARE @Customercd_d varchar(6)
+
+DECLARE @BaseD_d datetime
+DECLARE @Currencycd varchar(3)
+DECLARE @TRANSFER_AMOUNT_IN  numeric(30,18)
+DECLARE @TRANSFER_AMOUNT_OUT numeric(30,18)
+DECLARE @EXEC_NOMINAL_IN  numeric(30,18)
+DECLARE @EXEC_NOMINAL_OUT numeric(30,18)
+DECLARE @BALANCE numeric(30,18)
+
+DECLARE @TAB char(1) = char(9)
+
+SET @Companycd = '102'
+SET @Brancd = '105'
+--SET @Customercd = '103026'
+set @begin='2019-11-01'
+set @end='2019-11-30'
+set @Currencycd='ETH'
+
+
+
+DECLARE cust_cursor CURSOR FAST_FORWARD FOR
+SELECT top 1 COMPANY_CD, BRANCH_CD, CUSTOMER_CD FROM M_CUSTOMER WHERE COMPANY_CD = @Companycd AND BRANCH_CD = @Brancd 
+AND DELETE_FLG = 'N' 
+AND COMPANY_CD = '102' and BRANCH_CD = '100' and CUSTOMER_CD = '110046'
+ORDER BY COMPANY_CD, BRANCH_CD, CUSTOMER_CD; 
+
+--SELECT  COMPANY_CD ,CUSTOMER_CD, BRANCH_CD FROM T_VC_S_ORDER
+--WHERE COMPANY_CD = '102' AND ORDER_STATUS_CD = '10'
+--GROUP BY COMPANY_CD ,CUSTOMER_CD, BRANCH_CD
+--UNION
+---SELECT  COMPANY_CD ,CUSTOMER_CD, BRANCH_CD FROM T_VC_TRANSFER_REQUEST
+--WHERE COMPANY_CD = '102' AND TRANSFER_STATUS_CD IN ('13', '23')
+--GROUP BY COMPANY_CD ,CUSTOMER_CD, BRANCH_CD
+--ORDER BY COMPANY_CD ,CUSTOMER_CD, BRANCH_CD
+
+print '日付' +@TAB+ '企業コード' + @TAB + '部店コード' + @TAB + '顧客コード' + @TAB +'通貨コード' + @TAB + '入金'+@TAB+'出金'+@TAB+'買'+@TAB+'売'+@TAB + '保有残高'
+OPEN cust_cursor;
+FETCH NEXT FROM cust_cursor INTO @Companycd_d, @Brancd_d, @Customercd_d;
+WHILE @@FETCH_STATUS=0
+BEGIN
+
+    DECLARE calendar_cursor CURSOR FAST_FORWARD FOR
+    SELECT BASE_D FROM M_EXCHANGE_CALENDAR WHERE EXCHANGE_CD = '1' AND HOLIDAY_FLG = 'N' AND DELETE_FLG = 'N' and BASE_D between @begin and @end ORDER BY BASE_D;
+    open calendar_cursor;
+    FETCH NEXT FROM calendar_cursor INTO @BaseD_d;
+    WHILE @@FETCH_STATUS=0
+    BEGIN
+        --入金
+        select @TRANSFER_AMOUNT_IN = ISNULL(sum(TRANSFER_AMOUNT),0) from T_VC_TRANSFER_REQUEST 
+        where COMPANY_CD = @Companycd_d  and BRANCH_CD = @Brancd_d and CUSTOMER_CD = @Customercd_d and VALUE_D = @BaseD_d and TRANSFER_STATUS_CD = '13' and DELETE_FLG = 'N' and currency_cd = @Currencycd
+        --出金
+        select @TRANSFER_AMOUNT_OUT = ISNULL(sum(TRANSFER_AMOUNT),0) from T_VC_TRANSFER_REQUEST 
+        where COMPANY_CD = @Companycd_d  and BRANCH_CD = @Brancd_d and CUSTOMER_CD = @Customercd_d and VALUE_D = @BaseD_d and TRANSFER_STATUS_CD = '23' and DELETE_FLG = 'N' and currency_cd = @Currencycd
+
+        --買
+        select @EXEC_NOMINAL_IN = ISNULL(sum(EXEC_NOMINAL),0) from T_VC_S_EXECUTION 
+        where COMPANY_CD = @Companycd_d  and BRANCH_CD = @Brancd_d and CUSTOMER_CD = @Customercd_d and VALUE_D = @BaseD_d and BUY_SELL_CLS = '3' and DELETE_FLG = 'N' and currency_cd_1 = @Currencycd
+        --売
+        select @EXEC_NOMINAL_OUT = ISNULL(sum(EXEC_NOMINAL),0) from T_VC_S_EXECUTION 
+        where COMPANY_CD = @Companycd_d  and BRANCH_CD = @Brancd_d and CUSTOMER_CD = @Customercd_d and VALUE_D = @BaseD_d and BUY_SELL_CLS = '1' and DELETE_FLG = 'N' and currency_cd_1 = @Currencycd
+
+        --保有残高
+        select @BALANCE = ISNULL(sum(NOMINAL),0) from T_VC_S_BALANCE_HIST where CURRENCY_CD = @Currencycd and COMPANY_CD = @Companycd_d and BRANCH_CD = @Brancd_d and customer_cd =@Customercd_d and BASE_D = @BaseD_d and DELETE_FLG = 'N' 
+
+        print convert(varchar(256), @BaseD_d ,111)  + @TAB + @Companycd_d + @TAB + @Brancd_d + @TAB + @Customercd_d + @TAB + @Currencycd + @TAB
+        + convert(varchar(64), @TRANSFER_AMOUNT_IN) + @TAB +convert(varchar(64), @TRANSFER_AMOUNT_OUT) + @TAB + convert(varchar(64),@EXEC_NOMINAL_IN) + @TAB + convert(varchar(64),@EXEC_NOMINAL_OUT) + @TAB  + convert(varchar(64),@BALANCE)
+
+        FETCH NEXT FROM calendar_cursor INTO @BaseD_d;
+    END;
+
+    CLOSE calendar_cursor;
+    DEALLOCATE calendar_cursor;
+
+
+    FETCH NEXT FROM cust_cursor INTO @Companycd_d, @Brancd_d, @Customercd_d;
+END;
+
+CLOSE cust_cursor;
+DEALLOCATE cust_cursor;
+
+
+
+
+
+
+
+
+
+some
+java  batch:  spring-boot-starter-batch
+
+
+
+————前台页面  根据页面宽度（手机端 PC端） 选择性展示不同的css样式：
+@media only screen and (max-width: 667px) and (min-width: 375px) {
+.ShowNoneDataMessage{
+        text-align: left!important;
+    }
+}
+
+
+@media only screen and (max-width: 667px) and (min-width: 375px) {
+.checkMobilePage{
+        display:block!important;
+    }
+}
+
+<tbody th:if="${addInfo != null && #lists.isEmpty(addInfo.transferAddressTagList)}">
+    <tr class="odd">
+        <td valign="top" colspan="4" class="dataTables_empty ShowNoneDataMessage">[[#{NoData}]]<br class="checkMobilePage" style="display:none;"/></td>
+    </tr>
+</tbody>
+
+
+
+————input输入框 实时限制只能输入数字
+/**
+ * テキストボックスの入力値が数値であるかチェック
+ */
+Common.checkFloatNumberInputControl = function(target){
+	var val = target.val();
+	if(!val){
+		return;
+	}
+
+	var numberVal = val.replace(NUMBER_PATTERN_FLOAT,"$1");
+	// 整数制御
+	var intLength = target.attr("intlength");
+	if(intLength != null && intLength != undefined){
+		if(numberVal.indexOf(".") >= intLength){
+			numberVal = numberVal.substring(0, intLength) + numberVal.substring(numberVal.indexOf("."));
+		}else if(numberVal.indexOf(".") == -1 && numberVal.length > 12){
+			numberVal = numberVal.substring(0, intLength);
+		}
+	}
+	if(numberVal && numberVal.length > 1){
+		if(numberVal.charAt(0) == "0"){
+			numberVal = Number(numberVal);
+			if(isNaN(numberVal) == true){
+				numberVal = "";
+			}else{
+				if(val.match("^[0-9]*\\.+$")){
+					numberVal += ".";
+				} else {
+					if(val.indexOf(".") > 0){
+						numberVal = String(val);
+					}else{
+						numberVal = String(numberVal);
+					}
+				}
+			}
+		}
+	}
+	if(numberVal.charAt(0) == "."){
+		numberVal = 0 + numberVal;
+	}
+	if(numberVal != val){
+		target.val(numberVal);
+	}
+};
+
+
+Common.checkAmountDecPlace = function(target, amountDecPlace) {
+	var value = target.val();
+	if (Common.isNullOrWhiteSpace(value) || Common.isNullOrWhiteSpace(amountDecPlace)) {
+		return;
+	}
+
+	var index = value.indexOf(".");
+	if (index == -1) {
+		return;
+	}
+
+	amountDecPlace = Number(amountDecPlace);
+	if (amountDecPlace == 0) {
+		target.val(value.substring(0, index));
+		return;
+	}
+	var len = value.length;
+	var limitLen = index + amountDecPlace + 1;
+	if (len > limitLen) {
+		target.val(value.substring(0, limitLen));
+	}
+}
+
+
+金融项目 界面 安全键盘————
+keyboard.html
+
+<!DOCTYPE html>
+<html>
+<body>
+  <div th:fragment="keyboard" id="keyboard">
+    <div id="row_head" th:text="#{KeyboardTitle}"></div>
+      <div id="keyboardBody">
+      <div id="row0">
+        <input name="accent" type="button" value="`" /><input name="1" type="button" value="1" /><input name="2" type="button" value="2" /><input name="3" type="button" value="3" /><input name="4" type="button" value="4" /><input name="5" type="button" value="5" /><input name="6" type="button" value="6" /><input name="7" type="button" value="7" /><input name="8" type="button" value="8" /><input name="9" type="button" value="9" /><input name="0" type="button" value="0" /><input name="-" type="button" value="-" /><input name="=" type="button" value="=" /><input name="backspace" type="button" value="BS" />
+      </div>
+      <div id="row0_shift">
+        <input name="tilde" type="button" value="~" /><input name="exc" type="button" value="!" /><input name="at" type="button" value="@" /><input name="hash" type="button" value="#" /><input name="dollar" type="button" value="$" /><input name="percent" type="button" value="%" /><input name="caret" type="button" value="^" /><input name="ampersand" type="button" value="&" /><input name="asterik" type="button" value="*" /><input name="openbracket" type="button" value="(" /><input name="closebracket" type="button" value=")" /><input name="underscore" type="button" value="_" /><input name="plus" type="button" value="+" /><input name="backspace" type="button" value="BS" />
+      </div>
+      <div id="row1">
+        <input name="q" type="button" value="q" /><input name="w" type="button" value="w" /><input name="e" type="button" value="e" /><input name="r" type="button" value="r" /><input name="t" type="button" value="t" /><input name="y" type="button" value="y" /><input name="u" type="button" value="u" /><input name="i" type="button" value="i" /><input name="o" type="button" value="o" /><input name="p" type="button" value="p" /><input name="[" type="button" value="[" /><input name="]" type="button" value="]" /><input name="\" type="button" value="\" />
+      </div>
+      <div id="row1_shift">
+        <input name="Q" type="button" value="Q" /><input name="W" type="button" value="W" /><input name="E" type="button" value="E" /><input name="R" type="button" value="R" /><input name="T" type="button" value="T" /><input name="Y" type="button" value="Y" /><input name="U" type="button" value="U" /><input name="I" type="button" value="I" /><input name="O" type="button" value="O" /><input name="P" type="button" value="P" /><input name="{" type="button" value="{" /><input name="}" type="button" value="}" /><input name="|" type="button" value="|" />
+      </div>
+      <div id="row2">
+        <input name="a" type="button" value="a" /><input name="s" type="button" value="s" /><input name="d" type="button" value="d" /><input name="f" type="button" value="f" /><input name="g" type="button" value="g" /><input name="h" type="button" value="h" /><input name="j" type="button" value="j" /><input name="k" type="button" value="k" /><input name="l" type="button" value="l" /><input name=";" type="button" value=";" /><input name="'" type="button" value="'" />
+      </div>
+      <div id="row2_shift">
+        <input name="a" type="button" value="A" /><input name="s" type="button" value="S" /><input name="d" type="button" value="D" /><input name="f" type="button" value="F" /><input name="g" type="button" value="G" /><input name="h" type="button" value="H" /><input name="j" type="button" value="J" /><input name="k" type="button" value="K" /><input name="l" type="button" value="L" /><input name=";" type="button" value=":" /><input name="'" type="button" value='"' />
+      </div>
+      <div id="row3">
+        <input name="Shift" type="button" value="Shift" id="shift" /><input name="z" type="button" value="z" /><input name="x" type="button" value="x" /><input name="c" type="button" value="c" /><input name="v" type="button" value="v" /><input name="b" type="button" value="b" /><input name="n" type="button" value="n" /><input name="m" type="button" value="m" /><input name="," type="button" value="," /><input name="." type="button" value="." /><input name="/" type="button" value="/" />
+      </div>
+      <div id="row3_shift">
+        <input name="Shift" type="button" value="Shift" id="shifton" /><input name="Z" type="button" value="Z" /><input name="X" type="button" value="X" /><input name="C" type="button" value="C" /><input name="V" type="button" value="V" /><input name="B" type="button" value="B" /><input name="N" type="button" value="N" /><input name="M" type="button" value="M" /><input name="lt" type="button" value="&lt;" /><input name="gt" type="button" value="&gt;" /><input name="?" type="button" value="?" />
+      </div>
+      <div id="spacebar"><input name="spacebar" type="button" value=" " /><input name="close" type="button" value="close" /></div>
+      <div id="row4" th:utext="#{KeyboardContents}"></div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+/*******************************************************************************
+ * (C) 2008 Kishore Nallan for DesignShack http://www.kishorelive.com
+ * kishore.nc@gmail.com
+ ******************************************************************************/
+
+var isMobile = navigator.userAgent.match(/mobile/i) != null;
+
+$(document).ready(function() {
+
+	var shifton = false;
+	var keyId = "";
+	var vKeyPosition;
+
+	$("input[type=password]").on("focus", function(e) {
+		if ($(this).attr('readonly') != null && $(this).attr('readonly') != undefined && $(this).attr('readonly').trim() != '' && isMobile) {
+			$("#keyboard").toggle(false);
+			$(this).blur();
+			$("input[type=password]").removeAttr("readonly");
+			$(this).focus();
+		}
+	});
+
+	window.addEventListener("resize", function() {
+		var windowWidth = $(document.body).width();
+		var keyboardState = $("#keyboard").css("display");
+
+		if(keyboardState === "none") {
+			return;
+		}
+
+		if (windowWidth < 769 || isMobile) {
+			// Reset keyboard positioning
+			$("#keyboard").css({
+				"left" : "0px",
+				"margin-left": "0px",
+				"display" : "block"
+			});
+
+			var boardWidth = $("#keyboard").width();
+
+			// Hide keyboard again
+			$("#keyboard").css({
+				"left" : "0px",
+				"margin-left": "0px",
+				"display" : keyboardState
+			});
+
+			var leftOffset = "50%";
+			$("#keyboard").css({
+				"left": leftOffset,
+				"margin-left": (-(boardWidth / 2.0)) + "px"});
+		}
+	});
+
+	// toggles the keyboard to show or hide when link is clicked
+	// パスワード
+	$("#showkeyboardPasswd").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#passwd";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 現在のログインパスワード
+	$("#showkeyboardCurrentPassword").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#currentPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後のログインパスワード
+	$("#showkeyboardNewPassword").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後のログインパスワード（確認）
+	$("#showkeyboardNewPasswordConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newPasswordConfirm";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e,
+				tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// セキュリティ強化ため_現在のログインパスワード
+	$("#showkeyboardCurrentPwStrengthen").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#currentPwStrengthen";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// セキュリティ強化ため_変更後のログインパスワード
+	$("#showkeyboardNewPwStrengthen").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newPwStrengthen";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// セキュリティ強化ため_変更後のログインパスワード（確認）
+	$("#showkeyboardNewPwStrengthenConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newPwConfirmStrengthen";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e,
+				tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 取引暗証番号登録
+	$("#transactionPin").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#transacPin";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 取引暗証番号登録（確認）
+	$("#transactionPinConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#transacPinConfirm";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 現在の取引暗証番号
+	$("#showkeyboardCurrentTradingPassword").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#currentTradingPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後の取引暗証番号
+	$("#showkeyboardNewTradingPassword").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newTradingPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後の取引暗証番号（確認）
+	$("#showkeyboardNewTradingPasswordConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newTradingPasswordConfirm";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 現在のMT4ログインパスワード
+	$("#showkeyboardCurrentMt4Password").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#currentMt4Password";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後のMT4ログインパスワード
+	$("#showkeyboardNewMt4Password").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newMt4Password";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 変更後のMT4ログインパスワード（確認）
+	$("#showkeyboardNewMt4PasswordConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#newMt4PasswordConfirm";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 認証番号
+	$("#showkeyboardAupdateAccountAuthNum").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#authNumberIn";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 20);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// 取引暗証番号
+	$("#showkeyboardAupdateAccountPinCode").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#pinCodeIn";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	$("#showkeyboardPinCode").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#tradingPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardAuthNum").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#authNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNum").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardHeaderTwostepAuthNum").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#headerTwoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNumChangePin").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNumWithdrawal").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNumTransfer").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNumUserSettings").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardTwostepAuthNumAddress").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNumAddress";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardInitNewPW").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#password_init_modal #newPassword";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardInitNewPWConfirm").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#password_init_modal #newPasswordConfirm";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardUnlockAuthNum").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#account_lock_modal #authNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardUnlockPinCode").off('click').on('click', function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#account_lock_modal #pinCode";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardGoogleAuthCdChangePin").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#update_pin_inputGoogleAuthCd";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardGoogleAuthCdWithdrawal").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#withdrawal_inputGoogleAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardGoogleAuthCdTransfer").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#virtual_remittance_googleAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, -250);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+	$("#showkeyboardVerifyGoogleAuthModal").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#verify_google_auth_modal_googleAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// SmartAPI確認画面二段階認証
+	$("#showkeyboardSmartApiConfirmAuthNum").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#smart_api_key_confirm_authNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// SmartAPI確認画面Google認証
+	$("#showkeyboardSmartApiConfirmGoogleAuthNum").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#smart_api_key_confirm_googleAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// SmartAPI編集画面表示二段階認証
+	$("#showkeyboardSmartApiMngAuthNum").off('click').click(function(e) {
+		var height = $('#keyboard').height();
+		var width = $('#keyboard').width();
+
+		var tmpKeyId = "#twoStepAuthNum";
+
+		vKeyPosition = VKeyboard.getLeftTopOffset(e, tmpKeyId, false, 300, false, true);
+
+		$('#keyboard').css("z-index", 2000);
+		$('#keyboard').css(vKeyPosition).toggle();
+
+		VKeyboard.showDefaultKeyboard(keyId, tmpKeyId);
+
+		keyId = tmpKeyId;
+	});
+
+	// makes the keyboard draggable
+	$("#keyboard").draggable();
+
+	// toggles between the normal and the "SHIFT keys" on the keyboard
+	function onShift(e) {
+		var i;
+		if (e == 1) {
+			for (i = 0; i < 4; i++) {
+				var rowid = "#row" + i;
+				$(rowid).hide();
+				$(rowid + "_shift").show();
+			}
+		} else {
+			for (i = 0; i < 4; i++) {
+				var rowid = "#row" + i;
+				$(rowid).show();
+				$(rowid + "_shift").hide();
+			}
+		}
+	}
+
+	// function thats called when any of the keys on the keyboard are pressed
+	$("#keyboard input").off('click').on('click', function(e) {
+		if (isMobile == false) {
+			$(keyId).focus();
+		}
+		if ($(this).val() == 'BS') {
+			var keyObj = $(keyId);
+			if (isMobile == false) {
+				$(keyId).focus();
+			}
+			keyObj.replaceSelection("", true);
+		} else if ($(this).val() == "Shift") {
+			if (shifton == false) {
+				onShift(1);
+				shifton = true;
+			} else {
+				onShift(0);
+				shifton = false;
+			}
+		} else if ($(this).val() == "close") {
+			$('#keyboard').toggle();
+			if (isMobile) {
+				$(keyId).removeAttr("readonly");
+			}
+		} else {
+			var keyObj = $(keyId);
+			var maxLength = keyObj.attr('maxlength');
+			if(maxLength && maxLength != null && maxLength != undefined && maxLength > 0){
+				if((maxLength - keyObj.val().length) <= 0){
+					return;
+				}
+			}
+			if (isMobile == false) {
+				$(keyId).focus();
+			}
+			keyObj.replaceSelection($(this).val(), true);
+			if (shifton == true) {
+				onShift(0);
+				shifton = false;
+			}
+		}
+	});
+});
+
+function VKeyboard() {
+};
+
+/**
+ *
+ * @param {*} evnt
+ * @param {string} elemId
+ * @param {number} lExtraOffset only applies when window width is > 769
+ * @param {number} yExtraOffset only applies when window width is > 769
+ * @param {number} lExtraAbsolute only applies when window width is > 769
+ * @param {number} yExtraAbsolute only applies when window width is > 769
+ */
+VKeyboard.getLeftTopOffset = function(evnt, elemId, lExtraOffset, yExtraOffset, lExtraAbsolute, yExtraAbsolute) {
+	var body = document.body;
+	var docElem = document.documentElement;
+	var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+	var clientTop = docElem.clientTop || body.clientTop || 0;
+	var yScrollOffset = scrollTop - clientTop;
+
+	var box = document.querySelector(elemId).getBoundingClientRect();
+	var boxHeight = box.height;
+
+	var keyboardState = $("#keyboard").css("display");
+
+	// --
+	// Reset keyboard positioning
+	$("#keyboard").css({
+		"left" : "0px",
+		"margin-left": "0px",
+		"top" : box.top + yScrollOffset + "px",
+		"display" : "block"
+	});
+	// --
+
+  var defLExtraOffset = lExtraOffset || -180;
+  var defYExtraOffset = yExtraOffset || 20;
+
+  var leftOffset = (lExtraAbsolute ? 0 : evnt.pageX) + defLExtraOffset + "px";
+  var topOffset = (yExtraAbsolute ? 0 : evnt.pageY) + defYExtraOffset + "px";
+
+  var windowWidth = $(document.body).width();
+  var windowHeight = $(window).height();
+  var boardHeight = $("#keyboard").height();
+  var boardWidth = $("#keyboard").width();
+
+	// --
+	// Hide keyboard again
+	$("#keyboard").css({
+		"left" : "0px",
+		"top" : box.top + yScrollOffset + "px",
+		"display" : keyboardState
+	});
+
+	var retPos = {
+		"left" : leftOffset,
+	    "top" : topOffset,
+	};
+
+	if (windowWidth < 769 || isMobile) {
+		if (yExtraAbsolute) {
+			topOffset = box.top + boxHeight;
+		} else {
+			topOffset = box.top + yScrollOffset + boxHeight + 14;
+			if (topOffset + boardHeight > windowHeight + yScrollOffset) {
+				topOffset = box.top + yScrollOffset - (boardHeight + 20);
+			}
+		}
+
+		leftOffset = "50%";
+
+		retPos = {
+			"left" : leftOffset,
+		    "top" : topOffset,
+		    "margin-left": (-(boardWidth / 2.0)) + "px"
+		};
+	}
+
+	return retPos;
+};
+
+VKeyboard.toggleScroll = function(vkeyboard, e) {
+	e.preventDefault();
+};
+
+
+
+VKeyboard.showDefaultKeyboard = function (keyId, tmpKeyId) {
+	if (keyId == null || keyId == '') {
+		keyId = tmpKeyId;
+	}
+
+	if (isMobile) {
+		$(keyId).removeAttr("readonly");
+		$('#keyboard').css("display") == "none" ? $(tmpKeyId).removeAttr("readonly") : $(tmpKeyId).attr("readonly", "readonly");
+	}
+}
+
+
